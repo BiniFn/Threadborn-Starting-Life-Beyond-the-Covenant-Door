@@ -1,0 +1,27 @@
+{
+  "name": "threadborn",
+  "version": "1.0.0",
+  "description": "Official static reader and export hub for Threadborn - Starting Life Beyond the Covenant Door",
+  "scripts": {
+    "dev": "python3 -m http.server 8080",
+    "test": "echo \"No tests configured\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door.git"
+  },
+  "keywords": [
+    "threadborn",
+    "static-site",
+    "reader"
+  ],
+  "author": "BiniFn",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/issues"
+  },
+  "homepage": "https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door#readme",
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0"
+  }
+}
