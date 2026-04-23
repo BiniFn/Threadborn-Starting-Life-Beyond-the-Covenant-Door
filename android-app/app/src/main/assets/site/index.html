@@ -92,17 +92,20 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
       text-decoration: none;
       cursor: pointer;
       min-width: 0;
     }
 
     .brand-mark {
-      width: clamp(150px, 20vw, 230px);
-      height: 76px;
-      display: block;
+      width: clamp(110px, 12vw, 150px);
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex: 0 0 auto;
+      overflow: hidden;
     }
 
     .brand-mark::after {
@@ -114,7 +117,10 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.45));
+      object-position: left center;
+      transform: scale(1.22);
+      transform-origin: left center;
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.38));
     }
 
     .brand-copy {
@@ -333,6 +339,166 @@
       margin: 0;
       color: var(--mist);
       line-height: 1.75;
+    }
+
+    .app-start {
+      margin-top: 24px;
+      padding: 28px;
+    }
+
+    .app-start-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .app-start-head h3 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 3vw, 2.7rem);
+      font-family: "Cormorant Garamond", serif;
+    }
+
+    .app-start-head p {
+      margin: 0;
+      color: var(--mist);
+      line-height: 1.75;
+      max-width: 56ch;
+    }
+
+    .start-badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--bone);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-family: "Space Mono", monospace;
+      white-space: nowrap;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .step-card {
+      min-height: 280px;
+      padding: 24px;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 72%),
+        rgba(8, 8, 10, 0.7);
+    }
+
+    .step-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      margin-bottom: 14px;
+      border-radius: 50%;
+      background: var(--bone);
+      color: #160607;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .step-card h4 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      line-height: 1;
+      font-family: "Cormorant Garamond", serif;
+    }
+
+    .step-card p {
+      margin: 0;
+      color: var(--mist);
+      line-height: 1.75;
+    }
+
+    .step-card .link-cluster {
+      margin-top: 18px;
+    }
+
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top, rgba(207, 47, 47, 0.16), transparent 24%),
+        radial-gradient(circle at 80% 20%, rgba(132, 208, 199, 0.12), transparent 18%),
+        linear-gradient(180deg, rgba(5, 5, 5, 0.98), rgba(11, 7, 8, 1));
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+
+    .loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loading-shell {
+      width: min(100%, 420px);
+      padding: 34px 28px 28px;
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 70%),
+        rgba(18, 10, 12, 0.88);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .loading-logo {
+      width: min(100%, 260px);
+      margin: 0 auto 18px;
+      display: block;
+      filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.42));
+    }
+
+    .loading-shell h2 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      font-family: "Cormorant Garamond", serif;
+    }
+
+    .loading-shell p {
+      margin: 0;
+      color: var(--mist);
+      line-height: 1.7;
+    }
+
+    .loading-bar {
+      height: 8px;
+      margin-top: 22px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .loading-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #84d0c7, #ff8c5a 72%, #cf2f2f);
+      transform-origin: left center;
+      animation: loadingPulse 1.25s ease-in-out infinite;
+    }
+
+    @keyframes loadingPulse {
+      0% { transform: scaleX(0.22); opacity: 0.75; }
+      50% { transform: scaleX(0.82); opacity: 1; }
+      100% { transform: scaleX(0.3); opacity: 0.8; }
     }
 
     .btn {
@@ -1302,6 +1468,7 @@
 
     @media (max-width: 980px) {
       .feature-strip,
+      .steps-grid,
       .chapter-grid,
       .volumes-grid,
       .character-grid,
@@ -1369,11 +1536,13 @@
       }
 
       .subtabs {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        display: flex;
+        flex-wrap: nowrap;
         gap: 10px;
-        overflow: visible;
-        padding-bottom: 0;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x proximity;
       }
 
       .subtab-btn,
@@ -1386,8 +1555,9 @@
       .subtab-btn,
       .mobile-nav .nav-btn {
         flex: 0 0 auto;
-        white-space: normal;
+        white-space: nowrap;
         text-align: center;
+        scroll-snap-align: start;
       }
 
       .hero-actions .btn {
@@ -1395,6 +1565,10 @@
       }
 
       .footer-shell {
+        flex-direction: column;
+      }
+
+      .app-start-head {
         flex-direction: column;
       }
 
@@ -1419,6 +1593,7 @@
       }
 
       .reader-toolbar::-webkit-scrollbar,
+      .subtabs::-webkit-scrollbar,
       .mobile-nav::-webkit-scrollbar {
         display: none;
       }
@@ -1502,21 +1677,10 @@
         display: none;
       }
 
-      .mobile-nav {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        left: 10px;
-        right: 10px;
-        bottom: calc(10px + env(safe-area-inset-bottom));
-        padding: 10px;
-        gap: 8px;
-        border-radius: 24px;
-        overflow: visible;
-      }
-
       .mobile-nav .nav-btn {
-        width: 100%;
-        padding: 12px 10px;
+        width: auto;
+        min-width: 108px;
+        padding: 12px 16px;
       }
     }
 
@@ -1574,9 +1738,9 @@
         grid-template-columns: 1fr;
       }
 
-      .subtabs,
-      .mobile-nav {
-        grid-template-columns: 1fr 1fr;
+      .mobile-nav .nav-btn,
+      .subtab-btn {
+        min-width: 96px;
       }
 
       .toolbar-pill.status,
@@ -1592,10 +1756,25 @@
       .hero-shell {
         max-width: none;
       }
+
+      .loading-shell {
+        padding: 28px 22px 24px;
+      }
     }
   </style>
 </head>
 <body>
+  <div id="loading-screen" class="loading-screen" aria-hidden="true">
+    <div class="loading-shell">
+      <img class="loading-logo" src="assets/threadborn-logo.png" alt="Threadborn loading logo" />
+      <h2>Entering Lumera</h2>
+      <p>Loading the reader, chapters, and collector tools.</p>
+      <div class="loading-bar" aria-hidden="true">
+        <div class="loading-fill"></div>
+      </div>
+    </div>
+  </div>
+
   <header>
     <div class="header-shell">
       <a class="brand" onclick="switchView('home')">
@@ -1674,21 +1853,57 @@
         </article>
         <article class="card app-card">
           <strong>Windows Version</strong>
-          <p>Download the desktop Windows build from the latest GitHub desktop release.</p>
+          <p>A dedicated Windows desktop version is planned, but it is not ready to download yet.</p>
           <div class="link-cluster" style="margin-top:18px;">
-            <a class="btn btn-secondary" href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/Threadborn-Windows.zip" target="_blank" rel="noreferrer">Download Windows</a>
+            <span class="btn btn-secondary" aria-disabled="true">Windows Coming Soon</span>
           </div>
-          <p class="apk-note">This desktop package is built from the same local Threadborn reader and bundled for Windows.</p>
+          <p class="apk-note">The Windows build will be added here once the desktop package is ready.</p>
         </article>
         <article class="card app-card">
           <strong>macOS Version</strong>
-          <p>Download the desktop macOS build from the latest GitHub desktop release.</p>
+          <p>A dedicated macOS desktop version is planned, but it is not ready to download yet.</p>
           <div class="link-cluster" style="margin-top:18px;">
-            <a class="btn btn-secondary" href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/Threadborn-macOS.zip" target="_blank" rel="noreferrer">Download macOS</a>
+            <span class="btn btn-secondary" aria-disabled="true">macOS Coming Soon</span>
           </div>
-          <p class="apk-note">This package wraps the same offline site inside a native macOS desktop app build.</p>
+          <p class="apk-note">The macOS build will be added here once the desktop package is ready.</p>
         </article>
       </div>
+      <article class="card app-start">
+        <div class="app-start-head">
+          <div>
+            <h3>Get Started</h3>
+            <p>Pick the version you want, start reading from volume 1, and keep the offline tools ready for whenever you want exports or app installs.</p>
+          </div>
+          <div class="start-badge">Threadborn Setup</div>
+        </div>
+        <div class="steps-grid">
+          <article class="step-card">
+            <div class="step-pill">1</div>
+            <h4>Start Reading</h4>
+            <p>Jump straight into Volume 1, Chapter 1 and use the built-in reader to save progress, change themes, and export chapters when you want offline copies.</p>
+            <div class="link-cluster">
+              <button class="btn btn-primary" onclick="openChapter(0)">Open Chapter 1</button>
+            </div>
+          </article>
+          <article class="step-card">
+            <div class="step-pill">2</div>
+            <h4>Install Your Version</h4>
+            <p>Use the web app for quick home-screen access or install the Android APK if you want the fully bundled offline version with direct on-device saving.</p>
+            <div class="link-cluster">
+              <button class="btn btn-secondary" onclick="installWebApp()">Install Web App</button>
+              <a class="btn btn-secondary" href="Threadborn.apk" download>Download APK</a>
+            </div>
+          </article>
+          <article class="step-card">
+            <div class="step-pill">3</div>
+            <h4>Desktop Builds</h4>
+            <p>Windows and macOS packages are planned next. Until then, the Android app and installable web version are the main ways to use Threadborn offline.</p>
+            <div class="link-cluster">
+              <span class="btn btn-secondary" aria-disabled="true">Desktop Coming Soon</span>
+            </div>
+          </article>
+        </div>
+      </article>
     </section>
 
     <section id="view-volumes" class="view">
@@ -3139,6 +3354,74 @@ legacyEpisodes.push({
       button.textContent = deferredInstallPrompt ? "Install App" : "Install App";
     }
 
+    async function loadDesktopDownloadLinks() {
+      const releasesUrl = "https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases";
+      const windowsLink = document.getElementById("windows-download-link");
+      const macLink = document.getElementById("mac-download-link");
+      const windowsNote = document.getElementById("windows-download-note");
+      const macNote = document.getElementById("mac-download-note");
+
+      if (!windowsLink || !macLink) {
+        return;
+      }
+
+      try {
+        const response = await fetch("https://api.github.com/repos/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases");
+        if (!response.ok) {
+          throw new Error("Could not load releases");
+        }
+
+        const releases = await response.json();
+        let windowsAsset = null;
+        let macAsset = null;
+
+        releases.forEach(release => {
+          if (!release.assets) {
+            return;
+          }
+
+          if (!windowsAsset) {
+            windowsAsset = release.assets.find(asset => asset.name === "Threadborn-Windows.zip");
+          }
+
+          if (!macAsset) {
+            macAsset = release.assets.find(asset => asset.name === "Threadborn-macOS.zip");
+          }
+        });
+
+        if (windowsAsset) {
+          windowsLink.href = windowsAsset.browser_download_url;
+          windowsLink.setAttribute("download", "");
+          if (windowsNote) {
+            windowsNote.textContent = "Latest Windows desktop build found and ready to download.";
+          }
+        } else if (windowsNote) {
+          windowsNote.textContent = "Windows build not found yet. This button opens the Releases page until it finishes publishing.";
+          windowsLink.href = releasesUrl;
+        }
+
+        if (macAsset) {
+          macLink.href = macAsset.browser_download_url;
+          macLink.setAttribute("download", "");
+          if (macNote) {
+            macNote.textContent = "Latest macOS desktop build found and ready to download.";
+          }
+        } else if (macNote) {
+          macNote.textContent = "macOS build not found yet. This button opens the Releases page until it finishes publishing.";
+          macLink.href = releasesUrl;
+        }
+      } catch (error) {
+        windowsLink.href = releasesUrl;
+        macLink.href = releasesUrl;
+        if (windowsNote) {
+          windowsNote.textContent = "Could not check GitHub assets from this browser, so this button opens the Releases page.";
+        }
+        if (macNote) {
+          macNote.textContent = "Could not check GitHub assets from this browser, so this button opens the Releases page.";
+        }
+      }
+    }
+
     function updateReaderSummary(chapter) {
       const totalPages = chapter.pages.length;
       const percent = ((activePage + 1) / totalPages) * 100;
@@ -4112,6 +4395,13 @@ legacyEpisodes.push({
       syncInstallButton();
     });
 
+    window.addEventListener("load", () => {
+      const loadingScreen = document.getElementById("loading-screen");
+      if (loadingScreen) {
+        setTimeout(() => loadingScreen.classList.add("hidden"), 420);
+      }
+    });
+
     if ("serviceWorker" in navigator && window.location.protocol.startsWith("http")) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("./service-worker.js").catch(() => {});
@@ -4144,6 +4434,7 @@ legacyEpisodes.push({
     applyReaderTheme();
     updateResumeButton();
     loadVoices();
+    loadDesktopDownloadLinks();
     updateRateLabel();
     syncInstallButton();
     toggleReaderTools(window.innerWidth > 820);

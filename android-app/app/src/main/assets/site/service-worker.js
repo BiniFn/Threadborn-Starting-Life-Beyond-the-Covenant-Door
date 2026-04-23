@@ -1,4 +1,4 @@
-const CACHE_NAME = "threadborn-static-v2";
+const CACHE_NAME = "threadborn-static-v3";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -25,6 +25,23 @@ self.addEventListener("fetch", event => {
     return;
   }
 
+  const requestUrl = new URL(event.request.url);
+  const isNavigation = event.request.mode === "navigate";
+  const isHtmlRequest = event.request.headers.get("accept")?.includes("text/html");
+
+  if (isNavigation || isHtmlRequest) {
+    event.respondWith(
+      fetch(event.request).then(response => {
+        if (response && response.status === 200) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put("./index.html", clone));
+        }
+        return response;
+      }).catch(() => caches.match("./index.html"))
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) {
@@ -39,7 +56,7 @@ self.addEventListener("fetch", event => {
         const clone = response.clone();
         caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
         return response;
-      }).catch(() => caches.match("./index.html"));
+      }).catch(() => caches.match(event.request));
     })
   );
 });
