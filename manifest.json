@@ -1,0 +1,27 @@
+{
+  "name": "Threadborn — Starting Life Beyond the Covenant Door",
+  "short_name": "Threadborn",
+  "description": "Official reading hub for the Threadborn dark fantasy light novel. Read chapters, export collector PDFs, and download styled EPUBs — fully offline.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#050505",
+  "theme_color": "#090607",
+  "categories": ["books", "entertainment"],
+  "id": "./index.html",
+  "icons": [
+    {
+      "src": "assets/threadborn-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/threadborn-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

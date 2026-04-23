@@ -4,6 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Threadborn — Starting Life Beyond the Covenant Door</title>
+  <meta name="description" content="Official Threadborn light novel reader with chapter browsing, offline-friendly reading, collector PDF and styled EPUB exports, and Android app downloads." />
+  <meta name="theme-color" content="#090607" />
+  <link rel="icon" type="image/png" href="assets/threadborn-logo.png" />
+  <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -91,57 +95,30 @@
       gap: 14px;
       text-decoration: none;
       cursor: pointer;
+      min-width: 0;
     }
 
     .brand-mark {
-      position: relative;
-      width: 56px;
-      height: 56px;
-      border-radius: 18px;
-      display: grid;
-      place-items: center;
-      background:
-        radial-gradient(circle at 32% 28%, rgba(255, 229, 221, 0.8), transparent 28%),
-        linear-gradient(145deg, rgba(207, 47, 47, 0.78), rgba(78, 25, 28, 0.92));
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.12),
-        0 18px 38px rgba(207, 47, 47, 0.26);
-      overflow: hidden;
+      width: clamp(150px, 20vw, 230px);
+      height: 76px;
+      display: block;
+      flex: 0 0 auto;
     }
 
     .brand-mark::after {
-      content: "";
-      position: absolute;
-      inset: auto -16px -18px auto;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(132, 208, 199, 0.34), transparent 68%);
-      pointer-events: none;
+      display: none;
     }
 
-    .brand-mark svg {
-      position: relative;
-      z-index: 1;
-      width: 34px;
-      height: 34px;
-      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
-    }
-
-    .brand-copy strong {
+    .brand-mark img {
       display: block;
-      font-size: 14px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.45));
     }
 
-    .brand-copy span {
-      display: block;
-      font-size: 10px;
-      color: rgba(246, 238, 232, 0.72);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+    .brand-copy {
+      display: none;
     }
 
     .nav-row,
@@ -235,6 +212,18 @@
       min-height: 480px;
     }
 
+    .hero-logo-wrap {
+      margin: 0 0 18px;
+      max-width: 760px;
+    }
+
+    .hero-logo {
+      display: block;
+      width: min(100%, 720px);
+      height: auto;
+      filter: drop-shadow(0 18px 38px rgba(0, 0, 0, 0.45));
+    }
+
     .hero-card::after,
     .card::after,
     .quote-card::after {
@@ -284,6 +273,45 @@
       flex-wrap: wrap;
       gap: 12px;
       margin-top: 24px;
+    }
+
+    .apk-note {
+      margin: 16px 0 0;
+      color: rgba(246, 238, 232, 0.72);
+      line-height: 1.7;
+      max-width: 58ch;
+    }
+
+    .feature-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .feature-card {
+      padding: 18px 18px 16px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 70%),
+        rgba(255, 255, 255, 0.03);
+      min-height: 150px;
+    }
+
+    .feature-card strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 18px;
+      font-family: "Cormorant Garamond", serif;
+      color: var(--bone);
+    }
+
+    .feature-card p {
+      margin: 0;
+      color: rgba(246, 238, 232, 0.72);
+      line-height: 1.75;
+      font-size: 14px;
     }
 
     .btn {
@@ -708,7 +736,7 @@
       inset: 0;
       z-index: 100;
       display: grid;
-      grid-template-rows: auto 1fr auto;
+      grid-template-rows: auto auto auto 1fr auto;
       background:
         radial-gradient(circle at top, rgba(207, 47, 47, 0.1), transparent 28%),
         linear-gradient(180deg, rgba(4, 4, 5, 0.98), rgba(8, 7, 10, 1));
@@ -718,6 +746,77 @@
 
     .reader.open {
       transform: translateY(0);
+    }
+
+    body.reader-theme-night .reader {
+      background:
+        radial-gradient(circle at top, rgba(207, 47, 47, 0.1), transparent 28%),
+        linear-gradient(180deg, rgba(4, 4, 5, 0.98), rgba(8, 7, 10, 1));
+    }
+
+    body.reader-theme-paper .reader {
+      background:
+        radial-gradient(circle at top, rgba(138, 35, 51, 0.1), transparent 28%),
+        linear-gradient(180deg, #f5ede4, #f0e6dc 55%, #efe4d9 100%);
+    }
+
+    body.reader-theme-paper .reader-top,
+    body.reader-theme-paper .reader-toolbar,
+    body.reader-theme-paper .reader-footer {
+      background: rgba(248, 241, 234, 0.9);
+      border-color: rgba(35, 24, 23, 0.1);
+      color: #231817;
+    }
+
+    body.reader-theme-paper .reader-title-wrap strong,
+    body.reader-theme-paper .reader-content,
+    body.reader-theme-paper .page-indicator,
+    body.reader-theme-paper .toolbar-pill,
+    body.reader-theme-paper .toolbar-pill select,
+    body.reader-theme-paper .toolbar-pill input,
+    body.reader-theme-paper .toolbar-note {
+      color: #231817;
+    }
+
+    body.reader-theme-paper .reader-content h2,
+    body.reader-theme-paper .reader-content .chapter-title,
+    body.reader-theme-paper .toolbar-value,
+    body.reader-theme-paper #tts-status {
+      color: #1d1112;
+    }
+
+    body.reader-theme-paper .reader-content {
+      color: #342320;
+    }
+
+    body.reader-theme-paper .reader-content .story-callout,
+    body.reader-theme-paper .reader-content .system-box,
+    body.reader-theme-paper .reader-content .ep-intro-bar {
+      background: rgba(138, 35, 51, 0.06);
+      border-color: rgba(35, 24, 23, 0.12);
+      color: #4a302d;
+    }
+
+    body.reader-theme-paper .icon-btn,
+    body.reader-theme-paper .ghost-btn,
+    body.reader-theme-paper .btn-secondary,
+    body.reader-theme-paper .toolbar-pill {
+      background: rgba(35, 24, 23, 0.04);
+      border-color: rgba(35, 24, 23, 0.14);
+      color: #231817;
+    }
+
+    body.reader-theme-paper .toolbar-pill.status,
+    body.reader-theme-paper .progress-rail {
+      background: rgba(35, 24, 23, 0.05);
+      border-color: rgba(35, 24, 23, 0.14);
+    }
+
+    body.reader-theme-ember .reader {
+      background:
+        radial-gradient(circle at top right, rgba(255, 140, 90, 0.2), transparent 26%),
+        radial-gradient(circle at bottom left, rgba(132, 208, 199, 0.12), transparent 18%),
+        linear-gradient(180deg, #120708, #090607 50%, #140a0d 100%);
     }
 
     .reader-top,
@@ -732,9 +831,22 @@
       backdrop-filter: blur(18px);
     }
 
+    .reader-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+    }
+
     .reader-footer {
       border-top: 1px solid var(--line);
       border-bottom: none;
+    }
+
+    .reader-top-main {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
     }
 
     .reader-title-wrap span {
@@ -751,6 +863,22 @@
       margin-top: 4px;
       font-size: 24px;
       font-family: "Cormorant Garamond", serif;
+      line-height: 1;
+    }
+
+    .reader-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      margin-top: 10px;
+    }
+
+    .reader-summary span {
+      color: rgba(246, 238, 232, 0.7);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: "Space Mono", monospace;
     }
 
     .reader-controls {
@@ -759,10 +887,33 @@
       gap: 8px;
     }
 
+    .reader-progress-bar {
+      padding: 0 22px;
+      background: rgba(5, 5, 5, 0.84);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .progress-rail {
+      position: relative;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #84d0c7, #ff8c5a 70%, #cf2f2f);
+      transition: width 0.25s ease;
+    }
+
     .reader-toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
       padding: 14px 22px;
       border-bottom: 1px solid var(--line);
       background: rgba(10, 10, 12, 0.92);
@@ -770,43 +921,83 @@
     }
 
     .toolbar-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      min-height: 46px;
-      padding: 8px 12px;
-      border-radius: 999px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      flex-wrap: wrap;
+      min-height: 152px;
+      padding: 16px;
+      border-radius: 22px;
       border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.04);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 68%),
+        rgba(255, 255, 255, 0.04);
       color: var(--mist);
-      font-size: 12px;
-      font-family: "Space Mono", monospace;
+      font-size: 13px;
     }
 
     .toolbar-pill span {
-      white-space: nowrap;
+      white-space: normal;
+    }
+
+    .pill-label {
+      color: var(--mist);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-family: "Space Mono", monospace;
+    }
+
+    .toolbar-value {
+      color: var(--bone);
+      font-size: 20px;
+      line-height: 1.1;
+      font-family: "Cormorant Garamond", serif;
+      margin: -4px 0 0;
     }
 
     .toolbar-pill select,
     .toolbar-pill input[type="range"] {
-      background: transparent;
+      width: 100%;
+      min-width: 0;
+      min-height: 46px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
       color: var(--bone);
-      border: none;
-      min-width: 94px;
       font-family: "Bricolage Grotesque", sans-serif;
     }
 
     .toolbar-pill select:focus,
     .toolbar-pill input:focus {
-      outline: none;
+      outline: 2px solid rgba(132, 208, 199, 0.35);
+      outline-offset: 1px;
     }
 
     .toolbar-pill.status {
       color: var(--bone);
+      justify-content: space-between;
+    }
+
+    .toolbar-note {
+      margin: 0;
+      color: rgba(246, 238, 232, 0.68);
+      line-height: 1.6;
+      font-size: 13px;
     }
 
     .toolbar-actions {
-      flex-wrap: nowrap;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .toolbar-actions .ghost-btn {
+      flex: 1 1 calc(50% - 4px);
+      min-height: 46px;
     }
 
     .icon-btn {
@@ -819,6 +1010,11 @@
       cursor: pointer;
       font-size: 16px;
       font-weight: 800;
+    }
+
+    .reader-tools-btn,
+    .mobile-only {
+      display: none;
     }
 
     .reader-body {
@@ -1041,6 +1237,12 @@
       box-shadow: var(--shadow);
     }
 
+    body.reader-open .mobile-nav {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(18px);
+    }
+
     footer {
       max-width: var(--content);
       margin: 0 auto;
@@ -1079,6 +1281,7 @@
 
     @media (max-width: 980px) {
       .hero,
+      .feature-strip,
       .chapter-grid,
       .volumes-grid,
       .character-grid,
@@ -1174,24 +1377,23 @@
       }
 
       .reader-top {
-        flex-wrap: wrap;
-        align-items: flex-start;
+        grid-template-columns: 1fr;
+        gap: 10px;
       }
 
-      .reader-title-wrap {
-        flex: 1 1 calc(100% - 110px);
+      .reader-top-main {
         min-width: 0;
       }
 
       .reader-controls {
-        margin-left: auto;
+        justify-content: space-between;
+        width: 100%;
       }
 
       .reader-toolbar {
-        flex-wrap: nowrap;
-        overflow-x: auto;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
         padding: 12px 16px;
-        -webkit-overflow-scrolling: touch;
       }
 
       .reader-toolbar::-webkit-scrollbar,
@@ -1201,22 +1403,46 @@
       }
 
       .toolbar-pill {
-        flex: 0 0 auto;
+        width: 100%;
+        min-width: 0;
+        min-height: 0;
+        border-radius: 20px;
+        padding: 12px;
+      }
+
+      .toolbar-pill span,
+      .toolbar-actions .ghost-btn {
+        width: 100%;
       }
 
       .toolbar-pill select,
       .toolbar-pill input[type="range"] {
-        min-width: 82px;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .toolbar-pill.status,
+      .toolbar-pill.chapter-card,
+      .toolbar-pill.export-card {
+        grid-column: 1 / -1;
+      }
+
+      .reader-progress-bar {
+        padding-left: 16px;
+        padding-right: 16px;
       }
 
       .reader-body {
-        padding: 22px 16px calc(36px + env(safe-area-inset-bottom));
+        padding: 22px 16px calc(126px + env(safe-area-inset-bottom));
       }
 
       .reader-footer {
         display: grid;
         grid-template-columns: 1fr auto 1fr;
         gap: 10px;
+        position: sticky;
+        bottom: 0;
+        z-index: 4;
         padding-top: 14px;
         padding-bottom: calc(14px + env(safe-area-inset-bottom));
       }
@@ -1239,6 +1465,21 @@
         width: 38px;
         height: 38px;
       }
+
+      .mobile-only {
+        display: inline-flex;
+      }
+
+      .reader-tools-btn {
+        display: inline-flex;
+        min-height: 42px;
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .reader:not(.tools-open) .reader-toolbar {
+        display: none;
+      }
     }
 
     @media (max-width: 560px) {
@@ -1251,9 +1492,9 @@
         letter-spacing: 0.14em;
       }
 
-      .brand-copy span {
-        font-size: 10px;
-        letter-spacing: 0.08em;
+      .brand-mark {
+        width: 142px;
+        height: 50px;
       }
 
       .hero-card,
@@ -1276,6 +1517,11 @@
         width: 100%;
       }
 
+      .toolbar-actions .ghost-btn,
+      .feature-card {
+        flex-basis: 100%;
+      }
+
       .chapter-card strong,
       .power-card strong,
       .lore-card strong,
@@ -1286,6 +1532,20 @@
       .reader-title-wrap strong {
         font-size: 20px;
       }
+
+      .reader-toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar-pill.status,
+      .toolbar-pill.chapter-card,
+      .toolbar-pill.export-card {
+        grid-column: auto;
+      }
+
+      .reader-summary {
+        gap: 6px;
+      }
     }
   </style>
 </head>
@@ -1294,13 +1554,7 @@
     <div class="header-shell">
       <a class="brand" onclick="switchView('home')">
         <div class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17 14.5H47V49.5L32 56L17 49.5V14.5Z" fill="rgba(16,8,10,0.4)" stroke="#F6EEE8" stroke-width="2.4" stroke-linejoin="round"/>
-            <path d="M24 21.5C24 17.9101 26.9101 15 30.5 15H33.5C37.0899 15 40 17.9101 40 21.5V49" stroke="#FAD8C9" stroke-width="2.8" stroke-linecap="round"/>
-            <path d="M32 23V44" stroke="#84D0C7" stroke-width="2.8" stroke-linecap="round"/>
-            <path d="M25 31L32 23L39 31" stroke="#F6EEE8" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M24 42.5H40" stroke="#F6EEE8" stroke-width="2.4" stroke-linecap="round"/>
-          </svg>
+          <img src="assets/threadborn-logo.png" alt="Threadborn" />
         </div>
         <div class="brand-copy">
           <strong>Threadborn</strong>
@@ -1328,17 +1582,37 @@
     <section id="view-home" class="view active">
       <article class="hero-card" style="margin-bottom: 24px;">
         <p class="eyebrow">Threadborn — Starting Life Beyond the Covenant Door • dark fantasy • romance • gore • cosmic horror</p>
-        <h1 class="hero-title">Thread<span class="blood">born</span>.</h1>
+        <div class="hero-logo-wrap">
+          <img class="hero-logo" src="assets/threadborn-logo.png" alt="Threadborn logo" />
+        </div>
+        <h1 class="hero-title">Official reader, collector exports, and Android app.</h1>
         <p class="hero-copy">
           Yono Kazeshima dies, wakes in Lumera beside a dangerous goddess, falls in love in the middle of blood and ruin, and walks straight toward a sealed nightmare named Velkor.
         </p>
         <div class="hero-actions">
           <button class="btn btn-primary" onclick="switchHomeVolume('Volume 1')">Start Volume 1</button>
           <button class="btn btn-secondary" onclick="switchHomeVolume('Volume 2')">Go to Volume 2</button>
+          <a class="btn btn-secondary" id="apk-download-link" href="Threadborn.apk" download>Download Android APK</a>
+          <button class="btn btn-secondary" id="install-btn" onclick="installWebApp()" style="display: none;">Install Web App</button>
           <button class="btn btn-secondary" id="resume-btn" onclick="resumeReading()" style="display: none;">Resume Last Page</button>
           <button class="btn btn-secondary" onclick="switchView('leaks')">Leaks</button>
           <button class="btn btn-secondary" onclick="switchView('drawings')">Drawings</button>
           <button class="btn btn-secondary" onclick="switchView('credits')">Credits</button>
+        </div>
+        <p class="apk-note" id="apk-note">The latest Android build is linked here for direct install, using the same Threadborn reader layout and content as the website.</p>
+        <div class="feature-strip">
+          <article class="feature-card">
+            <strong>Offline-first reading</strong>
+            <p>The Android app ships the site inside the APK, and the web version can cache itself for repeat reading without a backend.</p>
+          </article>
+          <article class="feature-card">
+            <strong>Collector exports</strong>
+            <p>Every chapter can be turned into a cleaner PDF or EPUB edition with release branding, credits, and prettier chapter framing.</p>
+          </article>
+          <article class="feature-card">
+            <strong>Modern reading tools</strong>
+            <p>Saved progress, quick chapter jump, theme switching, TTS, reading-size control, and polished mobile controls are all built in.</p>
+          </article>
         </div>
       </article>
 
@@ -1688,51 +1962,103 @@
 
   <div id="reader" class="reader" aria-hidden="true">
     <div class="reader-top">
-      <button class="btn btn-secondary" onclick="closeReader()">Close</button>
+      <div class="reader-top-main">
+        <button class="btn btn-secondary" onclick="closeReader()">Close</button>
 
-      <div class="reader-title-wrap">
-        <span id="reader-kicker">Volume</span>
-        <strong id="reader-title">Chapter</strong>
+        <div class="reader-title-wrap">
+          <span id="reader-kicker">Volume</span>
+          <strong id="reader-title">Chapter</strong>
+          <div class="reader-summary">
+            <span id="reader-page-summary">Page 1 of 1</span>
+            <span id="reader-time-summary">About 1 min left</span>
+            <span id="reader-save-summary">Progress saved on this device</span>
+          </div>
+        </div>
       </div>
 
       <div class="reader-controls">
         <button class="icon-btn" onclick="changeReaderSize(-1)" aria-label="Smaller text">−</button>
         <button class="icon-btn" onclick="resetReaderSize()" aria-label="Reset text size">•</button>
         <button class="icon-btn" onclick="changeReaderSize(1)" aria-label="Larger text">+</button>
+        <button class="icon-btn" id="theme-toggle" onclick="cycleReaderTheme()" aria-label="Change reader theme">◐</button>
+        <button class="btn btn-secondary reader-tools-btn mobile-only" id="reader-tools-btn" onclick="toggleReaderTools()">Tools</button>
       </div>
     </div>
 
-    <div class="reader-toolbar">
+    <div class="reader-progress-bar">
+      <div class="progress-rail" aria-hidden="true">
+        <div id="reader-progress-fill" class="progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="reader-toolbar" id="reader-toolbar">
       <div class="toolbar-pill">
-        <span>TTS</span>
-        <button class="ghost-btn" onclick="speakCurrentPage()">Play</button>
-        <button class="ghost-btn" onclick="toggleSpeechPause()">Pause</button>
-        <button class="ghost-btn" onclick="stopSpeech()">Stop</button>
+        <span class="pill-label">Read aloud</span>
+        <div class="toolbar-value">Playback controls</div>
+        <p class="toolbar-note">Listen to the current page with built-in text to speech.</p>
+        <div class="toolbar-actions">
+          <button class="ghost-btn" onclick="speakCurrentPage()">Play</button>
+          <button class="ghost-btn" onclick="toggleSpeechPause()">Pause</button>
+          <button class="ghost-btn" onclick="stopSpeech()">Stop</button>
+        </div>
       </div>
 
-      <div class="toolbar-pill toolbar-actions">
-        <span>Download</span>
-        <button class="ghost-btn download-btn pdf-btn" onclick="downloadChapterPdf(activeChapter)">Collector PDF</button>
-        <button class="ghost-btn download-btn epub-btn" onclick="downloadChapterEpub(activeChapter)">Styled EPUB</button>
+      <div class="toolbar-pill export-card">
+        <span class="pill-label">Export chapter</span>
+        <div class="toolbar-value">Offline collector files</div>
+        <p class="toolbar-note">Download prettier PDF and EPUB versions with credits and chapter styling.</p>
+        <div class="toolbar-actions">
+          <button class="ghost-btn download-btn pdf-btn" onclick="downloadChapterPdf(activeChapter, this)">Collector PDF</button>
+          <button class="ghost-btn download-btn epub-btn" onclick="downloadChapterEpub(activeChapter, this)">Styled EPUB</button>
+          <button class="ghost-btn" onclick="copyCurrentPage()">Copy page</button>
+        </div>
       </div>
+
+      <label class="toolbar-pill chapter-card">
+        <span class="pill-label">Jump to chapter</span>
+        <div class="toolbar-value">Move faster</div>
+        <select id="chapter-jump" onchange="jumpToChapter(this.value)" aria-label="Jump to chapter"></select>
+      </label>
 
       <label class="toolbar-pill">
-        <span>Voice</span>
+        <span class="pill-label">Jump to page</span>
+        <div class="toolbar-value">Within this chapter</div>
+        <select id="page-jump" onchange="jumpToPage(this.value)" aria-label="Jump to page"></select>
+      </label>
+
+      <label class="toolbar-pill">
+        <span class="pill-label">Voice</span>
+        <div class="toolbar-value">Narration voice</div>
         <select id="voice-select" aria-label="Text to speech voice"></select>
       </label>
 
       <label class="toolbar-pill">
-        <span>Speed</span>
-        <input id="rate-range" type="range" min="0.8" max="1.4" step="0.1" value="1" aria-label="Text to speech speed" />
+        <span class="pill-label">Reader theme</span>
+        <div class="toolbar-value">Change the mood</div>
+        <select id="theme-select" onchange="setReaderTheme(this.value)" aria-label="Reader theme">
+          <option value="night">Night</option>
+          <option value="paper">Paper</option>
+          <option value="ember">Ember</option>
+        </select>
       </label>
 
       <label class="toolbar-pill">
-        <span>Page</span>
-        <select id="page-jump" onchange="jumpToPage(this.value)" aria-label="Jump to page"></select>
+        <span class="pill-label">Text size</span>
+        <div class="toolbar-value" id="size-output">18px</div>
+        <input id="size-range" type="range" min="15" max="24" step="1" value="18" oninput="setReaderSize(this.value, false)" onchange="setReaderSize(this.value)" aria-label="Reader text size" />
       </label>
 
-      <button class="ghost-btn" onclick="copyCurrentPage()">Copy page</button>
-      <div id="tts-status" class="toolbar-pill status">TTS ready</div>
+      <label class="toolbar-pill">
+        <span class="pill-label">Reading speed</span>
+        <div class="toolbar-value" id="rate-output">1.0x</div>
+        <input id="rate-range" type="range" min="0.8" max="1.4" step="0.1" value="1" oninput="updateRateLabel(this.value)" aria-label="Text to speech speed" />
+      </label>
+
+      <div class="toolbar-pill status">
+        <span class="pill-label">Reader status</span>
+        <div class="toolbar-value" id="reader-status-line">Progress saved locally</div>
+        <div id="tts-status" class="toolbar-note">TTS ready</div>
+      </div>
     </div>
 
     <div class="reader-body">
@@ -2649,9 +2975,130 @@ legacyEpisodes.push({
     let activePage = 0;
     let readerSize = 18;
     let activeHomeVolume = "Volume 1";
+    let readerTheme = "night";
+    let readerToolsOpen = window.innerWidth > 820;
     let ttsUtterance = null;
     let ttsVoices = [];
+    let deferredInstallPrompt = null;
     const progressKey = "novelverse_reader_progress";
+
+    function getThemeLabel(theme) {
+      return ({
+        night: "Night",
+        paper: "Paper",
+        ember: "Ember"
+      })[theme] || "Night";
+    }
+
+    function estimateMinutesLeft(chapter, fromPage = activePage) {
+      const text = chapter.pages
+        .slice(fromPage)
+        .map(page => htmlToPlainText(page))
+        .join(" ");
+      const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+      return Math.max(1, Math.round(wordCount / 190));
+    }
+
+    function updateRateLabel(value = document.getElementById("rate-range")?.value || 1) {
+      const output = document.getElementById("rate-output");
+      if (output) {
+        output.textContent = `${Number(value).toFixed(1)}x`;
+      }
+    }
+
+    function applyReaderTheme() {
+      document.body.classList.remove("reader-theme-night", "reader-theme-paper", "reader-theme-ember");
+      document.body.classList.add(`reader-theme-${readerTheme}`);
+
+      const themeSelect = document.getElementById("theme-select");
+      if (themeSelect) {
+        themeSelect.value = readerTheme;
+      }
+
+      const themeToggle = document.getElementById("theme-toggle");
+      if (themeToggle) {
+        themeToggle.textContent = getThemeLabel(readerTheme).slice(0, 1);
+        themeToggle.setAttribute("aria-label", `Reader theme ${getThemeLabel(readerTheme)}`);
+      }
+    }
+
+    function setReaderTheme(theme) {
+      if (!["night", "paper", "ember"].includes(theme)) {
+        return;
+      }
+      readerTheme = theme;
+      applyReaderTheme();
+      saveProgress();
+    }
+
+    function cycleReaderTheme() {
+      const themes = ["night", "paper", "ember"];
+      const nextIndex = (themes.indexOf(readerTheme) + 1) % themes.length;
+      setReaderTheme(themes[nextIndex]);
+    }
+
+    function toggleReaderTools(force) {
+      readerToolsOpen = typeof force === "boolean" ? force : !readerToolsOpen;
+      const reader = document.getElementById("reader");
+      reader.classList.toggle("tools-open", readerToolsOpen);
+      const button = document.getElementById("reader-tools-btn");
+      if (button) {
+        button.textContent = readerToolsOpen ? "Hide tools" : "Tools";
+      }
+    }
+
+    function setReaderSize(value, persist = true) {
+      readerSize = Math.max(15, Math.min(24, Number(value) || 18));
+      applyReaderSize();
+      if (persist) {
+        saveProgress();
+      }
+    }
+
+    async function installWebApp() {
+      if (!deferredInstallPrompt) {
+        return;
+      }
+
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice.catch(() => null);
+      deferredInstallPrompt = null;
+      syncInstallButton();
+    }
+
+    function syncInstallButton() {
+      const button = document.getElementById("install-btn");
+      if (!button) {
+        return;
+      }
+
+      button.style.display = deferredInstallPrompt ? "inline-flex" : "none";
+    }
+
+    function updateReaderSummary(chapter) {
+      const totalPages = chapter.pages.length;
+      const percent = ((activePage + 1) / totalPages) * 100;
+      document.getElementById("reader-page-summary").textContent = `Page ${activePage + 1} of ${totalPages}`;
+      document.getElementById("reader-time-summary").textContent = `About ${estimateMinutesLeft(chapter)} min left`;
+      document.getElementById("reader-status-line").textContent = `${Math.round(percent)}% through this chapter`;
+      document.getElementById("reader-progress-fill").style.width = `${percent}%`;
+    }
+
+    function renderChapterJump() {
+      const chapterJump = document.getElementById("chapter-jump");
+      chapterJump.innerHTML = chapters
+        .map((chapter, index) => `<option value="${index}" ${index === activeChapter ? "selected" : ""}>${chapter.volume} • ${chapter.chapter} • ${chapter.title}</option>`)
+        .join("");
+    }
+
+    function jumpToChapter(value) {
+      const nextChapter = Number(value);
+      if (Number.isNaN(nextChapter) || !chapters[nextChapter]) {
+        return;
+      }
+
+      openChapter(nextChapter, 0);
+    }
 
     function renderVolumes() {
       const grid = document.getElementById("volumes-grid");
@@ -2689,8 +3136,8 @@ legacyEpisodes.push({
             <span>${chapter.pages.length} pages</span>
             <div class="chapter-actions">
               <button class="ghost-btn" onclick="openChapter(${index})">Read chapter</button>
-              <button class="ghost-btn download-btn pdf-btn" onclick="downloadChapterPdf(${index})">Collector PDF</button>
-              <button class="ghost-btn download-btn epub-btn" onclick="downloadChapterEpub(${index})">Styled EPUB</button>
+              <button class="ghost-btn download-btn pdf-btn" onclick="downloadChapterPdf(${index}, this)">Collector PDF</button>
+              <button class="ghost-btn download-btn epub-btn" onclick="downloadChapterEpub(${index}, this)">Styled EPUB</button>
             </div>
           </div>
         </article>
@@ -2718,8 +3165,8 @@ legacyEpisodes.push({
               <span>${chapter.pages.length} pages</span>
               <div class="chapter-actions">
                 <button class="ghost-btn" onclick="openChapter(${index})">Read chapter</button>
-                <button class="ghost-btn download-btn pdf-btn" onclick="downloadChapterPdf(${index})">Collector PDF</button>
-                <button class="ghost-btn download-btn epub-btn" onclick="downloadChapterEpub(${index})">Styled EPUB</button>
+                <button class="ghost-btn download-btn pdf-btn" onclick="downloadChapterPdf(${index}, this)">Collector PDF</button>
+                <button class="ghost-btn download-btn epub-btn" onclick="downloadChapterEpub(${index}, this)">Styled EPUB</button>
               </div>
             </div>
           </article>
@@ -2801,7 +3248,9 @@ legacyEpisodes.push({
       renderPage();
       document.getElementById("reader").classList.add("open");
       document.getElementById("reader").setAttribute("aria-hidden", "false");
+      document.body.classList.add("reader-open");
       document.body.style.overflow = "hidden";
+      toggleReaderTools(window.innerWidth > 820);
     }
 
     function openLatestChapter() {
@@ -2815,6 +3264,7 @@ legacyEpisodes.push({
       stopSpeech(false);
       document.getElementById("reader").classList.remove("open");
       document.getElementById("reader").setAttribute("aria-hidden", "true");
+      document.body.classList.remove("reader-open");
       document.body.style.overflow = "";
     }
 
@@ -2828,6 +3278,7 @@ legacyEpisodes.push({
       document.getElementById("page-indicator").textContent = `Page ${activePage + 1} / ${totalPages}`;
       document.getElementById("prev-page").disabled = activePage === 0;
       document.getElementById("next-page").disabled = activePage === totalPages - 1;
+      renderChapterJump();
       document.getElementById("page-jump").innerHTML = chapter.pages
         .map((_, index) => `<option value="${index}" ${index === activePage ? "selected" : ""}>Page ${index + 1}</option>`)
         .join("");
@@ -2837,6 +3288,7 @@ legacyEpisodes.push({
         ${chapter.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}
       `;
 
+      updateReaderSummary(chapter);
       document.querySelector(".reader-body").scrollTo({ top: 0, behavior: "auto" });
       saveProgress();
     }
@@ -2856,17 +3308,22 @@ legacyEpisodes.push({
 
     function applyReaderSize() {
       document.documentElement.style.setProperty("--reader-size", `${readerSize}px`);
+      const sizeOutput = document.getElementById("size-output");
+      const sizeRange = document.getElementById("size-range");
+      if (sizeOutput) {
+        sizeOutput.textContent = `${readerSize}px`;
+      }
+      if (sizeRange) {
+        sizeRange.value = String(readerSize);
+      }
     }
 
     function changeReaderSize(delta) {
-      readerSize = Math.max(15, Math.min(24, readerSize + delta));
-      applyReaderSize();
+      setReaderSize(readerSize + delta);
     }
 
     function resetReaderSize() {
-      readerSize = 18;
-      applyReaderSize();
-      saveProgress();
+      setReaderSize(18);
     }
 
     function getCurrentPageText() {
@@ -3140,7 +3597,22 @@ legacyEpisodes.push({
       return cursorY;
     }
 
-    function downloadBlob(blob, filename) {
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(String(reader.result).split(",").pop() || "");
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    async function downloadBlob(blob, filename) {
+      if (window.AndroidBridge && typeof window.AndroidBridge.saveFile === "function") {
+        const base64 = await blobToBase64(blob);
+        window.AndroidBridge.saveFile(filename, blob.type || "application/octet-stream", base64);
+        return "saved";
+      }
+
       const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
       link.href = url;
@@ -3149,6 +3621,24 @@ legacyEpisodes.push({
       link.click();
       link.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
+      return "downloaded";
+    }
+
+    async function withBusyButton(button, busyText, work) {
+      if (!button) {
+        return work();
+      }
+
+      const originalText = button.textContent;
+      button.disabled = true;
+      button.textContent = busyText;
+
+      try {
+        return await work();
+      } finally {
+        button.disabled = false;
+        button.textContent = originalText;
+      }
     }
 
     function buildPdfBlob(chapter) {
@@ -3156,6 +3646,8 @@ legacyEpisodes.push({
       const pageHeight = 842;
       const bodyPages = paginateLines(getChapterTextLines(chapter, { includeHeader: false, wrapLength: 70 }), 34);
       const exportCredits = getExportCredits(chapter);
+      const estimatedRead = estimateMinutesLeft(chapter, 0);
+      const exportDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
       const pdfPages = [];
 
       const coverCommands = [];
@@ -3194,6 +3686,10 @@ legacyEpisodes.push({
         fillHex: "#2a1718"
       });
       pushPdfText(coverCommands, exportCredits[0], 66, 350, "F1", 11, "#2a1718");
+      pushPdfText(coverCommands, `Web reader pages: ${chapter.pages.length}`, 328, 408, "F1", 11, "#f6eee8");
+      pushPdfText(coverCommands, `Print pages: ${bodyPages.length + 2}`, 328, 390, "F1", 11, "#f6eee8");
+      pushPdfText(coverCommands, `Read time: ~${estimatedRead} min`, 328, 372, "F1", 11, "#f6eee8");
+      pushPdfText(coverCommands, `Exported ${normalizeAscii(exportDate)}`, 328, 354, "F1", 11, "#d9c7be");
       pushPdfText(coverCommands, "Official channels: @binifn / @binirbx / @binirx", 48, 72, "F1", 10, "#6d6259");
       pushPdfText(coverCommands, "Offline chapter export from the Threadborn reader.", 48, 52, "F3", 11, "#8a2333");
       pdfPages.push(coverCommands.join("\n"));
@@ -3205,6 +3701,7 @@ legacyEpisodes.push({
         pushPdfRect(commands, 0, 774, pageWidth, 8, "#84d0c7");
         pushPdfText(commands, "THREADBORN", 54, 816, "F2", 11, "#84d0c7");
         pushPdfText(commands, normalizeAscii(`${chapter.volume} • ${chapter.chapter}`), 54, 798, "F1", 10, "#f6eee8");
+        pushPdfText(commands, normalizeAscii(`Collector export • ${pageIndex + 1}/${bodyPages.length}`), 430, 816, "F1", 9, "#d9c7be");
         pushPdfWrappedText(commands, chapter.title, {
           x: 220,
           y: 808,
@@ -3413,7 +3910,7 @@ legacyEpisodes.push({
       const bookId = `urn:uuid:${chapterSlug}-${Date.now()}`;
       const modifiedAt = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
       const exportCredits = getExportCredits(chapter);
-      const styleCss = `:root{--paper:#f5ede4;--paper-strong:#fffaf4;--ink:#231817;--muted:#6d5a52;--blood:#8a2333;--blood-deep:#190b0c;--thread:#2f736d;--line:#dccdc1;}body{margin:0;background:var(--paper);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.78;}a{color:var(--blood);text-decoration:none;}img{max-width:100%;height:auto;}.cover,.nav-page,.credits-page,.page{max-width:44rem;margin:0 auto;padding:2.6rem 2.2rem;}.cover{background:linear-gradient(180deg,var(--blood-deep) 0 34%,var(--paper) 34.1% 100%);}.cover-card,.nav-card,.credits-card,.page-frame{background:var(--paper-strong);border:1px solid var(--line);border-radius:1.4rem;box-shadow:0 18px 40px rgba(18,10,10,.08);}.cover-card{margin-top:2rem;padding:2rem 2rem 1.8rem;}.eyebrow{margin:0 0 1rem;color:var(--thread);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;}.cover-title{margin:0;font-size:2.4rem;line-height:1.02;color:#1d1112;}.cover-summary{margin:1rem 0 0;color:var(--muted);}.tag-row{margin-top:1.2rem;}.tag{display:inline-block;margin:.2rem .45rem .2rem 0;padding:.45rem .75rem;border-radius:999px;border:1px solid var(--line);background:#f8efe6;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;}.credit-line,.note{color:var(--muted);}.nav-card,.credits-card,.page-frame{padding:1.8rem;}.nav-page h1,.credits-page h1{margin:0 0 .6rem;font-size:2rem;color:#1d1112;}.nav-page ol,.credits-page ol,.credits-page ul{padding-left:1.25rem;}.nav-page li,.credits-page li{margin-bottom:.75rem;}.page-frame{padding:2rem 1.8rem;}.chapter-head{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--line);}.chapter-num{display:block;margin-bottom:.75rem;color:var(--thread);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;}.chapter-title{margin:0 0 .6rem;font-size:2.1rem;line-height:1.05;color:#1b1011;}.chapter-subtitle{margin:0;color:var(--muted);font-style:italic;}.novel-p{margin:0 0 1rem;}.scene-title{margin:1.8rem 0 .85rem;color:var(--blood);font-weight:700;letter-spacing:.05em;text-transform:uppercase;}.system-box,.ep-intro-bar,.tbc{margin:1.3rem 0;padding:1rem 1.1rem;border-radius:1rem;border:1px solid var(--line);background:linear-gradient(135deg,rgba(138,35,51,.08),rgba(47,115,109,.08));}.system-box h5{margin:0 0 .65rem;color:var(--thread);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;}.big-sfx{display:block;margin:1.35rem 0;text-align:center;font-size:1.55rem;font-weight:700;letter-spacing:.16em;color:var(--blood);}.thought{font-style:italic;}.dialogue{color:#351b1d;}.shout{font-weight:700;letter-spacing:.05em;}`;
+      const styleCss = `:root{--paper:#f5ede4;--paper-strong:#fffaf4;--ink:#231817;--muted:#6d5a52;--blood:#8a2333;--blood-deep:#190b0c;--thread:#2f736d;--line:#dccdc1;}body{margin:0;background:radial-gradient(circle at top,rgba(138,35,51,.08),transparent 26%),var(--paper);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.78;}a{color:var(--blood);text-decoration:none;}img{max-width:100%;height:auto;}.cover,.nav-page,.credits-page,.page{max-width:44rem;margin:0 auto;padding:2.6rem 2.2rem;}.cover{background:linear-gradient(180deg,var(--blood-deep) 0 34%,var(--paper) 34.1% 100%);}.cover-card,.nav-card,.credits-card,.page-frame{background:var(--paper-strong);border:1px solid var(--line);border-radius:1.4rem;box-shadow:0 18px 40px rgba(18,10,10,.08);}.cover-card{margin-top:2rem;padding:2rem 2rem 1.8rem;}.eyebrow,.page-eyebrow{margin:0 0 1rem;color:var(--thread);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;}.page-eyebrow{margin-bottom:1.2rem;display:flex;justify-content:space-between;gap:.75rem;flex-wrap:wrap;}.cover-title{margin:0;font-size:2.4rem;line-height:1.02;color:#1d1112;}.cover-summary{margin:1rem 0 0;color:var(--muted);}.tag-row{margin-top:1.2rem;}.tag{display:inline-block;margin:.2rem .45rem .2rem 0;padding:.45rem .75rem;border-radius:999px;border:1px solid var(--line);background:#f8efe6;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;}.credit-line,.note,.page-footer-note{color:var(--muted);}.nav-card,.credits-card,.page-frame{padding:1.8rem;}.nav-page h1,.credits-page h1{margin:0 0 .6rem;font-size:2rem;color:#1d1112;}.nav-page ol,.credits-page ol,.credits-page ul{padding-left:1.25rem;}.nav-page li,.credits-page li{margin-bottom:.75rem;}.page-frame{padding:2rem 1.8rem;}.chapter-head{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--line);}.chapter-num{display:block;margin-bottom:.75rem;color:var(--thread);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;}.chapter-title{margin:0 0 .6rem;font-size:2.1rem;line-height:1.05;color:#1b1011;}.chapter-subtitle{margin:0;color:var(--muted);font-style:italic;}.novel-p{margin:0 0 1rem;}.scene-title{margin:1.8rem 0 .85rem;color:var(--blood);font-weight:700;letter-spacing:.05em;text-transform:uppercase;}.system-box,.ep-intro-bar,.tbc{margin:1.3rem 0;padding:1rem 1.1rem;border-radius:1rem;border:1px solid var(--line);background:linear-gradient(135deg,rgba(138,35,51,.08),rgba(47,115,109,.08));}.system-box h5{margin:0 0 .65rem;color:var(--thread);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;}.big-sfx{display:block;margin:1.35rem 0;text-align:center;font-size:1.55rem;font-weight:700;letter-spacing:.16em;color:var(--blood);}.thought{font-style:italic;}.dialogue{color:#351b1d;}.shout{font-weight:700;letter-spacing:.05em;}.page-footer-note{margin-top:1.6rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.9rem;}`;
 
       const coverPage = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="cover">\n    <div class="cover-card">\n      <p class="eyebrow">Threadborn Collector EPUB</p>\n      <h1 class="cover-title">${bookTitle}</h1>\n      <p class="cover-summary">${escapeXml(chapter.summary)}</p>\n      <div class="tag-row">${chapter.tags.map(tag => `<span class="tag">${escapeXml(tag)}</span>`).join("")}</div>\n      <p class="credit-line">Created by BiniFn</p>\n      <p class="note">Official offline chapter export from the Threadborn web reader.</p>\n    </div>\n  </section>\n</body>\n</html>`;
 
@@ -3423,7 +3920,7 @@ legacyEpisodes.push({
         name: `OEBPS/text/page-${index + 1}.xhtml`,
         mediaType: "application/xhtml+xml",
         title: `${chapter.title} - Page ${index + 1}`,
-        content: `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <title>${escapeXml(`${chapter.title} - Page ${index + 1}`)}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="../styles.css" />\n</head>\n<body>\n  <section class="page">\n    <div class="page-frame">\n      ${chapter.pages[index]}\n    </div>\n  </section>\n</body>\n</html>`
+        content: `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <title>${escapeXml(`${chapter.title} - Page ${index + 1}`)}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="../styles.css" />\n</head>\n<body>\n  <section class="page">\n    <div class="page-frame">\n      <p class="page-eyebrow"><span>${escapeXml(`${chapter.volume} • ${chapter.chapter}`)}</span><span>Page ${index + 1} of ${chapter.pages.length}</span></p>\n      ${chapter.pages[index]}\n      <p class="page-footer-note">Created by BiniFn • Official Threadborn EPUB export</p>\n    </div>\n  </section>\n</body>\n</html>`
       }));
 
       const manifestItems = [
@@ -3460,25 +3957,26 @@ legacyEpisodes.push({
       return buildStoredZip(files);
     }
 
-    function downloadChapterPdf(index = activeChapter) {
+    async function downloadChapterPdf(index = activeChapter, button = null) {
       const chapter = chapters[index];
       const filename = `${sanitizeFilename(`${chapter.volume}-${chapter.chapter}-${chapter.title}`)}.pdf`;
-      downloadBlob(buildPdfBlob(chapter), filename);
-      updateTtsStatus("Collector PDF downloaded");
+      const result = await withBusyButton(button, "Building PDF...", async () => downloadBlob(buildPdfBlob(chapter), filename));
+      updateTtsStatus(result === "saved" ? "Collector PDF saved to device" : "Collector PDF downloaded");
     }
 
-    function downloadChapterEpub(index = activeChapter) {
+    async function downloadChapterEpub(index = activeChapter, button = null) {
       const chapter = chapters[index];
       const filename = `${sanitizeFilename(`${chapter.volume}-${chapter.chapter}-${chapter.title}`)}.epub`;
-      downloadBlob(buildEpubBlob(chapter), filename);
-      updateTtsStatus("Styled EPUB downloaded");
+      const result = await withBusyButton(button, "Building EPUB...", async () => downloadBlob(buildEpubBlob(chapter), filename));
+      updateTtsStatus(result === "saved" ? "Styled EPUB saved to device" : "Styled EPUB downloaded");
     }
 
     function saveProgress() {
       const payload = {
         chapter: activeChapter,
         page: activePage,
-        size: readerSize
+        size: readerSize,
+        theme: readerTheme
       };
 
       localStorage.setItem(progressKey, JSON.stringify(payload));
@@ -3501,6 +3999,9 @@ legacyEpisodes.push({
         }
         if (typeof saved.size === "number") {
           readerSize = Math.max(15, Math.min(24, saved.size));
+        }
+        if (typeof saved.theme === "string" && ["night", "paper", "ember"].includes(saved.theme)) {
+          readerTheme = saved.theme;
         }
       } catch (error) {
         localStorage.removeItem(progressKey);
@@ -3535,6 +4036,24 @@ legacyEpisodes.push({
       openChapter(activeChapter, activePage);
     }
 
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 820) {
+        toggleReaderTools(true);
+      }
+    });
+
+    window.addEventListener("beforeinstallprompt", event => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      syncInstallButton();
+    });
+
+    if ("serviceWorker" in navigator && window.location.protocol.startsWith("http")) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+      });
+    }
+
     window.addEventListener("keydown", event => {
       const readerOpen = document.getElementById("reader").classList.contains("open");
       if (!readerOpen) {
@@ -3558,8 +4077,12 @@ legacyEpisodes.push({
     renderLore();
     renderHomeChapters();
     applyReaderSize();
+    applyReaderTheme();
     updateResumeButton();
     loadVoices();
+    updateRateLabel();
+    syncInstallButton();
+    toggleReaderTools(window.innerWidth > 820);
     if ("speechSynthesis" in window) {
       window.speechSynthesis.onvoiceschanged = loadVoices;
     } else {
