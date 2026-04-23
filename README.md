@@ -11,6 +11,7 @@ This repository contains both the public website and the Android app package for
 - Browser-generated **Collector PDF** and **Styled EPUB** chapter exports with improved presentation and credits
 - Installable web app using `manifest.json` and `service-worker.js`
 - Native Android wrapper that bundles the site locally and works offline
+- Desktop wrappers for Windows and macOS built from GitHub Actions
 - Direct APK download via [`Threadborn.apk`](./Threadborn.apk)
 - Ready for **GitHub Pages** and **Vercel**
 
@@ -33,6 +34,7 @@ Volume 2 pushes further into the Covenant Door arc, where each new chapter makes
 ├── README.md
 ├── Threadborn.apk
 ├── android-app/
+├── desktop-app/
 ├── assets/
 ├── index.html
 ├── manifest.json
@@ -60,6 +62,17 @@ What it includes:
 - Bundled site assets synced via [`scripts/sync_android_site.sh`](./scripts/sync_android_site.sh)
 
 The latest built APK is included in this repo at [`Threadborn.apk`](./Threadborn.apk).
+
+## Desktop Apps
+
+The repo also includes a desktop wrapper in [`desktop-app`](./desktop-app) plus a GitHub Actions workflow at [`.github/workflows/build-desktop.yml`](./.github/workflows/build-desktop.yml).
+
+That workflow builds:
+
+- `Threadborn-Windows.zip`
+- `Threadborn-macOS.zip`
+
+Each desktop build bundles the same local site files and opens the reader in a dedicated desktop window.
 
 ## Local Preview
 

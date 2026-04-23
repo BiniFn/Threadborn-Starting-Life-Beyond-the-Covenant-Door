@@ -5,4 +5,7 @@ android-app/.gradle/
 android-app/build/
 android-app/app/build/
 android-app/local.properties
-
+desktop-app/build/
+desktop-app/dist/
+desktop-app/site/
+desktop-app/*.spec
