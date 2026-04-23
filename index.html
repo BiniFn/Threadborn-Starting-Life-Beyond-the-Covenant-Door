@@ -318,6 +318,23 @@
       color: var(--bone);
     }
 
+    .app-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .app-card strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 26px;
+      font-family: "Cormorant Garamond", serif;
+    }
+
+    .app-card p {
+      margin: 0;
+      color: var(--mist);
+      line-height: 1.75;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -1595,6 +1612,7 @@
         <button class="nav-btn active" data-view="home" onclick="switchView('home')">Home</button>
         <button class="nav-btn" data-view="volumes" onclick="switchView('volumes')">Volumes</button>
         <button class="nav-btn" data-view="chapters" onclick="switchView('chapters')">Chapters</button>
+        <button class="nav-btn" data-view="app" onclick="switchView('app')">App</button>
         <button class="nav-btn" data-view="characters" onclick="switchView('characters')">Characters</button>
         <button class="nav-btn" data-view="powers" onclick="switchView('powers')">Powers</button>
         <button class="nav-btn" data-view="leaks" onclick="switchView('leaks')">Leaks</button>
@@ -1625,11 +1643,36 @@
           </div>
           <div class="hero-actions">
             <button class="btn btn-primary" onclick="openChapter(0)">Start Reading</button>
-            <button class="btn btn-secondary" id="install-btn" onclick="installWebApp()">Install App</button>
           </div>
-          <p class="apk-note" id="install-note">Install the web app for a faster home-screen version, or use the Android APK if you want the full offline app.</p>
         </div>
       </article>
+    </section>
+
+    <section id="view-app" class="view">
+      <div class="section-head">
+        <div>
+          <h2>App</h2>
+          <p class="section-copy">Install Threadborn as a web app or download the offline Android build.</p>
+        </div>
+      </div>
+      <div class="grid app-grid">
+        <article class="card app-card">
+          <strong>Install Web App</strong>
+          <p>Use the lighter installable version for quick home-screen access on supported browsers.</p>
+          <div class="link-cluster" style="margin-top:18px;">
+            <button class="btn btn-primary" id="install-btn" onclick="installWebApp()">Install App</button>
+          </div>
+          <p class="apk-note" id="install-note">If your browser does not support direct install prompts here, use the browser menu to add it to your home screen.</p>
+        </article>
+        <article class="card app-card">
+          <strong>Download Android APK</strong>
+          <p>Get the full offline Android app with the latest reader design, local chapter files, and direct PDF/EPUB saving.</p>
+          <div class="link-cluster" style="margin-top:18px;">
+            <a class="btn btn-secondary" id="apk-download-link" href="Threadborn.apk" download>Download APK</a>
+          </div>
+          <p class="apk-note" id="apk-note">The APK is rebuilt to match the current website layout and content.</p>
+        </article>
+      </div>
     </section>
 
     <section id="view-volumes" class="view">
@@ -1945,6 +1988,7 @@
     <button class="nav-btn active" data-view="home" onclick="switchView('home')">Home</button>
     <button class="nav-btn" data-view="volumes" onclick="switchView('volumes')">Vols</button>
     <button class="nav-btn" data-view="chapters" onclick="switchView('chapters')">Chapters</button>
+    <button class="nav-btn" data-view="app" onclick="switchView('app')">App</button>
     <button class="nav-btn" data-view="characters" onclick="switchView('characters')">Cast</button>
     <button class="nav-btn" data-view="powers" onclick="switchView('powers')">Powers</button>
     <button class="nav-btn" data-view="leaks" onclick="switchView('leaks')">Leaks</button>

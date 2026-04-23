@@ -282,36 +282,57 @@
       max-width: 58ch;
     }
 
-    .feature-strip {
+    .hero-shell {
+      max-width: 760px;
+    }
+
+    .hero-title {
+      max-width: 10ch;
+    }
+
+    .hero-copy {
+      max-width: 56ch;
+    }
+
+    .hero-copy strong {
+      color: var(--bone);
+      font-weight: 700;
+    }
+
+    .story-points {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
+      gap: 12px;
       margin-top: 24px;
     }
 
-    .feature-card {
-      padding: 18px 18px 16px;
-      border-radius: 22px;
+    .story-point {
+      padding: 16px 18px;
+      border-radius: 18px;
       border: 1px solid var(--line);
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 70%),
-        rgba(255, 255, 255, 0.03);
-      min-height: 150px;
+      background: rgba(255, 255, 255, 0.03);
+      color: rgba(246, 238, 232, 0.76);
+      line-height: 1.7;
     }
 
-    .feature-card strong {
-      display: block;
-      margin-bottom: 10px;
-      font-size: 18px;
-      font-family: "Cormorant Garamond", serif;
+    .story-point strong {
       color: var(--bone);
     }
 
-    .feature-card p {
+    .app-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .app-card strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 26px;
+      font-family: "Cormorant Garamond", serif;
+    }
+
+    .app-card p {
       margin: 0;
-      color: rgba(246, 238, 232, 0.72);
+      color: var(--mist);
       line-height: 1.75;
-      font-size: 14px;
     }
 
     .btn {
@@ -1280,7 +1301,6 @@
     }
 
     @media (max-width: 980px) {
-      .hero,
       .feature-strip,
       .chapter-grid,
       .volumes-grid,
@@ -1349,10 +1369,11 @@
       }
 
       .subtabs {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        padding-bottom: 4px;
-        -webkit-overflow-scrolling: touch;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        overflow: visible;
+        padding-bottom: 0;
       }
 
       .subtab-btn,
@@ -1365,7 +1386,8 @@
       .subtab-btn,
       .mobile-nav .nav-btn {
         flex: 0 0 auto;
-        scroll-snap-align: start;
+        white-space: normal;
+        text-align: center;
       }
 
       .hero-actions .btn {
@@ -1397,7 +1419,6 @@
       }
 
       .reader-toolbar::-webkit-scrollbar,
-      .subtabs::-webkit-scrollbar,
       .mobile-nav::-webkit-scrollbar {
         display: none;
       }
@@ -1480,6 +1501,23 @@
       .reader:not(.tools-open) .reader-toolbar {
         display: none;
       }
+
+      .mobile-nav {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        left: 10px;
+        right: 10px;
+        bottom: calc(10px + env(safe-area-inset-bottom));
+        padding: 10px;
+        gap: 8px;
+        border-radius: 24px;
+        overflow: visible;
+      }
+
+      .mobile-nav .nav-btn {
+        width: 100%;
+        padding: 12px 10px;
+      }
     }
 
     @media (max-width: 560px) {
@@ -1517,8 +1555,7 @@
         width: 100%;
       }
 
-      .toolbar-actions .ghost-btn,
-      .feature-card {
+      .toolbar-actions .ghost-btn {
         flex-basis: 100%;
       }
 
@@ -1537,6 +1574,11 @@
         grid-template-columns: 1fr;
       }
 
+      .subtabs,
+      .mobile-nav {
+        grid-template-columns: 1fr 1fr;
+      }
+
       .toolbar-pill.status,
       .toolbar-pill.chapter-card,
       .toolbar-pill.export-card {
@@ -1545,6 +1587,10 @@
 
       .reader-summary {
         gap: 6px;
+      }
+
+      .hero-shell {
+        max-width: none;
       }
     }
   </style>
@@ -1566,6 +1612,7 @@
         <button class="nav-btn active" data-view="home" onclick="switchView('home')">Home</button>
         <button class="nav-btn" data-view="volumes" onclick="switchView('volumes')">Volumes</button>
         <button class="nav-btn" data-view="chapters" onclick="switchView('chapters')">Chapters</button>
+        <button class="nav-btn" data-view="app" onclick="switchView('app')">App</button>
         <button class="nav-btn" data-view="characters" onclick="switchView('characters')">Characters</button>
         <button class="nav-btn" data-view="powers" onclick="switchView('powers')">Powers</button>
         <button class="nav-btn" data-view="leaks" onclick="switchView('leaks')">Leaks</button>
@@ -1581,62 +1628,51 @@
   <main>
     <section id="view-home" class="view active">
       <article class="hero-card" style="margin-bottom: 24px;">
-        <p class="eyebrow">Threadborn — Starting Life Beyond the Covenant Door • dark fantasy • romance • gore • cosmic horror</p>
-        <div class="hero-logo-wrap">
-          <img class="hero-logo" src="assets/threadborn-logo.png" alt="Threadborn logo" />
-        </div>
-        <h1 class="hero-title">Official reader, collector exports, and Android app.</h1>
-        <p class="hero-copy">
-          Yono Kazeshima dies, wakes in Lumera beside a dangerous goddess, falls in love in the middle of blood and ruin, and walks straight toward a sealed nightmare named Velkor.
-        </p>
-        <div class="hero-actions">
-          <button class="btn btn-primary" onclick="switchHomeVolume('Volume 1')">Start Volume 1</button>
-          <button class="btn btn-secondary" onclick="switchHomeVolume('Volume 2')">Go to Volume 2</button>
-          <a class="btn btn-secondary" id="apk-download-link" href="Threadborn.apk" download>Download Android APK</a>
-          <button class="btn btn-secondary" id="install-btn" onclick="installWebApp()" style="display: none;">Install Web App</button>
-          <button class="btn btn-secondary" id="resume-btn" onclick="resumeReading()" style="display: none;">Resume Last Page</button>
-          <button class="btn btn-secondary" onclick="switchView('leaks')">Leaks</button>
-          <button class="btn btn-secondary" onclick="switchView('drawings')">Drawings</button>
-          <button class="btn btn-secondary" onclick="switchView('credits')">Credits</button>
-        </div>
-        <p class="apk-note" id="apk-note">The latest Android build is linked here for direct install, using the same Threadborn reader layout and content as the website.</p>
-        <div class="feature-strip">
-          <article class="feature-card">
-            <strong>Offline-first reading</strong>
-            <p>The Android app ships the site inside the APK, and the web version can cache itself for repeat reading without a backend.</p>
-          </article>
-          <article class="feature-card">
-            <strong>Collector exports</strong>
-            <p>Every chapter can be turned into a cleaner PDF or EPUB edition with release branding, credits, and prettier chapter framing.</p>
-          </article>
-          <article class="feature-card">
-            <strong>Modern reading tools</strong>
-            <p>Saved progress, quick chapter jump, theme switching, TTS, reading-size control, and polished mobile controls are all built in.</p>
-          </article>
-        </div>
-      </article>
-
-      <article class="card" style="padding: 28px; margin-bottom: 24px;">
-        <div class="section-head" style="margin-bottom: 18px;">
-          <div>
-            <h2>Volume Reading Order</h2>
-            <p class="section-copy">Start with Yono's rebirth in Volume 1, then move into the Velkor prison arc in Volume 2.</p>
+        <div class="hero-shell">
+          <p class="eyebrow">Threadborn — Starting Life Beyond the Covenant Door • dark fantasy • romance • gore • cosmic horror</p>
+          <div class="hero-logo-wrap">
+            <img class="hero-logo" src="assets/threadborn-logo.png" alt="Threadborn logo" />
+          </div>
+          <h1 class="hero-title">A boy dies, wakes in Lumera, and steps into a world that was never meant to survive him.</h1>
+          <p class="hero-copy">
+            <strong>Threadborn</strong> follows <strong>Yono Kazeshima</strong> after a sudden death in Tokyo throws him into Lumera beside Violet, a dangerous goddess whose mistake changed both of their lives. What starts as survival turns into a dark fantasy story about love, debt, sealed monsters, and power that keeps climbing with every chapter.
+          </p>
+          <div class="story-points">
+            <div class="story-point"><strong>Volume 1:</strong> Yono learns Lumera’s rules, survives the Shade debt arc, and reaches the forest door hiding Velkor’s prison.</div>
+            <div class="story-point"><strong>Why it matters:</strong> The story mixes romance, gore, cosmic pressure, and an overpowered rise that keeps getting bigger without losing the emotional core.</div>
+          </div>
+          <div class="hero-actions">
+            <button class="btn btn-primary" onclick="openChapter(0)">Start Reading</button>
           </div>
         </div>
-        <div class="subtabs" id="home-volume-tabs">
-          <button class="subtab-btn active" data-home-volume="Volume 1" onclick="switchHomeVolume('Volume 1')">Volume 1</button>
-          <button class="subtab-btn" data-home-volume="Volume 2" onclick="switchHomeVolume('Volume 2')">Volume 2</button>
-        </div>
-        <div id="home-chapters-grid" class="grid chapter-grid" style="margin-top: 18px;"></div>
       </article>
+    </section>
 
-      <article class="quote-card">
-        <strong>Core Line</strong>
-        <blockquote>The newest Yono is always the strongest Yono. The next chapter just proves it again.</blockquote>
-        <p>
-          Volume 2 is built so every new chapter turns the last power ceiling into old news while still keeping Violet and the cast emotionally central.
-        </p>
-      </article>
+    <section id="view-app" class="view">
+      <div class="section-head">
+        <div>
+          <h2>App</h2>
+          <p class="section-copy">Install Threadborn as a web app or download the offline Android build.</p>
+        </div>
+      </div>
+      <div class="grid app-grid">
+        <article class="card app-card">
+          <strong>Install Web App</strong>
+          <p>Use the lighter installable version for quick home-screen access on supported browsers.</p>
+          <div class="link-cluster" style="margin-top:18px;">
+            <button class="btn btn-primary" id="install-btn" onclick="installWebApp()">Install App</button>
+          </div>
+          <p class="apk-note" id="install-note">If your browser does not support direct install prompts here, use the browser menu to add it to your home screen.</p>
+        </article>
+        <article class="card app-card">
+          <strong>Download Android APK</strong>
+          <p>Get the full offline Android app with the latest reader design, local chapter files, and direct PDF/EPUB saving.</p>
+          <div class="link-cluster" style="margin-top:18px;">
+            <a class="btn btn-secondary" id="apk-download-link" href="Threadborn.apk" download>Download APK</a>
+          </div>
+          <p class="apk-note" id="apk-note">The APK is rebuilt to match the current website layout and content.</p>
+        </article>
+      </div>
     </section>
 
     <section id="view-volumes" class="view">
@@ -1952,6 +1988,7 @@
     <button class="nav-btn active" data-view="home" onclick="switchView('home')">Home</button>
     <button class="nav-btn" data-view="volumes" onclick="switchView('volumes')">Vols</button>
     <button class="nav-btn" data-view="chapters" onclick="switchView('chapters')">Chapters</button>
+    <button class="nav-btn" data-view="app" onclick="switchView('app')">App</button>
     <button class="nav-btn" data-view="characters" onclick="switchView('characters')">Cast</button>
     <button class="nav-btn" data-view="powers" onclick="switchView('powers')">Powers</button>
     <button class="nav-btn" data-view="leaks" onclick="switchView('leaks')">Leaks</button>
@@ -3056,13 +3093,23 @@ legacyEpisodes.push({
     }
 
     async function installWebApp() {
+      const note = document.getElementById("install-note");
+
       if (!deferredInstallPrompt) {
+        if (note) {
+          note.textContent = "Install is available in supported browsers from the browser menu or from the Android APK download.";
+        }
         return;
       }
 
       deferredInstallPrompt.prompt();
-      await deferredInstallPrompt.userChoice.catch(() => null);
+      const choice = await deferredInstallPrompt.userChoice.catch(() => null);
       deferredInstallPrompt = null;
+      if (note) {
+        note.textContent = choice && choice.outcome === "accepted"
+          ? "Install prompt opened. Finish the install from your browser."
+          : "Install prompt dismissed. You can open it again if your browser supports it.";
+      }
       syncInstallButton();
     }
 
@@ -3072,7 +3119,8 @@ legacyEpisodes.push({
         return;
       }
 
-      button.style.display = deferredInstallPrompt ? "inline-flex" : "none";
+      button.disabled = false;
+      button.textContent = deferredInstallPrompt ? "Install App" : "Install App";
     }
 
     function updateReaderSummary(chapter) {
