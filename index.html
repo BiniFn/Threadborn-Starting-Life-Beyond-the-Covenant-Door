@@ -1625,7 +1625,9 @@
           </div>
           <div class="hero-actions">
             <button class="btn btn-primary" onclick="openChapter(0)">Start Reading</button>
+            <button class="btn btn-secondary" id="install-btn" onclick="installWebApp()">Install App</button>
           </div>
+          <p class="apk-note" id="install-note">Install the web app for a faster home-screen version, or use the Android APK if you want the full offline app.</p>
         </div>
       </article>
     </section>
@@ -3047,13 +3049,23 @@ legacyEpisodes.push({
     }
 
     async function installWebApp() {
+      const note = document.getElementById("install-note");
+
       if (!deferredInstallPrompt) {
+        if (note) {
+          note.textContent = "Install is available in supported browsers from the browser menu or from the Android APK download.";
+        }
         return;
       }
 
       deferredInstallPrompt.prompt();
-      await deferredInstallPrompt.userChoice.catch(() => null);
+      const choice = await deferredInstallPrompt.userChoice.catch(() => null);
       deferredInstallPrompt = null;
+      if (note) {
+        note.textContent = choice && choice.outcome === "accepted"
+          ? "Install prompt opened. Finish the install from your browser."
+          : "Install prompt dismissed. You can open it again if your browser supports it.";
+      }
       syncInstallButton();
     }
 
@@ -3063,7 +3075,8 @@ legacyEpisodes.push({
         return;
       }
 
-      button.style.display = deferredInstallPrompt ? "inline-flex" : "none";
+      button.disabled = false;
+      button.textContent = deferredInstallPrompt ? "Install App" : "Install App";
     }
 
     function updateReaderSummary(chapter) {
