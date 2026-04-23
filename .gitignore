@@ -9,3 +9,6 @@ desktop-app/build/
 desktop-app/dist/
 desktop-app/site/
 desktop-app/*.spec
+
+__pycache__/
+*.pyc
