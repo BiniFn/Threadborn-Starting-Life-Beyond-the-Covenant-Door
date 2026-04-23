@@ -1045,17 +1045,27 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
+      position: relative;
+      z-index: 6;
     }
 
     .reader-footer {
       border-top: 1px solid var(--line);
       border-bottom: none;
+      position: relative;
+      z-index: 6;
     }
 
     .reader-top-main {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 14px;
+      min-width: 0;
+    }
+
+    .reader-title-wrap {
+      flex: 1 1 260px;
       min-width: 0;
     }
 
@@ -1097,6 +1107,8 @@
       gap: 8px;
       flex-wrap: wrap;
       justify-content: flex-end;
+      position: relative;
+      z-index: 7;
     }
 
     .reader-progress-bar {
@@ -1226,6 +1238,9 @@
       cursor: pointer;
       font-size: 16px;
       font-weight: 800;
+      position: relative;
+      z-index: 8;
+      touch-action: manipulation;
     }
 
     .reader-tools-btn {
@@ -1236,6 +1251,9 @@
       align-items: center;
       justify-content: center;
       white-space: nowrap;
+      position: relative;
+      z-index: 8;
+      touch-action: manipulation;
     }
 
     .mobile-only {
@@ -1462,6 +1480,16 @@
       box-shadow: var(--shadow);
     }
 
+    .mobile-nav .nav-btn,
+    .reader-footer .btn,
+    .toolbar-actions .ghost-btn,
+    .ghost-btn,
+    .btn {
+      position: relative;
+      z-index: 8;
+      touch-action: manipulation;
+    }
+
     body.reader-open .mobile-nav {
       opacity: 0;
       pointer-events: none;
@@ -1623,6 +1651,7 @@
 
       .reader-top-main {
         min-width: 0;
+        align-items: flex-start;
       }
 
       .reader-controls {
