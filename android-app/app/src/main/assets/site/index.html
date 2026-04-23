@@ -289,11 +289,34 @@
     }
 
     .hero-shell {
-      max-width: 760px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.85fr);
+      gap: 36px;
+      align-items: center;
+    }
+
+    .hero-copy-block {
+      max-width: 640px;
+    }
+
+    .hero-media {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-logo-wrap {
+      margin: 0;
+      max-width: 520px;
+      width: 100%;
+    }
+
+    .hero-logo {
+      width: min(100%, 520px);
     }
 
     .hero-title {
-      max-width: 10ch;
+      max-width: 9ch;
     }
 
     .hero-copy {
@@ -1512,6 +1535,12 @@
         min-height: auto;
       }
 
+      .hero-shell {
+        grid-template-columns: 1fr;
+        gap: 22px;
+      }
+
+      .hero-copy-block,
       .hero-copy {
         max-width: none;
       }
@@ -1754,7 +1783,7 @@
       }
 
       .hero-shell {
-        max-width: none;
+        gap: 18px;
       }
 
       .loading-shell {
@@ -1808,20 +1837,24 @@
     <section id="view-home" class="view active">
       <article class="hero-card" style="margin-bottom: 24px;">
         <div class="hero-shell">
-          <p class="eyebrow">Threadborn — Starting Life Beyond the Covenant Door • dark fantasy • romance • gore • cosmic horror</p>
-          <div class="hero-logo-wrap">
-            <img class="hero-logo" src="assets/threadborn-logo.png" alt="Threadborn logo" />
+          <div class="hero-copy-block">
+            <p class="eyebrow">Threadborn — Starting Life Beyond the Covenant Door • dark fantasy • romance • gore • cosmic horror</p>
+            <h1 class="hero-title">A boy dies, wakes in Lumera, and steps into a world that was never meant to survive him.</h1>
+            <p class="hero-copy">
+              <strong>Threadborn</strong> follows <strong>Yono Kazeshima</strong> after a sudden death in Tokyo throws him into Lumera beside Violet, a dangerous goddess whose mistake changed both of their lives. What starts as survival turns into a dark fantasy story about love, debt, sealed monsters, and power that keeps climbing with every chapter.
+            </p>
+            <div class="story-points">
+              <div class="story-point"><strong>Volume 1:</strong> Yono learns Lumera’s rules, survives the Shade debt arc, and reaches the forest door hiding Velkor’s prison.</div>
+              <div class="story-point"><strong>Why it matters:</strong> The story mixes romance, gore, cosmic pressure, and an overpowered rise that keeps getting bigger without losing the emotional core.</div>
+            </div>
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="openChapter(0)">Start Reading</button>
+            </div>
           </div>
-          <h1 class="hero-title">A boy dies, wakes in Lumera, and steps into a world that was never meant to survive him.</h1>
-          <p class="hero-copy">
-            <strong>Threadborn</strong> follows <strong>Yono Kazeshima</strong> after a sudden death in Tokyo throws him into Lumera beside Violet, a dangerous goddess whose mistake changed both of their lives. What starts as survival turns into a dark fantasy story about love, debt, sealed monsters, and power that keeps climbing with every chapter.
-          </p>
-          <div class="story-points">
-            <div class="story-point"><strong>Volume 1:</strong> Yono learns Lumera’s rules, survives the Shade debt arc, and reaches the forest door hiding Velkor’s prison.</div>
-            <div class="story-point"><strong>Why it matters:</strong> The story mixes romance, gore, cosmic pressure, and an overpowered rise that keeps getting bigger without losing the emotional core.</div>
-          </div>
-          <div class="hero-actions">
-            <button class="btn btn-primary" onclick="openChapter(0)">Start Reading</button>
+          <div class="hero-media">
+            <div class="hero-logo-wrap">
+              <img class="hero-logo" src="assets/threadborn-logo.png" alt="Threadborn logo" />
+            </div>
           </div>
         </div>
       </article>
@@ -2350,16 +2383,16 @@
         status: "Complete",
         summary: "Yono dies in Tokyo, gets dragged into Lumera by Violet, survives the Shade debt arc, and finds Velkor's sealed prison standing alone in the forest.",
         chips: ["reincarnation", "shade debt", "forest confession", "Velkor door"],
-        actionLabel: "Browse Volume 1",
-        action: "switchHomeVolume('Volume 1')"
+        actionLabel: "Read Volume 1",
+        action: "openVolumeStart('Volume 1')"
       },
       {
         name: "Volume 2 • The Covenant Door",
         status: "Active",
         summary: "Yono, Violet, Mirika, Meryn, and Lyra return to the Old Covenant seal, Velkor wakes up, and every new chapter turns Yono's last ceiling into the floor of the next one.",
         chips: ["Velkor", "door arc", "chapter by chapter ascension", "romance"],
-        actionLabel: "Browse Volume 2",
-        action: "switchHomeVolume('Volume 2')"
+        actionLabel: "Read Volume 2",
+        action: "openVolumeStart('Volume 2')"
       }
     ];
 
@@ -3468,7 +3501,7 @@ legacyEpisodes.push({
     function renderChapters() {
       const grid = document.getElementById("chapters-grid");
       grid.innerHTML = chapters.map((chapter, index) => `
-        <article class="card chapter-card">
+        <article class="card chapter-card" data-volume="${chapter.volume}" data-chapter-index="${index}">
           <div class="chapter-label">
             <span>${chapter.volume}</span>
             <span>${chapter.chapter}</span>
@@ -3493,6 +3526,10 @@ legacyEpisodes.push({
 
     function renderHomeChapters() {
       const grid = document.getElementById("home-chapters-grid");
+      if (!grid) {
+        return;
+      }
+
       const filtered = chapters.filter(chapter => chapter.volume === activeHomeVolume);
       grid.innerHTML = filtered.map(chapter => {
         const index = chapters.indexOf(chapter);
@@ -3525,11 +3562,32 @@ legacyEpisodes.push({
       });
     }
 
+    function findVolumeStartIndex(volume) {
+      const index = chapters.findIndex(chapter => chapter.volume === volume);
+      return index >= 0 ? index : 0;
+    }
+
+    function openVolumeStart(volume) {
+      activeHomeVolume = volume;
+      switchView("chapters");
+      renderChapters();
+      const target = document.querySelector(`[data-volume="${volume}"]`);
+      if (target) {
+        target.scrollIntoView({ block: "start", behavior: "smooth" });
+      }
+    }
+
     function switchHomeVolume(volume) {
       activeHomeVolume = volume;
-      switchView("home");
-      renderHomeChapters();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const grid = document.getElementById("home-chapters-grid");
+      if (grid) {
+        switchView("home");
+        renderHomeChapters();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
+      openVolumeStart(volume);
     }
 
     function renderCharacters() {
@@ -3602,9 +3660,7 @@ legacyEpisodes.push({
 
     function openLatestChapter() {
       activeHomeVolume = "Volume 2";
-      switchView("home");
-      renderHomeChapters();
-      openChapter(chapters.length - 1);
+      openChapter(findVolumeStartIndex("Volume 2"));
     }
 
     function closeReader() {
@@ -4357,6 +4413,10 @@ legacyEpisodes.push({
 
     function updateResumeButton() {
       const button = document.getElementById("resume-btn");
+      if (!button) {
+        return;
+      }
+
       const raw = localStorage.getItem(progressKey);
       if (!raw) {
         button.style.display = "none";

@@ -2383,16 +2383,16 @@
         status: "Complete",
         summary: "Yono dies in Tokyo, gets dragged into Lumera by Violet, survives the Shade debt arc, and finds Velkor's sealed prison standing alone in the forest.",
         chips: ["reincarnation", "shade debt", "forest confession", "Velkor door"],
-        actionLabel: "Browse Volume 1",
-        action: "switchHomeVolume('Volume 1')"
+        actionLabel: "Read Volume 1",
+        action: "openVolumeStart('Volume 1')"
       },
       {
         name: "Volume 2 • The Covenant Door",
         status: "Active",
         summary: "Yono, Violet, Mirika, Meryn, and Lyra return to the Old Covenant seal, Velkor wakes up, and every new chapter turns Yono's last ceiling into the floor of the next one.",
         chips: ["Velkor", "door arc", "chapter by chapter ascension", "romance"],
-        actionLabel: "Browse Volume 2",
-        action: "switchHomeVolume('Volume 2')"
+        actionLabel: "Read Volume 2",
+        action: "openVolumeStart('Volume 2')"
       }
     ];
 
@@ -3501,7 +3501,7 @@ legacyEpisodes.push({
     function renderChapters() {
       const grid = document.getElementById("chapters-grid");
       grid.innerHTML = chapters.map((chapter, index) => `
-        <article class="card chapter-card">
+        <article class="card chapter-card" data-volume="${chapter.volume}" data-chapter-index="${index}">
           <div class="chapter-label">
             <span>${chapter.volume}</span>
             <span>${chapter.chapter}</span>
@@ -3526,6 +3526,10 @@ legacyEpisodes.push({
 
     function renderHomeChapters() {
       const grid = document.getElementById("home-chapters-grid");
+      if (!grid) {
+        return;
+      }
+
       const filtered = chapters.filter(chapter => chapter.volume === activeHomeVolume);
       grid.innerHTML = filtered.map(chapter => {
         const index = chapters.indexOf(chapter);
@@ -3558,11 +3562,32 @@ legacyEpisodes.push({
       });
     }
 
+    function findVolumeStartIndex(volume) {
+      const index = chapters.findIndex(chapter => chapter.volume === volume);
+      return index >= 0 ? index : 0;
+    }
+
+    function openVolumeStart(volume) {
+      activeHomeVolume = volume;
+      switchView("chapters");
+      renderChapters();
+      const target = document.querySelector(`[data-volume="${volume}"]`);
+      if (target) {
+        target.scrollIntoView({ block: "start", behavior: "smooth" });
+      }
+    }
+
     function switchHomeVolume(volume) {
       activeHomeVolume = volume;
-      switchView("home");
-      renderHomeChapters();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const grid = document.getElementById("home-chapters-grid");
+      if (grid) {
+        switchView("home");
+        renderHomeChapters();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
+      openVolumeStart(volume);
     }
 
     function renderCharacters() {
@@ -3635,9 +3660,7 @@ legacyEpisodes.push({
 
     function openLatestChapter() {
       activeHomeVolume = "Volume 2";
-      switchView("home");
-      renderHomeChapters();
-      openChapter(chapters.length - 1);
+      openChapter(findVolumeStartIndex("Volume 2"));
     }
 
     function closeReader() {
@@ -4390,6 +4413,10 @@ legacyEpisodes.push({
 
     function updateResumeButton() {
       const button = document.getElementById("resume-btn");
+      if (!button) {
+        return;
+      }
+
       const raw = localStorage.getItem(progressKey);
       if (!raw) {
         button.style.display = "none";
