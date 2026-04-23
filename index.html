@@ -1369,11 +1369,13 @@
       }
 
       .subtabs {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        display: flex;
+        flex-wrap: nowrap;
         gap: 10px;
-        overflow: visible;
-        padding-bottom: 0;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x proximity;
       }
 
       .subtab-btn,
@@ -1386,8 +1388,9 @@
       .subtab-btn,
       .mobile-nav .nav-btn {
         flex: 0 0 auto;
-        white-space: normal;
+        white-space: nowrap;
         text-align: center;
+        scroll-snap-align: start;
       }
 
       .hero-actions .btn {
@@ -1419,6 +1422,7 @@
       }
 
       .reader-toolbar::-webkit-scrollbar,
+      .subtabs::-webkit-scrollbar,
       .mobile-nav::-webkit-scrollbar {
         display: none;
       }
@@ -1502,21 +1506,10 @@
         display: none;
       }
 
-      .mobile-nav {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        left: 10px;
-        right: 10px;
-        bottom: calc(10px + env(safe-area-inset-bottom));
-        padding: 10px;
-        gap: 8px;
-        border-radius: 24px;
-        overflow: visible;
-      }
-
       .mobile-nav .nav-btn {
-        width: 100%;
-        padding: 12px 10px;
+        width: auto;
+        min-width: 108px;
+        padding: 12px 16px;
       }
     }
 
@@ -1574,9 +1567,9 @@
         grid-template-columns: 1fr;
       }
 
-      .subtabs,
-      .mobile-nav {
-        grid-template-columns: 1fr 1fr;
+      .mobile-nav .nav-btn,
+      .subtab-btn {
+        min-width: 96px;
       }
 
       .toolbar-pill.status,
@@ -1674,19 +1667,19 @@
         </article>
         <article class="card app-card">
           <strong>Windows Version</strong>
-          <p>Download the desktop Windows build from the latest GitHub desktop release.</p>
+          <p>Open the GitHub Releases page to download the latest desktop Windows build when it has finished publishing.</p>
           <div class="link-cluster" style="margin-top:18px;">
-            <a class="btn btn-secondary" href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/Threadborn-Windows.zip" target="_blank" rel="noreferrer">Download Windows</a>
+            <a class="btn btn-secondary" href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases" target="_blank" rel="noreferrer">Open Releases</a>
           </div>
-          <p class="apk-note">This desktop package is built from the same local Threadborn reader and bundled for Windows.</p>
+          <p class="apk-note">Look for `Threadborn-Windows.zip` in the newest desktop release.</p>
         </article>
         <article class="card app-card">
           <strong>macOS Version</strong>
-          <p>Download the desktop macOS build from the latest GitHub desktop release.</p>
+          <p>Open the GitHub Releases page to download the latest desktop macOS build when it has finished publishing.</p>
           <div class="link-cluster" style="margin-top:18px;">
-            <a class="btn btn-secondary" href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/Threadborn-macOS.zip" target="_blank" rel="noreferrer">Download macOS</a>
+            <a class="btn btn-secondary" href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases" target="_blank" rel="noreferrer">Open Releases</a>
           </div>
-          <p class="apk-note">This package wraps the same offline site inside a native macOS desktop app build.</p>
+          <p class="apk-note">Look for `Threadborn-macOS.zip` in the newest desktop release.</p>
         </article>
       </div>
     </section>
