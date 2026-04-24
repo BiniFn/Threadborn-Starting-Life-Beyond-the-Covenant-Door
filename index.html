@@ -312,7 +312,7 @@
       }
 
       .reader-toolbar {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       }
     }
 
@@ -1391,12 +1391,13 @@
 
     .reader-toolbar {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 12px;
       padding: 14px 22px;
       border-bottom: 1px solid var(--line);
       background: rgba(10, 10, 12, 0.92);
       backdrop-filter: blur(18px);
+      align-content: start;
     }
 
     .reader:not(.tools-open) .reader-toolbar {
@@ -1408,8 +1409,7 @@
       flex-direction: column;
       align-items: stretch;
       gap: 12px;
-      flex-wrap: wrap;
-      min-height: 152px;
+      min-height: 0;
       padding: 16px;
       border-radius: 22px;
       border: 1px solid var(--line);
@@ -1475,15 +1475,16 @@
     }
 
     .toolbar-actions {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
       align-items: stretch;
     }
 
     .toolbar-actions .ghost-btn {
-      flex: 1 1 calc(50% - 4px);
       min-height: 46px;
+      width: 100%;
+      white-space: normal;
     }
 
     .icon-btn {
@@ -2033,7 +2034,6 @@
 
       .toolbar-actions .ghost-btn {
         min-height: 40px;
-        flex: 1 1 calc(50% - 3px);
       }
 
       .reader-progress-bar {
@@ -2125,7 +2125,7 @@
       }
 
       .toolbar-actions .ghost-btn {
-        flex-basis: 100%;
+        grid-column: 1 / -1;
       }
 
       .chapter-card strong,
@@ -2195,7 +2195,7 @@
       }
 
       .toolbar-actions .ghost-btn {
-        flex-basis: 100%;
+        grid-column: 1 / -1;
       }
     }
   </style>
