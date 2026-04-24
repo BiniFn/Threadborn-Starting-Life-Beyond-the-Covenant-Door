@@ -2183,7 +2183,6 @@
         <button class="nav-btn active" data-view="home" onclick="switchView('home')">Home</button>
         <button class="nav-btn" data-view="volumes" onclick="switchView('volumes')">Volumes</button>
         <button class="nav-btn" data-view="chapters" onclick="switchView('chapters')">Chapters</button>
-        <button class="nav-btn" data-view="community" onclick="switchView('community')">Community</button>
         <button class="nav-btn" data-view="app" onclick="switchView('app')">App</button>
         <button class="nav-btn" data-view="characters" onclick="switchView('characters')">Characters</button>
         <button class="nav-btn" data-view="powers" onclick="switchView('powers')">Powers</button>
@@ -2341,50 +2340,6 @@
         </div>
       </div>
       <div id="chapters-grid" class="grid chapter-grid"></div>
-    </section>
-
-    <section id="view-community" class="view">
-      <div class="section-head">
-        <div>
-          <h2>Community</h2>
-          <p class="section-copy">Talk about the latest chapters, drop fan art, and post theories or leaks.</p>
-        </div>
-      </div>
-      <div class="community-shell">
-        <article class="card community-compose">
-          <strong>Create post</strong>
-          <p class="toolbar-note">Like a mini Threadborn timeline feed.</p>
-          <label style="display:block;margin-top:10px;">Category</label>
-          <select id="community-category">
-            <option value="theory">Theory</option>
-            <option value="fan_art">Fan Art</option>
-            <option value="spoiler">Spoiler / Leak</option>
-          </select>
-          <label style="display:block;margin-top:10px;">Title</label>
-          <input id="community-title" maxlength="120" placeholder="What chapter are you talking about?" />
-          <label style="display:block;margin-top:10px;">Post</label>
-          <textarea id="community-content" maxlength="3000" style="min-height:130px;" placeholder="Share your thoughts..."></textarea>
-          <label style="display:block;margin-top:10px;">Image (optional)</label>
-          <input id="community-image" type="file" accept="image/*" />
-          <img id="community-image-preview" class="post-image" style="display:none;" alt="Post image preview" />
-          <button class="btn btn-primary" style="margin-top:12px;" onclick="submitCommunityPost()">Post</button>
-          <div id="community-moderation" style="display:none;margin-top:14px;border-top:1px solid var(--line);padding-top:12px;">
-            <strong style="display:block;">Community moderation</strong>
-            <label style="display:block;margin-top:8px;">Username</label>
-            <input id="mod-username" maxlength="64" placeholder="username_to_moderate" />
-            <label style="display:block;margin-top:8px;">Ban reason</label>
-            <input id="mod-reason" maxlength="220" placeholder="Broken community rules" />
-            <label style="display:block;margin-top:8px;">Ban duration (hours)</label>
-            <input id="mod-hours" type="number" min="1" max="8760" value="72" />
-            <div class="row-inline" style="margin-top:8px;">
-              <button class="btn btn-ghost" onclick="banCommunityUser()">Ban user</button>
-              <button class="btn btn-ghost" onclick="unbanCommunityUser()">Unban user</button>
-            </div>
-          </div>
-          <p id="community-status" class="toolbar-note" style="margin-top:8px;"></p>
-        </article>
-        <div id="community-feed" class="community-feed"></div>
-      </div>
     </section>
 
     <section id="view-characters" class="view">
@@ -2680,7 +2635,6 @@
     <button class="nav-btn active" data-view="home" onclick="switchView('home')">Home</button>
     <button class="nav-btn" data-view="volumes" onclick="switchView('volumes')">Vols</button>
     <button class="nav-btn" data-view="chapters" onclick="switchView('chapters')">Chapters</button>
-    <button class="nav-btn" data-view="community" onclick="switchView('community')">Talk</button>
     <button class="nav-btn" data-view="app" onclick="switchView('app')">App</button>
     <button class="nav-btn" data-view="characters" onclick="switchView('characters')">Cast</button>
     <button class="nav-btn" data-view="powers" onclick="switchView('powers')">Powers</button>
@@ -3751,7 +3705,7 @@ legacyEpisodes.push({
       }
 
       const displayName = user && (user.displayName || user.email) ? (user.displayName || user.email) : "Guest reader";
-      const avatar = user && user.avatarUrl ? user.avatarUrl : "assets/threadborn-logo.png";
+      const avatar = "assets/threadborn-logo.png";
       nameEl.textContent = displayName;
       avatarEl.src = avatar;
     }
@@ -3783,11 +3737,23 @@ legacyEpisodes.push({
         <article class="comment-item">
           <div class="comment-head">
             <span>${comment.author}</span>
-            <span>${comment.volume} • ${comment.createdAt}</span>
+            <span>
+              ${comment.volume} • ${comment.createdAt}
+              <button class="ghost-btn" style="margin-left:8px;padding:4px 8px;min-height:auto;" onclick="deleteVolumeComment('${comment.id || ""}')" aria-label="Delete comment" title="Delete comment">🗑</button>
+            </span>
           </div>
           <div>${comment.text}</div>
         </article>
       `).join("");
+    }
+
+    function deleteVolumeComment(commentId) {
+      if (!commentId) {
+        return;
+      }
+      const comments = readComments().filter(item => item.id !== commentId);
+      writeComments(comments);
+      renderVolumeComments();
     }
 
     function submitVolumeComment(event) {
@@ -3807,6 +3773,7 @@ legacyEpisodes.push({
       const author = user ? (user.displayName || user.email || "Reader") : "Guest";
       const comments = readComments();
       comments.push({
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         volume: volumeEl.value,
         text,
         author,
@@ -4431,10 +4398,6 @@ legacyEpisodes.push({
       document.querySelectorAll(".nav-btn").forEach(button => {
         button.classList.toggle("active", button.dataset.view === view);
       });
-
-      if (view === "community") {
-        loadCommunityFeed();
-      }
 
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -5489,7 +5452,6 @@ legacyEpisodes.push({
     renderLore();
     renderUserChip();
     renderVolumeComments();
-    loadCommunityFeed();
     renderHomeChapters();
     applyReaderSize();
     applyReaderTheme();

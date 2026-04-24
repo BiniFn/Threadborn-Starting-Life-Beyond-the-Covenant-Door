@@ -18,9 +18,6 @@
     .muted { color:var(--muted); font-size:.93rem; }
     .badge { display:inline-block; font-size:.8rem; padding:4px 8px; border-radius:999px; border:1px solid var(--border); }
     .ok { color:#8ceba1; }
-    .preset-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(64px,1fr)); gap:8px; margin-top:10px; }
-    .preset-avatar { width:64px; height:64px; border-radius:50%; object-fit:cover; border:2px solid transparent; cursor:pointer; }
-    .preset-avatar.active { border-color:var(--accent); }
   </style>
 </head>
 <body>
@@ -43,17 +40,6 @@
           <label>Username</label>
           <input id="username" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" />
         </div>
-        <div>
-          <label>Avatar image</label>
-          <input id="avatar-file" type="file" accept="image/*" />
-          <label style="margin-top:8px;display:block;">Or pick a preset</label>
-          <div id="preset-grid" class="preset-grid"></div>
-        </div>
-      </div>
-      <canvas id="crop-canvas" width="320" height="320" style="display:none;margin-top:10px;border-radius:12px;border:1px solid var(--border);max-width:100%;"></canvas>
-      <div style="margin-top:8px;">
-        <label>Crop zoom</label>
-        <input id="crop-zoom" type="range" min="1" max="3" step="0.1" value="1" />
       </div>
       <div class="row" style="margin-top:10px;">
         <button id="save-profile">Save Profile</button>
@@ -101,22 +87,7 @@
     const verifiedEl = document.getElementById("verified");
     const profileStatus = document.getElementById("profile-status");
     const settingsStatus = document.getElementById("settings-status");
-    const canvas = document.getElementById("crop-canvas");
-    const ctx = canvas.getContext("2d");
     let csrfToken = "";
-    let cropDataUrl = "";
-    let latestAvatarUrl = "";
-    let loadedImage = null;
-    let cropZoom = 1;
-    let selectedPreset = "";
-    const presetAvatars = [
-      "https://api.dicebear.com/9.x/adventurer/svg?seed=threadborn-yono",
-      "https://api.dicebear.com/9.x/adventurer/svg?seed=threadborn-violet",
-      "https://api.dicebear.com/9.x/adventurer/svg?seed=threadborn-serah",
-      "https://api.dicebear.com/9.x/adventurer/svg?seed=threadborn-kael",
-      "https://api.dicebear.com/9.x/adventurer/svg?seed=threadborn-mirika",
-      "https://api.dicebear.com/9.x/adventurer/svg?seed=threadborn-fan"
-    ];
 
     async function apiFetch(path, options = {}) {
       const headers = Object.assign({ "Content-Type": "application/json" }, options.headers || {});
@@ -132,81 +103,23 @@
       target.className = ok ? "muted ok" : "muted";
     }
 
-    function drawCropPreview() {
-      if (!loadedImage) return;
-      canvas.style.display = "block";
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const side = Math.min(loadedImage.width, loadedImage.height) / cropZoom;
-      const sx = Math.floor((loadedImage.width - side) / 2);
-      const sy = Math.floor((loadedImage.height - side) / 2);
-      ctx.drawImage(loadedImage, sx, sy, side, side, 0, 0, canvas.width, canvas.height);
-      cropDataUrl = canvas.toDataURL("image/jpeg", 0.92);
-      avatarEl.src = cropDataUrl;
-    }
-
-    function renderAvatarForCrop(sourceUrl) {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        loadedImage = img;
-        drawCropPreview();
-      };
-      img.src = sourceUrl;
-    }
-
-    function renderPresetAvatars() {
-      const grid = document.getElementById("preset-grid");
-      grid.innerHTML = presetAvatars.map(url => `<img class="preset-avatar ${selectedPreset === url ? "active" : ""}" src="${url}" data-url="${url}" alt="Preset avatar" />`).join("");
-      grid.querySelectorAll(".preset-avatar").forEach(item => {
-        item.addEventListener("click", () => {
-          selectedPreset = item.dataset.url || "";
-          renderPresetAvatars();
-          cropZoom = 1;
-          document.getElementById("crop-zoom").value = "1";
-          renderAvatarForCrop(selectedPreset);
-        });
-      });
-    }
-
-    document.getElementById("avatar-file").addEventListener("change", event => {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      selectedPreset = "";
-      renderPresetAvatars();
-      renderAvatarForCrop(URL.createObjectURL(file));
-    });
-
-    document.getElementById("crop-zoom").addEventListener("input", event => {
-      cropZoom = Number(event.target.value || 1);
-      drawCropPreview();
-    });
-
     document.getElementById("save-profile").addEventListener("click", async () => {
       try {
-        let avatarUrl = latestAvatarUrl;
-        if (cropDataUrl) {
-          const upload = await apiFetch("/api/upload/avatar", {
-            method: "POST",
-            body: JSON.stringify({ dataUrl: cropDataUrl })
-          });
-          avatarUrl = upload.url;
-        }
         const username = document.getElementById("username").value.trim();
         if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) {
           throw new Error("Username must be 3-24 letters, numbers, or underscores.");
         }
         const profile = await apiFetch("/api/user/profile", {
           method: "PATCH",
-          body: JSON.stringify({ username, avatarUrl })
+          body: JSON.stringify({ username })
         });
-        latestAvatarUrl = profile.user.avatarUrl;
         nameEl.textContent = profile.user.username;
-        avatarEl.src = profile.user.avatarUrl || "./assets/threadborn-logo.png";
+        avatarEl.src = "./assets/threadborn-logo.png";
         localStorage.setItem("threadborn_user", JSON.stringify({
           id: profile.user.id,
           email: profile.user.email,
           displayName: profile.user.username,
-          avatarUrl: profile.user.avatarUrl,
+          avatarUrl: "./assets/threadborn-logo.png",
           verified: profile.user.verified,
           role: profile.user.role
         }));
@@ -234,13 +147,11 @@
       const me = await apiFetch("/api/auth/me");
       csrfToken = me.csrfToken || "";
       const user = me.user;
-      latestAvatarUrl = user.avatarUrl || "";
-      avatarEl.src = user.avatarUrl || "./assets/threadborn-logo.png";
+      avatarEl.src = "./assets/threadborn-logo.png";
       nameEl.textContent = user.username;
       metaEl.textContent = `${user.email} • role: ${user.role}`;
       verifiedEl.style.display = user.verified ? "inline-block" : "none";
       document.getElementById("username").value = user.username;
-      renderPresetAvatars();
 
       const profile = await apiFetch("/api/user/profile");
       const posts = Array.isArray(profile.posts) ? profile.posts : [];
