@@ -57,11 +57,23 @@ jobs:
           name: Threadborn.apk
           path: Threadborn.apk
 
-      - name: Upload APK as Release
+      - name: Upload APK as numbered release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "apk-build-${{ github.run_number }}"
+          name: "Threadborn APK Build #${{ github.run_number }}"
+          body: |
+            Auto-built Android APK
+            - Build number: #${{ github.run_number }}
+            - Commit: ${{ github.sha }}
+          files: Threadborn.apk
+          make_latest: true
+
+      - name: Upload APK as latest-apk release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "latest-apk"
           name: "Threadborn Latest APK"
           body: "Auto-built Android APK from commit ${{ github.sha }}"
           files: Threadborn.apk
-          make_latest: true
+          make_latest: false
