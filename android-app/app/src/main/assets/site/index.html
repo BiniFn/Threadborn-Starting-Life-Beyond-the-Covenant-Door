@@ -1997,8 +1997,10 @@
         <button class="nav-btn" data-view="lore" onclick="switchView('lore')">Lore</button>
         <button class="nav-btn" data-view="drawings" onclick="switchView('drawings')">Drawings</button>
         <button class="nav-btn" data-view="credits" onclick="switchView('credits')">Credits</button>
-        <a class="nav-btn" href="./login.html">Login</a>
-        <a class="nav-btn" href="./signup.html">Sign Up</a>
+        <a class="nav-btn" id="nav-login" href="./login.html">Login</a>
+        <a class="nav-btn" id="nav-signup" href="./signup.html">Sign Up</a>
+        <a class="nav-btn" id="nav-profile" href="./profile.html" style="display:none;">Profile</a>
+        <button class="nav-btn" id="nav-logout" onclick="logoutUser()" style="display:none;">Logout</button>
       </nav>
 
       <div class="user-chip" id="user-chip">
@@ -2447,8 +2449,10 @@
     <button class="nav-btn" data-view="lore" onclick="switchView('lore')">Lore</button>
     <button class="nav-btn" data-view="drawings" onclick="switchView('drawings')">Art</button>
     <button class="nav-btn" data-view="credits" onclick="switchView('credits')">Credits</button>
-    <a class="nav-btn" href="./login.html">Login</a>
-    <a class="nav-btn" href="./signup.html">Sign Up</a>
+    <a class="nav-btn" id="mobile-nav-login" href="./login.html">Login</a>
+    <a class="nav-btn" id="mobile-nav-signup" href="./signup.html">Sign Up</a>
+    <a class="nav-btn" id="mobile-nav-profile" href="./profile.html" style="display:none;">Profile</a>
+    <button class="nav-btn" id="mobile-nav-logout" onclick="logoutUser()" style="display:none;">Logout</button>
   </nav>
 
   <div id="reader" class="reader" aria-hidden="true">
@@ -2472,6 +2476,7 @@
         <button class="icon-btn" onclick="resetReaderSize()" aria-label="Reset text size">•</button>
         <button class="icon-btn" onclick="changeReaderSize(1)" aria-label="Larger text">+</button>
         <button class="icon-btn" id="theme-toggle" onclick="cycleReaderTheme()" aria-label="Change reader theme">◐</button>
+        <button class="btn btn-secondary" onclick="addBookmarkFromReader()">Add Bookmark</button>
         <button class="btn btn-secondary reader-tools-btn" id="reader-tools-btn" onclick="toggleReaderTools()" aria-expanded="false" aria-controls="reader-toolbar">Show tools</button>
       </div>
     </div>
@@ -2503,6 +2508,15 @@
           <button class="ghost-btn download-btn epub-btn" onclick="downloadChapterEpub(activeChapter, this)">Styled EPUB</button>
           <button class="ghost-btn" onclick="copyCurrentPage()">Copy page</button>
         </div>
+      </div>
+
+      <div class="toolbar-pill">
+        <span class="pill-label">Bookmarks</span>
+        <div class="toolbar-value">Quick jumps</div>
+        <p class="toolbar-note">Saved moments for this novel.</p>
+        <select id="bookmark-jump" onchange="jumpToBookmark(this.value)" aria-label="Jump to bookmark">
+          <option value="">Select a bookmark</option>
+        </select>
       </div>
 
       <label class="toolbar-pill chapter-card">
@@ -4787,5 +4801,6 @@ legacyEpisodes.push({
       updateTtsStatus("TTS unavailable");
     }
   </script>
+  <script src="./assets/phase1-client.js"></script>
 </body>
 </html>

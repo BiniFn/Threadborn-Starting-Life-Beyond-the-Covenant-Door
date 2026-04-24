@@ -130,8 +130,7 @@
   </main>
 
   <script>
-    const LOCAL_USERS_KEY = "threadborn_local_users";
-    const ACTIVE_USER_KEY = "threadborn_user";
+    const API_BASE = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
     const form = document.getElementById("login-form");
     const submitBtn = document.getElementById("submit-btn");
     const statusEl = document.getElementById("status");
@@ -139,14 +138,6 @@
     function setStatus(message, type) {
       statusEl.textContent = message || "";
       statusEl.className = "status" + (type ? " " + type : "");
-    }
-
-    function readLocalUsers() {
-      try {
-        return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || "[]");
-      } catch (error) {
-        return [];
-      }
     }
 
     form.addEventListener("submit", async event => {
@@ -161,51 +152,32 @@
       };
 
       try {
-        const response = await fetch("/api/login", {
+        const response = await fetch(`${API_BASE}/api/auth/login`, {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
         const result = await response.json();
-
-        if (!response.ok) {
-          if (result.error && result.error.includes("Missing DATABASE_URL")) {
-            const localUser = readLocalUsers().find(user =>
-              user.email === payload.email.toLowerCase() && user.password === payload.password
-            );
-            if (localUser) {
-              localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify(localUser));
-              setStatus("Signed in using local mode. Redirecting...", "ok");
-              window.setTimeout(() => {
-                window.location.href = "./index.html";
-              }, 700);
-              return;
-            }
-            setStatus("Database not configured yet. Use Sign Up first on this device.", "error");
-            return;
-          }
+        if (!response.ok || !result.success) {
           setStatus(result.error || "Login failed.", "error");
           return;
         }
-
-        localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify(result.user));
+        localStorage.setItem("threadborn_csrf_token", result.data.csrfToken || "");
+        localStorage.setItem("threadborn_user", JSON.stringify({
+          id: result.data.user.id,
+          email: result.data.user.email,
+          displayName: result.data.user.username,
+          avatarUrl: result.data.user.avatarUrl,
+          verified: result.data.user.verified,
+          role: result.data.user.role
+        }));
         setStatus("Login successful. Redirecting...", "ok");
         window.setTimeout(() => {
           window.location.href = "./index.html";
         }, 700);
       } catch (error) {
-        const localUser = readLocalUsers().find(user =>
-          user.email === payload.email.toLowerCase() && user.password === payload.password
-        );
-        if (localUser) {
-          localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify(localUser));
-          setStatus("Signed in using offline mode. Redirecting...", "ok");
-          window.setTimeout(() => {
-            window.location.href = "./index.html";
-          }, 700);
-          return;
-        }
-        setStatus("Could not reach server. Use Sign Up first on this device.", "error");
+        setStatus("Could not reach server. Please try again.", "error");
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = "Sign In";

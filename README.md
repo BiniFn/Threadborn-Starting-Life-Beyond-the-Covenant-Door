@@ -105,9 +105,9 @@ Recommended Vercel setup:
 4. Leave **Output Directory** as `.`.
 5. Deploy.
 
-This project now includes an optional Vercel Function for login at `api/login.js`, which reads `DATABASE_URL` from environment variables.
+This project now includes production-focused Vercel Functions for auth, profile, reader sync, bookmarks, and analytics.
 
-### Login + Neon database setup
+### Phase 1 backend setup (Neon + Vercel Blob)
 
 1. Install dependencies:
    ```bash
@@ -117,15 +117,29 @@ This project now includes an optional Vercel Function for login at `api/login.js
    ```bash
    cp .env.example .env.local
    ```
-3. Add your Neon connection string as `DATABASE_URL` in `.env.local`.
-4. Ensure your Neon database has a `users` table with:
-   - `email` column
-   - either `password` (plain text, not recommended) or `password_hash` (`scrypt$<saltHex>$<hashHex>`)
-5. Run local Vercel dev server:
+3. Add environment variables in `.env.local`:
+   - `DATABASE_URL`
+   - `SESSION_SECRET`
+   - `BLOB_READ_WRITE_TOKEN`
+   - `OWNER_EMAIL`
+   - `OWNER_PASSWORD`
+   - `API_BASE_URL` (optional for web; required for Android API sync)
+4. Run migrations:
+   ```bash
+   npm run db:migrate
+   ```
+5. Bootstrap owner once:
+   ```bash
+   curl -X POST http://localhost:3000/api/auth/bootstrap-owner
+   ```
+6. Run local Vercel dev server:
    ```bash
    npx vercel dev
    ```
-6. Open `http://localhost:3000/login.html`.
+7. Open:
+   - `http://localhost:3000/login.html`
+   - `http://localhost:3000/signup.html`
+   - `http://localhost:3000/profile.html`
 
 To add the same secret in Vercel:
 
@@ -133,7 +147,30 @@ To add the same secret in Vercel:
 vercel env add DATABASE_URL production
 vercel env add DATABASE_URL preview
 vercel env add DATABASE_URL development
+vercel env add SESSION_SECRET production
+vercel env add SESSION_SECRET preview
+vercel env add SESSION_SECRET development
+vercel env add BLOB_READ_WRITE_TOKEN production
+vercel env add OWNER_EMAIL production
+vercel env add OWNER_PASSWORD production
+vercel env add API_BASE_URL production
+vercel env add API_BASE_URL preview
+vercel env add API_BASE_URL development
 ```
+
+### API routes (Phase 1)
+
+- `POST /api/auth/login`
+- `POST /api/auth/signup`
+- `POST /api/auth/logout`
+- `GET /api/auth/me`
+- `POST /api/auth/bootstrap-owner`
+- `GET|PATCH /api/user/profile`
+- `GET|PUT /api/user/settings`
+- `GET|PUT /api/reader/progress`
+- `GET|POST|DELETE /api/reader/bookmarks`
+- `GET|POST /api/reader/analytics`
+- `POST /api/upload/avatar`
 
 ## Offline / PWA
 

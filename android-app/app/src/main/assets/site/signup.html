@@ -79,8 +79,8 @@
     <h1>Sign Up</h1>
     <p>Create your Threadborn account and avatar.</p>
     <form id="signup-form">
-      <label for="displayName">Display name</label>
-      <input id="displayName" name="displayName" required maxlength="40" />
+      <label for="username">Username</label>
+      <input id="username" name="username" required maxlength="24" pattern="[A-Za-z0-9_]{3,24}" />
       <label for="email">Email</label>
       <input id="email" name="email" type="email" required autocomplete="email" />
       <label for="password">Password</label>
@@ -97,7 +97,7 @@
     </div>
   </main>
   <script>
-    const LOCAL_USERS_KEY = "threadborn_local_users";
+    const API_BASE = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
     const ACTIVE_USER_KEY = "threadborn_user";
     const form = document.getElementById("signup-form");
     const statusEl = document.getElementById("status");
@@ -109,18 +109,6 @@
     function setStatus(message, type) {
       statusEl.textContent = message || "";
       statusEl.className = "status" + (type ? " " + type : "");
-    }
-
-    function readLocalUsers() {
-      try {
-        return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || "[]");
-      } catch (error) {
-        return [];
-      }
-    }
-
-    function saveLocalUsers(users) {
-      localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users));
     }
 
     avatarInput.addEventListener("change", () => {
@@ -145,67 +133,39 @@
       submitBtn.textContent = "Creating...";
 
       const payload = {
-        displayName: form.displayName.value.trim(),
+        username: form.username.value.trim(),
         email: form.email.value.trim().toLowerCase(),
         password: form.password.value,
-        avatarDataUrl
+        avatarUrl: avatarDataUrl
       };
 
       try {
-        const response = await fetch("/api/signup", {
+        const response = await fetch(`${API_BASE}/api/auth/signup`, {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
         const result = await response.json();
 
-        if (response.ok) {
-          localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify(result.user));
+        if (response.ok && result.success) {
+          localStorage.setItem("threadborn_csrf_token", result.data.csrfToken || "");
+          localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify({
+            id: result.data.user.id,
+            email: result.data.user.email,
+            displayName: result.data.user.username,
+            avatarUrl: result.data.user.avatarUrl,
+            verified: result.data.user.verified,
+            role: result.data.user.role
+          }));
           setStatus("Account created. Redirecting...", "ok");
           setTimeout(() => { window.location.href = "./index.html"; }, 700);
           return;
         }
 
-        if (result.error && result.error.includes("Missing DATABASE_URL")) {
-          const users = readLocalUsers();
-          if (users.some(user => user.email === payload.email)) {
-            setStatus("This email already exists on this device.", "error");
-            return;
-          }
-          const localUser = {
-            id: "local-" + Date.now(),
-            email: payload.email,
-            password: payload.password,
-            displayName: payload.displayName,
-            avatarUrl: payload.avatarDataUrl || ""
-          };
-          users.push(localUser);
-          saveLocalUsers(users);
-          localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify(localUser));
-          setStatus("Created locally because server DB is not configured yet. Redirecting...", "ok");
-          setTimeout(() => { window.location.href = "./index.html"; }, 900);
-          return;
-        }
-
         setStatus(result.error || "Signup failed.", "error");
       } catch (error) {
-        const users = readLocalUsers();
-        if (users.some(user => user.email === payload.email)) {
-          setStatus("This email already exists on this device.", "error");
-          return;
-        }
-        const localUser = {
-          id: "local-" + Date.now(),
-          email: payload.email,
-          password: payload.password,
-          displayName: payload.displayName,
-          avatarUrl: payload.avatarDataUrl || ""
-        };
-        users.push(localUser);
-        saveLocalUsers(users);
-        localStorage.setItem(ACTIVE_USER_KEY, JSON.stringify(localUser));
-        setStatus("Created in offline mode. Redirecting...", "ok");
-        setTimeout(() => { window.location.href = "./index.html"; }, 900);
+        setStatus("Could not reach server. Try again.", "error");
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = "Create Account";

@@ -56,7 +56,11 @@ public class MainActivity extends AppCompatActivity {
     webView.setWebViewClient(new WebViewClient() {
       @Override
       public void onPageFinished(WebView view, String url) {
+        String apiBase = BuildConfig.API_BASE_URL == null ? "" : BuildConfig.API_BASE_URL;
+        String escapedApiBase = apiBase.replace("\\", "\\\\").replace("'", "\\'");
         webView.evaluateJavascript(
+          "window.__THREADBORN_API_BASE='" + escapedApiBase + "';" +
+            "try{localStorage.setItem('threadborn_api_base','" + escapedApiBase + "');}catch(e){}" +
           "document.documentElement.classList.add('android-app');" +
             "const apkLink=document.getElementById('apk-download-link');" +
             "if(apkLink){apkLink.textContent='Android app installed';apkLink.removeAttribute('href');apkLink.removeAttribute('download');apkLink.style.pointerEvents='none';apkLink.style.opacity='0.65';}" +
