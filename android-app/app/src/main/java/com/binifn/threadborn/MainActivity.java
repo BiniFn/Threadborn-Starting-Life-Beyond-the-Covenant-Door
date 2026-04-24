@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     settings.setAllowContentAccess(true);
     settings.setUseWideViewPort(true);
     settings.setLoadWithOverviewMode(true);
+    settings.setTextZoom(100);
     settings.setBuiltInZoomControls(false);
     settings.setDisplayZoomControls(false);
     settings.setMediaPlaybackRequiresUserGesture(false);
@@ -112,6 +113,11 @@ public class MainActivity extends AppCompatActivity {
       public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
         return assetLoader.shouldInterceptRequest(request.getUrl());
       }
+
+      @Override
+      public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+        return assetLoader.shouldInterceptRequest(Uri.parse(url));
+      }
     });
 
     webView.loadUrl(START_URL);
@@ -120,6 +126,21 @@ public class MainActivity extends AppCompatActivity {
   private boolean handleUrl(String url) {
     if (url == null) {
       return false;
+    }
+
+    Uri parsed = Uri.parse(url);
+    String path = parsed.getPath() == null ? "" : parsed.getPath();
+    if (path.endsWith("/login.html") || path.equals("/login.html")) {
+      webView.loadUrl("https://appassets.androidplatform.net/assets/site/login.html");
+      return true;
+    }
+    if (path.endsWith("/signup.html") || path.equals("/signup.html")) {
+      webView.loadUrl("https://appassets.androidplatform.net/assets/site/signup.html");
+      return true;
+    }
+    if (path.endsWith("/profile.html") || path.equals("/profile.html")) {
+      webView.loadUrl("https://appassets.androidplatform.net/assets/site/profile.html");
+      return true;
     }
 
     if (url.startsWith("http://") || url.startsWith("https://")) {
