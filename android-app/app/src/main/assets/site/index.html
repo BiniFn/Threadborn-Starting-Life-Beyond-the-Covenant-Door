@@ -2101,7 +2101,7 @@
             <p>Use the web app for quick home-screen access or install the Android APK if you want the fully bundled offline version with direct on-device saving.</p>
             <div class="link-cluster">
               <button class="btn btn-secondary" onclick="installWebApp()">Install Web App</button>
-              <a class="btn btn-secondary" href="Threadborn.apk" download>Download APK</a>
+              <a class="btn btn-secondary" id="apk-download-link-secondary" href="Threadborn.apk" download>Download APK</a>
             </div>
           </article>
           <article class="step-card">
@@ -3679,6 +3679,9 @@ legacyEpisodes.push({
 
     async function loadDesktopDownloadLinks() {
       const releasesUrl = "https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases";
+      const apkLink = document.getElementById("apk-download-link");
+      const apkLinkSecondary = document.getElementById("apk-download-link-secondary");
+      const apkNote = document.getElementById("apk-note");
       const windowsLink = document.getElementById("windows-download-link");
       const macLink = document.getElementById("mac-download-link");
       const windowsNote = document.getElementById("windows-download-note");
@@ -3695,12 +3698,17 @@ legacyEpisodes.push({
         }
 
         const releases = await response.json();
+        let apkAsset = null;
         let windowsAsset = null;
         let macAsset = null;
 
         releases.forEach(release => {
           if (!release.assets) {
             return;
+          }
+
+          if (!apkAsset) {
+            apkAsset = release.assets.find(asset => asset.name === "Threadborn.apk");
           }
 
           if (!windowsAsset) {
@@ -3711,6 +3719,32 @@ legacyEpisodes.push({
             macAsset = release.assets.find(asset => asset.name === "Threadborn-macOS.zip");
           }
         });
+
+        if (apkAsset) {
+          if (apkLink) {
+            apkLink.href = apkAsset.browser_download_url;
+            apkLink.setAttribute("download", "");
+          }
+          if (apkLinkSecondary) {
+            apkLinkSecondary.href = apkAsset.browser_download_url;
+            apkLinkSecondary.setAttribute("download", "");
+          }
+          if (apkNote) {
+            apkNote.textContent = "Latest APK release found and ready to download.";
+          }
+        } else {
+          if (apkLink) {
+            apkLink.href = releasesUrl;
+            apkLink.removeAttribute("download");
+          }
+          if (apkLinkSecondary) {
+            apkLinkSecondary.href = releasesUrl;
+            apkLinkSecondary.removeAttribute("download");
+          }
+          if (apkNote) {
+            apkNote.textContent = "APK release not found yet. Opening the Releases page instead.";
+          }
+        }
 
         if (windowsAsset) {
           windowsLink.href = windowsAsset.browser_download_url;
@@ -3734,6 +3768,17 @@ legacyEpisodes.push({
           macLink.href = releasesUrl;
         }
       } catch (error) {
+        if (apkLink) {
+          apkLink.href = releasesUrl;
+          apkLink.removeAttribute("download");
+        }
+        if (apkLinkSecondary) {
+          apkLinkSecondary.href = releasesUrl;
+          apkLinkSecondary.removeAttribute("download");
+        }
+        if (apkNote) {
+          apkNote.textContent = "Could not check GitHub assets from this browser, so this button opens the Releases page.";
+        }
         windowsLink.href = releasesUrl;
         macLink.href = releasesUrl;
         if (windowsNote) {
