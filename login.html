@@ -140,6 +140,14 @@
       statusEl.className = "status" + (type ? " " + type : "");
     }
 
+    function normalizeAuthError(message) {
+      const text = String(message || "");
+      if (text.includes("Missing DATABASE_URL")) {
+        return "Server is not configured yet. Please set DATABASE_URL in Vercel Production env vars.";
+      }
+      return text || "Login failed.";
+    }
+
     form.addEventListener("submit", async event => {
       event.preventDefault();
       setStatus("");
@@ -160,7 +168,7 @@
         });
         const result = await response.json();
         if (!response.ok || !result.success) {
-          setStatus(result.error || "Login failed.", "error");
+          setStatus(normalizeAuthError(result.error), "error");
           return;
         }
         localStorage.setItem("threadborn_csrf_token", result.data.csrfToken || "");

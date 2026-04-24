@@ -9,6 +9,7 @@
   let analyticsTimer = null;
   let syncTimer = null;
   let readerActiveSince = null;
+  let authConfigMissing = false;
 
   function apiPath(path) {
     return `${API_BASE}${path}`;
@@ -104,6 +105,10 @@
     });
     if (typeof window.renderUserChip === "function") {
       window.renderUserChip();
+    }
+    const userName = document.getElementById("user-name");
+    if (userName && authConfigMissing && !loggedIn) {
+      userName.textContent = "Setup required";
     }
   }
 
@@ -255,6 +260,7 @@
       const data = await apiFetch("/api/auth/me", { method: "GET" });
       authUser = data.user;
       csrfToken = data.csrfToken || "";
+      authConfigMissing = false;
       localStorage.setItem("threadborn_user", JSON.stringify({
         id: authUser.id,
         email: authUser.email,
@@ -266,6 +272,9 @@
     } catch (error) {
       authUser = null;
       csrfToken = "";
+      authConfigMissing = String(error.message || "").includes("Missing DATABASE_URL");
+      localStorage.removeItem("threadborn_user");
+      localStorage.removeItem("threadborn_csrf_token");
     }
     toggleAuthNav();
     await loadBookmarks();

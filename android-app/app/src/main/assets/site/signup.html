@@ -111,6 +111,14 @@
       statusEl.className = "status" + (type ? " " + type : "");
     }
 
+    function normalizeAuthError(message) {
+      const text = String(message || "");
+      if (text.includes("Missing DATABASE_URL")) {
+        return "Server is not configured yet. Please set DATABASE_URL in Vercel Production env vars.";
+      }
+      return text || "Signup failed.";
+    }
+
     avatarInput.addEventListener("change", () => {
       const file = avatarInput.files && avatarInput.files[0];
       if (!file) {
@@ -163,7 +171,7 @@
           return;
         }
 
-        setStatus(result.error || "Signup failed.", "error");
+        setStatus(normalizeAuthError(result.error), "error");
       } catch (error) {
         setStatus("Could not reach server. Try again.", "error");
       } finally {
