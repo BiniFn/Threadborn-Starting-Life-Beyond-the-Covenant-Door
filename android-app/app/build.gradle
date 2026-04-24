@@ -10,8 +10,8 @@ android {
     applicationId "com.binifn.threadborn"
     minSdk 24
     targetSdk 34
-    versionCode 1
-    versionName "1.0.0"
+    versionCode 17
+    versionName "1.0.17"
     def apiBase = project.findProperty("API_BASE_URL") ?: ""
     buildConfigField "String", "API_BASE_URL", "\"${apiBase}\""
   }
