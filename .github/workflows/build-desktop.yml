@@ -32,8 +32,7 @@ jobs:
       - name: Sync site
         shell: bash
         run: |
-          chmod +x scripts/sync_desktop_site.sh
-          ./scripts/sync_desktop_site.sh
+          bash scripts/sync_desktop_site.sh
 
       - name: Install dependencies
         run: |
