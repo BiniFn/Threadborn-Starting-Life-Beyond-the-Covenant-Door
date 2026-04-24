@@ -3,15 +3,28 @@
 <head>
   <script>
     (function() {
-      var savedLang = localStorage.getItem('threadborn_lang');
-      var path = window.location.pathname;
-      if (path.endsWith('/')) path += 'index.html';
-      var isJp = path.indexOf('-jp.html') !== -1;
-      if (savedLang === 'ja' && !isJp) {
-        window.location.replace(path.replace('.html', '-jp.html'));
-      } else if (savedLang === 'en' && isJp) {
-        window.location.replace(path.replace('-jp.html', '.html'));
-      }
+      try {
+        var savedLang = localStorage.getItem('threadborn_lang');
+        if (!savedLang) return;
+        var path = window.location.pathname;
+        var isJp = path.indexOf('-jp') !== -1;
+        
+        if (savedLang === 'ja' && !isJp) {
+          if (path === '/' || path === '/index' || path === '/index.html') {
+            window.location.replace('./index-jp.html');
+          } else if (path.indexOf('.html') !== -1) {
+            window.location.replace(path.replace('.html', '-jp.html'));
+          } else {
+            window.location.replace(path + '-jp');
+          }
+        } else if (savedLang === 'en' && isJp) {
+          if (path.indexOf('-jp.html') !== -1) {
+            window.location.replace(path.replace('-jp.html', '.html'));
+          } else {
+            window.location.replace(path.replace('-jp', ''));
+          }
+        }
+      } catch(e) {}
     })();
   </script>
   <meta charset="utf-8" />
@@ -2300,7 +2313,7 @@
       </nav>
 
       <div class="user-chip" id="user-chip">
-        <img id="user-avatar" alt="Profile picture" />
+        <img id="user-avatar" alt="Profile picture" src="assets/threadborn-logo.png" />
         <span class="user-name" id="user-name">ゲスト読者</span>
       </div>
     </div>
@@ -2895,18 +2908,18 @@
   <script>
     const volumes = [
       {
-        name: "Volume 1 • Reborn With Zero Dignity",
+        name: "第 1 巻 • 尊厳ゼロで生まれ変わる",
         status: "Complete",
-        summary: "Yono dies in Tokyo, gets dragged into Lumera by Violet, survives the Shade debt arc, and finds Velkor's sealed prison standing alone in the forest.",
+        summary: "ヨノは東京で死に、ヴァイオレットによってルメラに引きずり込まれ、シェイドの借金編を生き延び、森の中にぽつんと佇むヴェルコールの封印された牢獄を発見する。",
         coverArt: "./assets/volume1-cover.png",
         chips: ["reincarnation", "shade debt", "forest confession", "Velkor door"],
         actionLabel: "Read Volume 1",
         action: "openVolumeStart('Volume 1')"
       },
       {
-        name: "Volume 2 • The Covenant Door",
+        name: "第 2 巻 • 契約の扉",
         status: "Active",
-        summary: "Yono, Violet, Mirika, Meryn, and Lyra return to the Old Covenant seal, Velkor wakes up, and every new chapter turns Yono's last ceiling into the floor of the next one.",
+        summary: "ヨノ、ヴァイオレット、ミリカ、メリカ、ライラは古い契約の封印に戻り、ヴェルコールは目覚め、新しい章ごとにヨノの最後の天井が次の章の床に変わります。",
         coverArt: "./assets/volume2-cover.jpg",
         chips: ["Velkor", "door arc", "chapter by chapter ascension", "romance"],
         actionLabel: "Read Volume 2",
@@ -2918,7 +2931,7 @@
 
   // ---- CHAPTER 1 ----
   {
-    label: "Chapter 01 · The Goddess Who Pushed Me Off The Bridge",
+    label: "第01章 私を橋から突き落とした女神",
     pages: [
       `<div class="chapter-head">
         <span class="chapter-num">Volume 01 · Chapter 01</span>
@@ -2969,7 +2982,7 @@
 
   // ---- CHAPTER 2 ----
   {
-    label: "Chapter 02 · Rocket Tennis and a City on Fire",
+    label: "第02章 ロケットテニスと燃え上がる街",
     pages: [
       `<div class="chapter-head">
         <span class="chapter-num">Volume 01 · Chapter 02</span>
@@ -3003,7 +3016,7 @@
 
   // ---- CHAPTER 3 ----
   {
-    label: "Chapter 03 · When the Warden Knocks",
+    label: "第03章 · 所長がノックするとき",
     pages: [
       `<div class="chapter-head">
         <span class="chapter-num">Volume 01 · Chapter 03</span>
@@ -3036,7 +3049,7 @@
 
   // ---- CHAPTER 4 ----
   {
-    label: "Chapter 04 · The Price of Warm Things",
+    label: "第04章 温かいものの値段",
     pages: [
 
       // PAGE 1 — Opening + Meryn's Treatment
@@ -3269,7 +3282,7 @@
 
 // CHAPTER 5
 legacyEpisodes.push({
-  label: "Chapter 05 · What the Forest Keeps",
+  label: "第05章 森が守るもの",
   pages: [
 
     // PAGE 1 — The Road In
@@ -3458,55 +3471,55 @@ legacyEpisodes.push({
       {
         volume: "Volume 1",
         chapter: "Chapter 1",
-        label: "Rebirth",
-        title: "The Goddess Who Pushed Me Off The Bridge",
-        summary: "A goddess kills Yono by accident, compensates him with absurd powers, and throws him into Lumera with a rocket racket and a problem that already knows his name.",
-        tags: ["isekai", "goddess", "rocket racket"],
+        label: "再生",
+        title: "私を橋から突き落とした女神",
+        summary: "女神はヨノを誤って殺し、不条理な力で彼を補償し、ロケットラケットとすでに彼の名前を知っている問題で彼をルメラに投げ込みます。",
+        tags: ["異世界", "女神", "ロケットラケット"],
         pages: legacyEpisodes[0].pages
       },
       {
         volume: "Volume 1",
         chapter: "Chapter 2",
-        label: "Lumera",
-        title: "Rocket Tennis and a City on Fire",
-        summary: "Yono lands in Lumera, saves a child, and learns that his gifts make him useful, hunted, and immediately involved in the city's worst night.",
-        tags: ["city fire", "shade", "first battle"],
+        label: "ルメラ",
+        title: "ロケットテニスと燃え上がる街",
+        summary: "ヨノはルメラに着陸し、子供を救い、彼の才能が役に立ち、追われ、即座に街の最悪の夜に巻き込まれることを知ります。",
+        tags: ["都市火災", "シェード", "最初の戦い"],
         pages: legacyEpisodes[1].pages
       },
       {
         volume: "Volume 1",
         chapter: "Chapter 3",
-        label: "Turning Point",
-        title: "When the Warden Knocks",
-        summary: "The Shade Warden hits hard, Violet and Yono stop pretending the chemistry is accidental, and the debt arc starts getting personal.",
-        tags: ["warden", "kiss", "pressure"],
+        label: "ターニングポイント",
+        title: "監視員がノックするとき",
+        summary: "シェード・ウォーデンは強烈な攻撃を加え、ヴァイオレットとヨノは化学反応が偶然であるふりをするのをやめ、借金のアークは個人的なものになり始めます。",
+        tags: ["監視員", "キス", "プレッシャー"],
         pages: legacyEpisodes[2].pages
       },
       {
         volume: "Volume 1",
         chapter: "Chapter 4",
-        label: "Debt Inversion",
-        title: "The Price of Warm Things",
-        summary: "At Meryn's safehouse the cast grows, the oath behind the Shade is finally understood, and Yono helps turn the debt back on the thing hunting him.",
-        tags: ["safehouse", "new cast", "oath lore"],
+        label: "債務逆転",
+        title: "温かいものの値段",
+        summary: "メリンのセーフハウスではキャストが成長し、シェイドの裏にある誓いがついに理解され、ヨノは彼を追いかけている者への借金を返すのを手伝います。",
+        tags: ["セーフハウス", "新キャスト", "誓いの伝承"],
         pages: legacyEpisodes[3].pages
       },
       {
         volume: "Volume 1",
         chapter: "Chapter 5",
-        label: "Forest Finale",
-        title: "What the Forest Keeps",
-        summary: "Yono and Violet finally become real in the forest, then discover the sealed prison that starts the next volume's catastrophe.",
-        tags: ["forest", "confession", "Velkor"],
+        label: "森のフィナーレ",
+        title: "森が守るもの",
+        summary: "ヨノとヴァイオレットはついに森の中で本物になり、次の巻の大惨事の始まりとなる封印された刑務所を発見します。",
+        tags: ["森", "告白", "ヴェルコール"],
         pages: legacyEpisodes[4].pages
       },
       {
         volume: "Volume 2",
         chapter: "Chapter 1",
-        label: "The Door Opens",
-        title: "When the Seal Breathes",
-        summary: "The party returns to Velkor's prison, the Old Covenant seal answers Yono directly, and his next layer of power wakes up in front of everyone.",
-        tags: ["Velkor", "seal break", "team return", "power climb"],
+        label: "ドアが開く",
+        title: "アザラシが息づくとき",
+        summary: "一行はヴェルコールの牢獄に戻り、古き契約の封印がヨノに直接答え、そして彼の次なる力の層がみんなの前で目覚める。",
+        tags: ["ヴェルコール", "シールブレイク", "チーム復帰", "パワークライム"],
         pages: [
           `<div class="chapter-head">
             <span class="chapter-num">Volume 02 · Chapter 01</span>
@@ -3572,10 +3585,10 @@ legacyEpisodes.push({
       {
         volume: "Volume 2",
         chapter: "Chapter 2",
-        label: "The First Thread Cut",
-        title: "The Strongest Chapter Yet",
-        summary: "Velkor forces the seal wider, Yono dies and comes back the wrong way, and the first cut in his remaining seals turns strongest-in-fiction into a moving target instead of a finish line.",
-        tags: ["deathless", "thread cut", "strongest in fiction", "meta ascension"],
+        label: "初めての糸切り",
+        title: "史上最強の章",
+        summary: "ヴェルコールはシールを広げ、ヨノは死んで間違った方向に戻り、残ったシールの最初のカットは、フィクション内で最も強いものをゴールラインではなく動くターゲットに変えます。",
+        tags: ["死なない", "糸切り", "フィクションの中で最強", "メタアセンション"],
         pages: [
           `<div class="chapter-head">
             <span class="chapter-num">Volume 02 · Chapter 02</span>
@@ -3631,10 +3644,10 @@ legacyEpisodes.push({
       {
         volume: "Volume 2",
         chapter: "Chapter 3",
-        label: "The Boy Who Buried Himself",
-        title: "The Boy Who Buried Himself",
-        summary: "In which the black hall finally answers — and the answer is worse than anyone expected.",
-        tags: ["black hall", "lore", "origin"],
+        label: "身を埋めた少年",
+        title: "身を埋めた少年",
+        summary: "ブラックホールがついに答えを導き出しますが、その答えは誰もが予想していたよりも悪いものでした。",
+        tags: ["ブラックホール", "伝承", "起源"],
         pages: [
           `<div class="chapter-head">
             <span class="chapter-num">Volume 02 · Chapter 03</span>
@@ -3765,10 +3778,10 @@ Last chapter's ceiling is always this chapter's floor.</div>
       {
         volume: "Volume 2",
         chapter: "Chapter 4",
-        label: "The One Who Collects Endings",
-        title: "The One Who Collects Endings",
-        summary: "Cadreth the Archivist arrives to file the end of the story, but Violet unleashes Bloom Absolute to ensure the record stays open.",
-        tags: ["archivist", "bloom absolute", "divine class", "new ceiling"],
+        label: "エンディングを集める者",
+        title: "エンディングを集める者",
+        summary: "アーキビストのカドレスが物語の終わりを提出するために到着しますが、ヴァイオレットは記録が未解決のままであることを保証するためにブルーム・アブソリュートを解き放ちます。",
+        tags: ["アーキビスト", "ブルーム・アブソリュート", "神クラス", "新しい天井"],
         pages: [
           `<div class="chapter-head">
             <span class="chapter-num">Volume 02 · Chapter 04</span>
@@ -3990,91 +4003,91 @@ Last chapter's ceiling is always this chapter's floor.</div>
       {
         role: "Latest chapter lead",
         age: "19",
-        name: "Yono Kazeshima",
+        name: "与野風島",
         bio: "From the Covenant Door onward, the newest version of Yono is always his strongest one. Every broken seal turns the previous peak into his next floor.",
         chips: ["time control origin", "thread cut", "latest-chapter strongest", "rocket racket"]
       },
       {
         role: "Goddess / girlfriend",
         age: "appears 19",
-        name: "Violet Arden",
+        name: "ヴァイオレット・アーデン",
         bio: "The flower goddess who caused Yono's death, followed him into Lumera, and now refuses to let his power climb cost him his humanity or his relationship with her.",
         chips: ["thread sight", "divine rune magic", "romance lead", "door arc secret"]
       },
       {
         role: "Warrior",
         age: "21",
-        name: "Serah Nightbloom",
+        name: "セラ・ナイトブルーム",
         bio: "Twin-saber frontline force and one of the first people in Lumera to decide Yono was worth fighting beside instead of around.",
         chips: ["twin sabers", "combat form", "night alarm first", "field backbone"]
       },
       {
         role: "Elite knight",
         age: "22",
-        name: "Kael Thornhart",
+        name: "ケール・ソーンハート",
         bio: "A quiet archer in silver armor whose tactical instincts keep saving the group before anybody has time to thank him properly.",
         chips: ["precision bow", "silver armor", "tactical sight", "silent loyalty"]
       },
       {
         role: "Court mage",
         age: "24",
-        name: "Mirika Solenne",
+        name: "ミリカ・ソレンヌ",
         bio: "Former Covenant mage, oath scholar, and one of the only people alive who can read the legal architecture holding Velkor's prison together.",
         chips: ["oath lore", "amber aura", "seal work", "old covenant"]
       },
       {
         role: "Safehouse anchor",
         age: "31",
-        name: "Elder Meryn",
+        name: "メリン長老",
         bio: "Healer, cook, and emotional center of the party. Her warmth field can buy the others precious seconds against powers that should ignore ordinary defense.",
         chips: ["healing", "warmth field", "triage", "steady hand"]
       },
       {
         role: "Veil guide",
         age: "23",
-        name: "Lyra Voss",
+        name: "ライラ・ヴォス",
         bio: "An information broker who reads consequence lines faster than most people read a room. She is usually the first person to notice when the plan has become a myth.",
         chips: ["consequence logic", "thread reading", "route control", "sharp tongue"]
       },
       {
         role: "Safehouse heart",
         age: "10",
-        name: "Liri",
+        name: "リリ",
         bio: "A quiet but emotionally precise child at Meryn's safehouse whose small gestures keep landing with the force of vows.",
         chips: ["safehouse child", "ribbon promise", "chapter 4", "chapter 6"]
       },
       {
         role: "Memorial presence",
         age: "unknown",
-        name: "Cael",
+        name: "カエル",
         bio: "The ribbon-maker's apprentice whose death turns the Shade conflict personal and whose map helps lead the cast toward the forest prison.",
         chips: ["ribbon stall", "memorial", "map clue", "chapter 3 legacy"]
       },
       {
         role: "Debt enforcer",
         age: "unknown",
-        name: "Shade Warden",
+        name: "シェードウォーデン",
         bio: "A hulking debt-collection monster made of shadow and armor, sent to hunt through old promises until the cast turns the oath against it.",
         chips: ["shade debt", "market attack", "chapter 2", "chapter 3"]
       },
       {
         role: "Off-page authority",
         age: "ancient",
-        name: "The Registrar",
+        name: "レジストラ",
         bio: "A feared legal power in the Veil Quarter whose authority can formalize debts, nullify fraud, and redirect who is allowed to hunt whom.",
         chips: ["veil quarter", "oath authority", "chapter 4", "chapter 5 lead-in"]
       },
       {
         role: "Runners",
         age: "unknown",
-        name: "Rin & Rina",
+        name: "リン＆リナ",
         bio: "Quick-moving helpers tied to the safehouse network, mentioned when Liri sends for Cael's ribbon at first light.",
         chips: ["safehouse network", "chapter 4", "support cast", "off-screen assist"]
       },
       {
         role: "Volume 2 villain",
         age: "300+",
-        name: "Velkor",
+        name: "ヴェルコール",
         bio: "A former Covenant Elder who learned to eat life-threads and grow from what he stole. The forest door was built to keep him in; Yono is the reason it no longer feels permanent.",
         chips: ["thread devouring", "hunger field", "seal prisoner", "old covenant elder"]
       }
@@ -4082,66 +4095,66 @@ Last chapter's ceiling is always this chapter's floor.</div>
 
     const powers = [
       {
-        name: "Latest-Chapter Supremacy",
+        name: "最新章の覇権",
         text: "From Volume 2 onward, Yono's newest chapter is always his strongest version. The story treats every previous peak as draft material."
       },
       {
-        name: "Seal Harvest",
+        name: "アザラシの収穫",
         text: "Whenever Yono breaks one of his old self-imposed seals, the gain stays. He does not power down after the moment passes."
       },
       {
-        name: "Pre-Definition Authority",
+        name: "事前定義権限",
         text: "Before a law, title, attack, or limitation fully becomes real, Yono can allow it, blank it out, or reject it entirely."
       },
       {
-        name: "Thread Cut",
+        name: "ねじ切り",
         text: "He can sever the link between a concept and what it normally does: hunger without gain, death without finality, attack without impact."
       },
       {
-        name: "Narrative Overwrite",
+        name: "ナラティブ上書き",
         text: "If a scene tries to trap him inside a fixed outcome, Yono can rewrite the terms the scene is operating on."
       },
       {
-        name: "All-Power Adjacency",
+        name: "全電力隣接関係",
         text: "Other fictional powers do not feel foreign to him. They register as lower expressions of possibility that he can stand above without borrowing."
       },
       {
-        name: "Deathless Continuance",
+        name: "不死の継続",
         text: "Killing Yono no longer guarantees an ending. He can return by checkpoint, by refusal, or by simply not letting the death finish the sentence."
       },
       {
-        name: "Observer Anchor",
+        name: "オブザーバーアンカー",
         text: "The story stays alive because Yono still needs to be noticed. If nobody sees him, thinks about him, or anchors him, he goes quiet."
       },
       {
-        name: "Violet Link",
+        name: "バイオレットリンク",
         text: "Violet is more than the romance lead. She is one of the clearest emotional anchors keeping Yono connected to people instead of vanishing upward into pure scale."
       }
     ];
 
     const loreEntries = [
       {
-        title: "The Tokyo Bridge",
+        title: "東京橋",
         text: "Yono Kazeshima dies in modern Japan after Violet accidentally kills him while saving a cat, then gets reincarnated into Lumera with absurd starter powers."
       },
       {
-        title: "The Shade Debt Arc",
+        title: "陰の借金編",
         text: "Volume 1 is not just setup. It is the full debt-and-oath story where Yono, Violet, Meryn, Mirika, and the others turn the Shade's claim back on itself."
       },
       {
-        title: "The Forest Confession",
+        title: "森の告白",
         text: "Yono and Violet become fully real as a couple in the forest shelter before they find Velkor's sealed prison the next morning."
       },
       {
-        title: "Velkor's Prison",
+        title: "ヴェルコールの刑務所",
         text: "The stone door in the forest is an Old Covenant seal built to hold Velkor, a thread-eating Elder who kept growing stronger even while imprisoned."
       },
       {
-        title: "Why Yono Keeps Climbing",
+        title: "与野が登り続ける理由",
         text: "His old life was not erased. It was layered under self-made seals. Every new chapter can cut another one, which is why the latest Yono is always the strongest Yono."
       },
       {
-        title: "Why Violet Still Matters",
+        title: "バイオレットが依然として重要な理由",
         text: "Yono's power trend is infinite on purpose, so the story's emotional counterweight is Violet keeping him seen, chosen, and attached to a human scale of love."
       }
     ];
@@ -5673,7 +5686,7 @@ Last chapter's ceiling is always this chapter's floor.</div>
 
       pdf += `trailer\n<< /Size ${objects.length} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
 
-      return new Blob([pdf], { type: "application/pdf" });
+      return new Blob([pdf], { type: "申請書/PDF" });
     }
 
     const crcTable = (() => {
@@ -5771,7 +5784,7 @@ Last chapter's ceiling is always this chapter's floor.</div>
       endView.setUint32(16, centralOffset, true);
       endView.setUint16(20, 0, true);
 
-      return new Blob([...localParts, ...centralParts, endRecord], { type: "application/epub+zip" });
+      return new Blob([...localParts, ...centralParts, endRecord], { type: "アプリケーション/epub+zip" });
     }
 
     async function buildEpubBlob(chapter) {
@@ -5791,33 +5804,59 @@ Last chapter's ceiling is always this chapter's floor.</div>
 
       const coverPage = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>
   <script>
-  (function() {
-    var savedLang = localStorage.getItem('threadborn_lang');
-    var path = window.location.pathname;
-    if (path.endsWith('/')) path += 'index.html';
-    var isJp = path.indexOf('-jp.html') !== -1;
-    if (savedLang === 'ja' && !isJp) {
-      window.location.replace(path.replace('.html', '-jp.html'));
-    } else if (savedLang === 'en' && isJp) {
-      window.location.replace(path.replace('-jp.html', '.html'));
-    }
-  })();
-</script>\n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="cover">\n    <div class="cover-card">\n      <p class="eyebrow">Threadborn Collector EPUB</p>\n      <h1 class="cover-title">${bookTitle}</h1>\n      ${volumeCover ? `<img class="cover-art" src="images/volume-cover.jpg" alt="${chapter.volume} cover art" />` : ""}\n      <p class="cover-summary">${escapeXml(chapter.summary)}</p>\n      <div class="tag-row">${chapter.tags.map(tag => `<span class="tag">${escapeXml(tag)}</span>`).join("")}</div>\n      <p class="credit-line">Created by BiniFn</p>\n      <p class="note">Official offline chapter export from the Threadborn web reader.</p>\n    </div>\n  </section>\n</body>\n</html>`;
+    (function() {
+      try {
+        var savedLang = localStorage.getItem('threadborn_lang');
+        if (!savedLang) return;
+        var path = window.location.pathname;
+        var isJp = path.indexOf('-jp') !== -1;
+        
+        if (savedLang === 'ja' && !isJp) {
+          if (path === '/' || path === '/index' || path === '/index.html') {
+            window.location.replace('./index-jp.html');
+          } else if (path.indexOf('.html') !== -1) {
+            window.location.replace(path.replace('.html', '-jp.html'));
+          } else {
+            window.location.replace(path + '-jp');
+          }
+        } else if (savedLang === 'en' && isJp) {
+          if (path.indexOf('-jp.html') !== -1) {
+            window.location.replace(path.replace('-jp.html', '.html'));
+          } else {
+            window.location.replace(path.replace('-jp', ''));
+          }
+        }
+      } catch(e) {}
+    })();
+  </script>\n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="cover">\n    <div class="cover-card">\n      <p class="eyebrow">Threadborn Collector EPUB</p>\n      <h1 class="cover-title">${bookTitle}</h1>\n      ${volumeCover ? `<img class="cover-art" src="images/volume-cover.jpg" alt="${chapter.volume} cover art" />` : ""}\n      <p class="cover-summary">${escapeXml(chapter.summary)}</p>\n      <div class="tag-row">${chapter.tags.map(tag => `<span class="tag">${escapeXml(tag)}</span>`).join("")}</div>\n      <p class="credit-line">Created by BiniFn</p>\n      <p class="note">Official offline chapter export from the Threadborn web reader.</p>\n    </div>\n  </section>\n</body>\n</html>`;
 
       const creditsPage = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>
   <script>
-  (function() {
-    var savedLang = localStorage.getItem('threadborn_lang');
-    var path = window.location.pathname;
-    if (path.endsWith('/')) path += 'index.html';
-    var isJp = path.indexOf('-jp.html') !== -1;
-    if (savedLang === 'ja' && !isJp) {
-      window.location.replace(path.replace('.html', '-jp.html'));
-    } else if (savedLang === 'en' && isJp) {
-      window.location.replace(path.replace('-jp.html', '.html'));
-    }
-  })();
-</script>\n  <title>${bookTitle} - Credits</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="credits-page">\n    <div class="credits-card">\n      <p class="eyebrow">クレジット</p>\n      <h1>Release Credits</h1>\n      <ul>${exportCredits.map(line => `<li>${escapeXml(line)}</li>`).join("")}</ul>\n      <p class="note">Please keep the BiniFn credit attached if this EPUB is reposted or shared.</p>\n    </div>\n  </section>\n</body>\n</html>`;
+    (function() {
+      try {
+        var savedLang = localStorage.getItem('threadborn_lang');
+        if (!savedLang) return;
+        var path = window.location.pathname;
+        var isJp = path.indexOf('-jp') !== -1;
+        
+        if (savedLang === 'ja' && !isJp) {
+          if (path === '/' || path === '/index' || path === '/index.html') {
+            window.location.replace('./index-jp.html');
+          } else if (path.indexOf('.html') !== -1) {
+            window.location.replace(path.replace('.html', '-jp.html'));
+          } else {
+            window.location.replace(path + '-jp');
+          }
+        } else if (savedLang === 'en' && isJp) {
+          if (path.indexOf('-jp.html') !== -1) {
+            window.location.replace(path.replace('-jp.html', '.html'));
+          } else {
+            window.location.replace(path.replace('-jp', ''));
+          }
+        }
+      } catch(e) {}
+    })();
+  </script>\n  <title>${bookTitle} - Credits</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="credits-page">\n    <div class="credits-card">\n      <p class="eyebrow">クレジット</p>\n      <h1>Release Credits</h1>\n      <ul>${exportCredits.map(line => `<li>${escapeXml(line)}</li>`).join("")}</ul>\n      <p class="note">Please keep the BiniFn credit attached if this EPUB is reposted or shared.</p>\n    </div>\n  </section>\n</body>\n</html>`;
 
       const pageFiles = chapter.pages.map((pageHtml, index) => ({
         name: `OEBPS/text/page-${index + 1}.xhtml`,
@@ -5825,18 +5864,31 @@ Last chapter's ceiling is always this chapter's floor.</div>
         title: `${chapter.title} - Page ${index + 1}`,
         content: `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>
   <script>
-  (function() {
-    var savedLang = localStorage.getItem('threadborn_lang');
-    var path = window.location.pathname;
-    if (path.endsWith('/')) path += 'index.html';
-    var isJp = path.indexOf('-jp.html') !== -1;
-    if (savedLang === 'ja' && !isJp) {
-      window.location.replace(path.replace('.html', '-jp.html'));
-    } else if (savedLang === 'en' && isJp) {
-      window.location.replace(path.replace('-jp.html', '.html'));
-    }
-  })();
-</script>\n  <title>${escapeXml(`${chapter.title} - Page ${index + 1}`)}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="../styles.css" />\n</head>\n<body>\n  <section class="page">\n    <div class="page-frame">\n      <p class="page-eyebrow"><span>${escapeXml(`${chapter.volume} • ${chapter.chapter}`)}</span><span>Page ${index + 1} of ${chapter.pages.length}</span></p>\n      ${chapter.pages[index]}\n      <p class="page-footer-note">Created by BiniFn • Official Threadborn EPUB export</p>\n    </div>\n  </section>\n</body>\n</html>`
+    (function() {
+      try {
+        var savedLang = localStorage.getItem('threadborn_lang');
+        if (!savedLang) return;
+        var path = window.location.pathname;
+        var isJp = path.indexOf('-jp') !== -1;
+        
+        if (savedLang === 'ja' && !isJp) {
+          if (path === '/' || path === '/index' || path === '/index.html') {
+            window.location.replace('./index-jp.html');
+          } else if (path.indexOf('.html') !== -1) {
+            window.location.replace(path.replace('.html', '-jp.html'));
+          } else {
+            window.location.replace(path + '-jp');
+          }
+        } else if (savedLang === 'en' && isJp) {
+          if (path.indexOf('-jp.html') !== -1) {
+            window.location.replace(path.replace('-jp.html', '.html'));
+          } else {
+            window.location.replace(path.replace('-jp', ''));
+          }
+        }
+      } catch(e) {}
+    })();
+  </script>\n  <title>${escapeXml(`${chapter.title} - Page ${index + 1}`)}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="../styles.css" />\n</head>\n<body>\n  <section class="page">\n    <div class="page-frame">\n      <p class="page-eyebrow"><span>${escapeXml(`${chapter.volume} • ${chapter.chapter}`)}</span><span>Page ${index + 1} of ${chapter.pages.length}</span></p>\n      ${chapter.pages[index]}\n      <p class="page-footer-note">Created by BiniFn • Official Threadborn EPUB export</p>\n    </div>\n  </section>\n</body>\n</html>`
       }));
 
       const manifestItems = [
@@ -5861,26 +5913,39 @@ Last chapter's ceiling is always this chapter's floor.</div>
       ].join("");
 
       const files = [
-        { name: "mimetype", data: encoder.encode("application/epub+zip") },
+        { name: "MIMEタイプ", data: encoder.encode("application/epub+zip") },
         { name: "META-INF/container.xml", data: encoder.encode(`<?xml version="1.0" encoding="UTF-8"?>\n<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">\n  <rootfiles>\n    <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>\n  </rootfiles>\n</container>`) },
         { name: "OEBPS/styles.css", data: encoder.encode(styleCss) },
         { name: "OEBPS/cover.xhtml", data: encoder.encode(coverPage) },
         ...(volumeCover ? [{ name: "OEBPS/images/volume-cover.jpg", data: volumeCover.bytes }] : []),
-        { name: "OEBPS/credits.xhtml", data: encoder.encode(creditsPage) },
+        { name: "OEBPS/クレジット.xhtml", data: encoder.encode(creditsPage) },
         { name: "OEBPS/nav.xhtml", data: encoder.encode(`<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">\n<head>
   <script>
-  (function() {
-    var savedLang = localStorage.getItem('threadborn_lang');
-    var path = window.location.pathname;
-    if (path.endsWith('/')) path += 'index.html';
-    var isJp = path.indexOf('-jp.html') !== -1;
-    if (savedLang === 'ja' && !isJp) {
-      window.location.replace(path.replace('.html', '-jp.html'));
-    } else if (savedLang === 'en' && isJp) {
-      window.location.replace(path.replace('-jp.html', '.html'));
-    }
-  })();
-</script>\n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="nav-page">\n    <div class="nav-card">\n      <p class="eyebrow">Contents</p>\n      <nav epub:type="toc" id="toc">\n        <h1>${bookTitle}</h1>\n        <ol>${navLinks}</ol>\n        <a class="nav-btn" id="lang-en" href="./index.html" onclick="localStorage.setItem('threadborn_lang', 'en')">EN</a>
+    (function() {
+      try {
+        var savedLang = localStorage.getItem('threadborn_lang');
+        if (!savedLang) return;
+        var path = window.location.pathname;
+        var isJp = path.indexOf('-jp') !== -1;
+        
+        if (savedLang === 'ja' && !isJp) {
+          if (path === '/' || path === '/index' || path === '/index.html') {
+            window.location.replace('./index-jp.html');
+          } else if (path.indexOf('.html') !== -1) {
+            window.location.replace(path.replace('.html', '-jp.html'));
+          } else {
+            window.location.replace(path + '-jp');
+          }
+        } else if (savedLang === 'en' && isJp) {
+          if (path.indexOf('-jp.html') !== -1) {
+            window.location.replace(path.replace('-jp.html', '.html'));
+          } else {
+            window.location.replace(path.replace('-jp', ''));
+          }
+        }
+      } catch(e) {}
+    })();
+  </script>\n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="nav-page">\n    <div class="nav-card">\n      <p class="eyebrow">Contents</p>\n      <nav epub:type="toc" id="toc">\n        <h1>${bookTitle}</h1>\n        <ol>${navLinks}</ol>\n        <a class="nav-btn" id="lang-en" href="./index.html" onclick="localStorage.setItem('threadborn_lang', 'en')">EN</a>
       </nav>\n    </div>\n  </section>\n</body>\n</html>`) },
         { name: "OEBPS/content.opf", data: encoder.encode(`<?xml version="1.0" encoding="UTF-8"?>\n<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="book-id">\n  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">\n    <dc:identifier id="book-id">${escapeXml(bookId)}</dc:identifier>\n    <dc:title>${bookTitle}</dc:title>\n    <dc:language>en</dc:language>\n    <dc:creator>BiniFn</dc:creator>\n    <dc:publisher>BiniFn</dc:publisher>\n    <dc:description>${escapeXml(chapter.summary)}</dc:description>\n    <meta property="dcterms:modified">${modifiedAt}</meta>\n  </metadata>\n  <manifest>\n    ${manifestItems}\n  </manifest>\n  <spine>\n    ${spineItems}\n  </spine>\n</package>`) },
         ...pageFiles.map(page => ({ name: page.name, data: encoder.encode(page.content) }))
