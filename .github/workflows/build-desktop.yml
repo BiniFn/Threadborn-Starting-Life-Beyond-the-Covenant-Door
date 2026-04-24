@@ -5,10 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'index.html'
-      - 'login.html'
-      - 'signup.html'
-      - 'profile.html'
+      - '*.html'
       - 'runtime-config.js'
       - 'assets/**'
       - 'manifest.json'
