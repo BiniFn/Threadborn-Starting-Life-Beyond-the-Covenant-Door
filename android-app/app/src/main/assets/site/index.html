@@ -2634,10 +2634,16 @@
             <span>Art Slot</span>
           </div>
           <strong>Violet Arden</strong>
-          <p>Goddess design page coming soon.</p>
-          <div class="chip-line">
-            <span class="chip">coming soon</span>
+          <p>Goddess of Flowers character design and official artwork.</p>
+          <div class="character-gallery" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px;">
+            <img src="assets/characters/violet/violet_art_1.jpeg" alt="Violet Arden art 1" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/violet/violet_art_1.jpeg', '_blank')" />
+            <img src="assets/characters/violet/violet_art_2.jpeg" alt="Violet Arden art 2" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/violet/violet_art_2.jpeg', '_blank')" />
+            <img src="assets/characters/violet/violet_art_3.jpeg" alt="Violet Arden art 3" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/violet/violet_art_3.jpeg', '_blank')" />
+            <img src="assets/characters/violet/violet_art_4.jpeg" alt="Violet Arden art 4" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/violet/violet_art_4.jpeg', '_blank')" />
+          </div>
+          <div class="chip-line" style="margin-top: 16px;">
             <span class="chip">character art</span>
+            <span class="chip">official design</span>
           </div>
         </article>
         <article class="card chapter-card">
@@ -3980,13 +3986,7 @@ Last chapter's ceiling is always this chapter's floor.</div>
         age: "appears 19",
         name: "Violet Arden",
         bio: "The flower goddess who caused Yono's death, followed him into Lumera, and now refuses to let his power climb cost him his humanity or his relationship with her.",
-        chips: ["thread sight", "divine rune magic", "romance lead", "door arc secret"],
-        images: [
-          "assets/characters/violet/violet_art_1.jpeg",
-          "assets/characters/violet/violet_art_2.jpeg",
-          "assets/characters/violet/violet_art_3.jpeg",
-          "assets/characters/violet/violet_art_4.jpeg"
-        ]
+        chips: ["thread sight", "divine rune magic", "romance lead", "door arc secret"]
       },
       {
         role: "Warrior",
@@ -4861,11 +4861,6 @@ Last chapter's ceiling is always this chapter's floor.</div>
           <div class="chip-line" style="margin-top: 16px;">
             ${character.chips.map(chip => `<span class="chip">${chip}</span>`).join("")}
           </div>
-          ${character.images && character.images.length > 0 ? `
-          <div class="character-gallery" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px;">
-            ${character.images.map(img => `<img src="${img}" alt="${character.name} art" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('${img}', '_blank')" />`).join("")}
-          </div>
-          ` : ""}
         </article>
       `).join("");
     }
