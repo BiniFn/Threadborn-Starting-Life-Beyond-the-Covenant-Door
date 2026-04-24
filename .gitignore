@@ -12,3 +12,6 @@ desktop-app/*.spec
 
 __pycache__/
 *.pyc
+.env
+.env.local
+.env.*.local

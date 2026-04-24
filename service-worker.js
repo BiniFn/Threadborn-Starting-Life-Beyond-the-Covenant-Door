@@ -1,7 +1,8 @@
-const CACHE_NAME = "threadborn-static-v3";
+const CACHE_NAME = "threadborn-static-v4";
 const CORE_ASSETS = [
   "./",
   "./index.html",
+  "./login.html",
   "./manifest.json",
   "./assets/threadborn-logo.png"
 ];

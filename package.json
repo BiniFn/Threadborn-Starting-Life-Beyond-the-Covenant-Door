@@ -1,0 +1,12 @@
+{
+  "name": "threadborn",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Threadborn static site with Vercel login API",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
+  }
+}

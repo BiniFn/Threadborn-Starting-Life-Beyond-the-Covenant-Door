@@ -105,7 +105,35 @@ Recommended Vercel setup:
 4. Leave **Output Directory** as `.`.
 5. Deploy.
 
-Because the project is static HTML/CSS/JS, it stays very light on the free tier as long as you avoid adding server functions or databases.
+This project now includes an optional Vercel Function for login at `api/login.js`, which reads `DATABASE_URL` from environment variables.
+
+### Login + Neon database setup
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Create a local env file:
+   ```bash
+   cp .env.example .env.local
+   ```
+3. Add your Neon connection string as `DATABASE_URL` in `.env.local`.
+4. Ensure your Neon database has a `users` table with:
+   - `email` column
+   - either `password` (plain text, not recommended) or `password_hash` (`scrypt$<saltHex>$<hashHex>`)
+5. Run local Vercel dev server:
+   ```bash
+   npx vercel dev
+   ```
+6. Open `http://localhost:3000/login.html`.
+
+To add the same secret in Vercel:
+
+```bash
+vercel env add DATABASE_URL production
+vercel env add DATABASE_URL preview
+vercel env add DATABASE_URL development
+```
 
 ## Offline / PWA
 
