@@ -3980,7 +3980,13 @@ Last chapter's ceiling is always this chapter's floor.</div>
         age: "appears 19",
         name: "Violet Arden",
         bio: "The flower goddess who caused Yono's death, followed him into Lumera, and now refuses to let his power climb cost him his humanity or his relationship with her.",
-        chips: ["thread sight", "divine rune magic", "romance lead", "door arc secret"]
+        chips: ["thread sight", "divine rune magic", "romance lead", "door arc secret"],
+        images: [
+          "assets/characters/violet/violet_art_1.jpeg",
+          "assets/characters/violet/violet_art_2.jpeg",
+          "assets/characters/violet/violet_art_3.jpeg",
+          "assets/characters/violet/violet_art_4.jpeg"
+        ]
       },
       {
         role: "Warrior",
@@ -4855,6 +4861,11 @@ Last chapter's ceiling is always this chapter's floor.</div>
           <div class="chip-line" style="margin-top: 16px;">
             ${character.chips.map(chip => `<span class="chip">${chip}</span>`).join("")}
           </div>
+          ${character.images && character.images.length > 0 ? `
+          <div class="character-gallery" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px;">
+            ${character.images.map(img => `<img src="${img}" alt="${character.name} art" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('${img}', '_blank')" />`).join("")}
+          </div>
+          ` : ""}
         </article>
       `).join("");
     }
