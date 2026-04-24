@@ -15,6 +15,7 @@ module.exports = async (req, res) => {
     return;
   }
   try {
+    await pool.ensureMigrations();
     const ownerEmail = process.env.OWNER_EMAIL.trim().toLowerCase();
     const ownerUsername = ownerEmail.split("@")[0].replace(/[^a-zA-Z0-9_]/g, "_").slice(0, 24) || "owner";
     const existing = await pool.query("select id from users where role = 'owner'::user_role limit 1");

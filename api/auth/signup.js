@@ -26,6 +26,7 @@ module.exports = async (req, res) => {
   }
 
   try {
+    await pool.ensureMigrations();
     const body = await parseJsonBody(req);
     const email = String(body.email || "").trim().toLowerCase();
     const username = String(body.username || "").trim();
