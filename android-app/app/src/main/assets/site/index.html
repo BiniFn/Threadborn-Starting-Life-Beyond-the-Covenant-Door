@@ -5023,9 +5023,8 @@ Last chapter's ceiling is always this chapter's floor.</div>
     }
 
     function getCurrentPageText() {
-      const temp = document.createElement("div");
-      temp.innerHTML = chapters[activeChapter].pages[activePage];
-      return temp.textContent.replace(/\s+/g, " ").trim();
+      const container = document.getElementById("reader-content");
+      return container ? container.textContent : "";
     }
 
     function updateTtsStatus(text) {
