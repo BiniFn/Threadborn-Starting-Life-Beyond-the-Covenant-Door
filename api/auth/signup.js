@@ -1,8 +1,8 @@
-const pool = require("../_lib/db");
-const { allowCors, success, fail } = require("../_lib/http");
-const { parseJsonBody, getClientIp } = require("../_lib/request");
-const { takeRateLimitToken } = require("../_lib/rate-limit");
-const { makePasswordHash, createSession, SESSION_COOKIE, SESSION_TTL_MS, makeCookie } = require("../_lib/auth");
+const pool = require("../../lib/api/db");
+const { allowCors, success, fail } = require("../../lib/api/http");
+const { parseJsonBody, getClientIp } = require("../../lib/api/request");
+const { takeRateLimitToken } = require("../../lib/api/rate-limit");
+const { makePasswordHash, createSession, SESSION_COOKIE, SESSION_TTL_MS, makeCookie } = require("../../lib/api/auth");
 
 function validUsername(value) {
   return /^[a-zA-Z0-9_]{3,24}$/.test(value);

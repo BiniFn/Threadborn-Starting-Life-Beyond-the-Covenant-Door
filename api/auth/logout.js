@@ -1,5 +1,5 @@
-const { allowCors, success, fail } = require("../_lib/http");
-const { destroySession } = require("../_lib/auth");
+const { allowCors, success, fail } = require("../../lib/api/http");
+const { destroySession } = require("../../lib/api/auth");
 
 module.exports = async (req, res) => {
   if (allowCors(req, res)) {

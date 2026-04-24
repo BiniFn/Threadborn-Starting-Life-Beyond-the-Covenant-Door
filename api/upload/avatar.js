@@ -1,7 +1,7 @@
 const { put } = require("@vercel/blob");
-const { allowCors, success, fail } = require("../_lib/http");
-const { parseJsonBody } = require("../_lib/request");
-const { requireSession, validateCsrf } = require("../_lib/auth");
+const { allowCors, success, fail } = require("../../lib/api/http");
+const { parseJsonBody } = require("../../lib/api/request");
+const { requireSession, validateCsrf } = require("../../lib/api/auth");
 
 module.exports = async (req, res) => {
   if (allowCors(req, res)) {

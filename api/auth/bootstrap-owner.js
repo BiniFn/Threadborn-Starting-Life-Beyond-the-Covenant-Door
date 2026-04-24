@@ -1,6 +1,6 @@
-const pool = require("../_lib/db");
-const { allowCors, success, fail } = require("../_lib/http");
-const { makePasswordHash } = require("../_lib/auth");
+const pool = require("../../lib/api/db");
+const { allowCors, success, fail } = require("../../lib/api/http");
+const { makePasswordHash } = require("../../lib/api/auth");
 
 module.exports = async (req, res) => {
   if (allowCors(req, res)) {

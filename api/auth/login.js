@@ -1,14 +1,14 @@
-const pool = require("../_lib/db");
-const { allowCors, success, fail } = require("../_lib/http");
-const { parseJsonBody, getClientIp } = require("../_lib/request");
-const { takeRateLimitToken } = require("../_lib/rate-limit");
+const pool = require("../../lib/api/db");
+const { allowCors, success, fail } = require("../../lib/api/http");
+const { parseJsonBody, getClientIp } = require("../../lib/api/request");
+const { takeRateLimitToken } = require("../../lib/api/rate-limit");
 const {
   SESSION_COOKIE,
   SESSION_TTL_MS,
   makeCookie,
   verifyPassword,
   createSession
-} = require("../_lib/auth");
+} = require("../../lib/api/auth");
 
 module.exports = async (req, res) => {
   if (allowCors(req, res)) {
