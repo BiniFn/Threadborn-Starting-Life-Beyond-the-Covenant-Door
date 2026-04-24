@@ -1,5 +1,17 @@
 (function () {
-  const API_BASE = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
+  function resolveApiBase() {
+    const configured = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
+    if (configured) {
+      return configured;
+    }
+    const host = window.location.hostname;
+    if (host === "appassets.androidplatform.net") {
+      return "https://threadborn.vercel.app";
+    }
+    return "";
+  }
+
+  const API_BASE = resolveApiBase();
   const QUEUE_KEY = "threadborn_sync_queue_v1";
   const FALLBACK_PROGRESS_KEY = "novelverse_reader_progress";
   let csrfToken = "";

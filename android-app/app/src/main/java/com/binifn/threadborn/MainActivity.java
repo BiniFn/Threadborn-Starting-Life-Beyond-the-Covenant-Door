@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.http.SslError;
 import android.net.Uri;
 import android.os.Bundle;
+import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebChromeClient;
@@ -36,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     WebViewAssetLoader assetLoader = new WebViewAssetLoader.Builder()
       .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this))
       .build();
+    CookieManager cookieManager = CookieManager.getInstance();
+    cookieManager.setAcceptCookie(true);
+    cookieManager.setAcceptThirdPartyCookies(webView, true);
 
     WebSettings settings = webView.getSettings();
     settings.setJavaScriptEnabled(true);

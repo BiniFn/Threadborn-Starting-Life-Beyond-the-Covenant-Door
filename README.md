@@ -107,6 +107,11 @@ Recommended Vercel setup:
 
 This project now includes production-focused Vercel Functions for auth, profile, reader sync, bookmarks, and analytics.
 
+Native wrapper note:
+
+- Android and desktop builds keep the reader bundled offline but use the live auth API for login, signup, and profile sync.
+- If `API_BASE_URL` is not supplied during a native build, the apps fall back to `https://threadborn.vercel.app`.
+
 ### Phase 1 backend setup (Neon + Vercel Blob)
 
 1. Install dependencies:
@@ -123,7 +128,7 @@ This project now includes production-focused Vercel Functions for auth, profile,
    - `BLOB_READ_WRITE_TOKEN`
    - `OWNER_EMAIL`
    - `OWNER_PASSWORD`
-   - `API_BASE_URL` (optional for web; required for Android API sync)
+   - `API_BASE_URL` (optional for web; recommended for native wrappers if you are not using the default `https://threadborn.vercel.app`)
 4. Run migrations:
    ```bash
    npm run db:migrate

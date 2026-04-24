@@ -6,6 +6,7 @@ const {
   SESSION_COOKIE,
   SESSION_TTL_MS,
   makeCookie,
+  getSessionCookieOptions,
   verifyPassword,
   createSession
 } = require("../../lib/api/auth");
@@ -48,7 +49,10 @@ module.exports = async (req, res) => {
 
     const user = rows[0];
     const session = await createSession(user.id);
-    res.setHeader("Set-Cookie", makeCookie(SESSION_COOKIE, session.token, Math.floor(SESSION_TTL_MS / 1000)));
+    res.setHeader(
+      "Set-Cookie",
+      makeCookie(SESSION_COOKIE, session.token, Math.floor(SESSION_TTL_MS / 1000), getSessionCookieOptions(req))
+    );
     success(res, {
       user: {
         id: user.id,

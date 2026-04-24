@@ -2,7 +2,7 @@ const pool = require("../../lib/api/db");
 const { allowCors, success, fail } = require("../../lib/api/http");
 const { parseJsonBody, getClientIp } = require("../../lib/api/request");
 const { takeRateLimitToken } = require("../../lib/api/rate-limit");
-const { makePasswordHash, createSession, SESSION_COOKIE, SESSION_TTL_MS, makeCookie } = require("../../lib/api/auth");
+const { makePasswordHash, createSession, SESSION_COOKIE, SESSION_TTL_MS, makeCookie, getSessionCookieOptions } = require("../../lib/api/auth");
 
 function validUsername(value) {
   return /^[a-zA-Z0-9_]{3,24}$/.test(value);
@@ -63,7 +63,10 @@ module.exports = async (req, res) => {
 
     const user = rows[0];
     const session = await createSession(user.id);
-    res.setHeader("Set-Cookie", makeCookie(SESSION_COOKIE, session.token, Math.floor(SESSION_TTL_MS / 1000)));
+    res.setHeader(
+      "Set-Cookie",
+      makeCookie(SESSION_COOKIE, session.token, Math.floor(SESSION_TTL_MS / 1000), getSessionCookieOptions(req))
+    );
     success(res, {
       user: {
         id: user.id,

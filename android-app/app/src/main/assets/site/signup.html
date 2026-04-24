@@ -96,8 +96,21 @@
       <a href="./index.html">Back to Reader</a>
     </div>
   </main>
+  <script src="./runtime-config.js"></script>
   <script>
-    const API_BASE = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
+    function resolveApiBase() {
+      const configured = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
+      if (configured) {
+        return configured;
+      }
+      const host = window.location.hostname;
+      if (host === "appassets.androidplatform.net") {
+        return "https://threadborn.vercel.app";
+      }
+      return "";
+    }
+
+    const API_BASE = resolveApiBase();
     const ACTIVE_USER_KEY = "threadborn_user";
     const form = document.getElementById("signup-form");
     const statusEl = document.getElementById("status");

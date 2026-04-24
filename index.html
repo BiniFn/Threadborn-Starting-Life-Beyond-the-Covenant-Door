@@ -2873,6 +2873,7 @@
     </div>
   </div>
 
+  <script src="./runtime-config.js"></script>
   <script>
     const volumes = [
       {
@@ -3785,7 +3786,19 @@ legacyEpisodes.push({
     const activeUserKey = "threadborn_user";
     const commentKey = "threadborn_volume_comments";
     const communityImageState = { dataUrl: "" };
-    const apiBase = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
+    function resolveApiBase() {
+      const configured = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
+      if (configured) {
+        return configured;
+      }
+      const host = window.location.hostname;
+      if (host === "appassets.androidplatform.net") {
+        return "https://threadborn.vercel.app";
+      }
+      return "";
+    }
+
+    const apiBase = resolveApiBase();
 
     function getActiveUser() {
       try {

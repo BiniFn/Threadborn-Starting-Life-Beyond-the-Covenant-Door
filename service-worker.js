@@ -5,6 +5,7 @@ const CORE_ASSETS = [
   "./login.html",
   "./signup.html",
   "./profile.html",
+  "./runtime-config.js",
   "./manifest.json",
   "./assets/threadborn-logo.png"
 ];

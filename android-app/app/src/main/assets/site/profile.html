@@ -40,12 +40,7 @@
           <label>Username</label>
           <input id="username" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" />
         </div>
-        <div>
-          <label>Avatar image</label>
-          <input id="avatar-file" type="file" accept="image/*" />
-        </div>
       </div>
-      <canvas id="crop-canvas" width="320" height="320" style="display:none;margin-top:10px;border-radius:12px;border:1px solid var(--border);max-width:100%;"></canvas>
       <div class="row" style="margin-top:10px;">
         <button id="save-profile">Save Profile</button>
         <a href="./index.html" class="muted">Back to reader</a>
@@ -84,19 +79,28 @@
     </article>
   </main>
 
+  <script src="./runtime-config.js"></script>
   <script>
-    const API_BASE = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
+    function resolveApiBase() {
+      const configured = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
+      if (configured) {
+        return configured;
+      }
+      const host = window.location.hostname;
+      if (host === "appassets.androidplatform.net") {
+        return "https://threadborn.vercel.app";
+      }
+      return "";
+    }
+
+    const API_BASE = resolveApiBase();
     const avatarEl = document.getElementById("avatar");
     const nameEl = document.getElementById("name");
     const metaEl = document.getElementById("meta");
     const verifiedEl = document.getElementById("verified");
     const profileStatus = document.getElementById("profile-status");
     const settingsStatus = document.getElementById("settings-status");
-    const canvas = document.getElementById("crop-canvas");
-    const ctx = canvas.getContext("2d");
     let csrfToken = "";
-    let cropDataUrl = "";
-    let latestAvatarUrl = "";
 
     async function apiFetch(path, options = {}) {
       const headers = Object.assign({ "Content-Type": "application/json" }, options.headers || {});
@@ -112,48 +116,23 @@
       target.className = ok ? "muted ok" : "muted";
     }
 
-    function renderAvatarForCrop(file) {
-      const img = new Image();
-      img.onload = () => {
-        canvas.style.display = "block";
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const side = Math.min(img.width, img.height);
-        const sx = Math.floor((img.width - side) / 2);
-        const sy = Math.floor((img.height - side) / 2);
-        ctx.drawImage(img, sx, sy, side, side, 0, 0, canvas.width, canvas.height);
-        cropDataUrl = canvas.toDataURL("image/jpeg", 0.9);
-        avatarEl.src = cropDataUrl;
-      };
-      img.src = URL.createObjectURL(file);
-    }
-
-    document.getElementById("avatar-file").addEventListener("change", event => {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      renderAvatarForCrop(file);
-    });
-
     document.getElementById("save-profile").addEventListener("click", async () => {
       try {
-        let avatarUrl = latestAvatarUrl;
-        if (cropDataUrl) {
-          const upload = await apiFetch("/api/upload/avatar", {
-            method: "POST",
-            body: JSON.stringify({ dataUrl: cropDataUrl })
-          });
-          avatarUrl = upload.url;
-        }
         const username = document.getElementById("username").value.trim();
+        if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) {
+          throw new Error("Username must be 3-24 letters, numbers, or underscores.");
+        }
         const profile = await apiFetch("/api/user/profile", {
           method: "PATCH",
-          body: JSON.stringify({ username, avatarUrl })
+          body: JSON.stringify({ username })
         });
-        latestAvatarUrl = profile.user.avatarUrl;
+        nameEl.textContent = profile.user.username;
+        avatarEl.src = "./assets/threadborn-logo.png";
         localStorage.setItem("threadborn_user", JSON.stringify({
           id: profile.user.id,
           email: profile.user.email,
           displayName: profile.user.username,
-          avatarUrl: profile.user.avatarUrl,
+          avatarUrl: "./assets/threadborn-logo.png",
           verified: profile.user.verified,
           role: profile.user.role
         }));
@@ -181,8 +160,7 @@
       const me = await apiFetch("/api/auth/me");
       csrfToken = me.csrfToken || "";
       const user = me.user;
-      latestAvatarUrl = user.avatarUrl || "";
-      avatarEl.src = user.avatarUrl || "./assets/threadborn-logo.png";
+      avatarEl.src = "./assets/threadborn-logo.png";
       nameEl.textContent = user.username;
       metaEl.textContent = `${user.email} • role: ${user.role}`;
       verifiedEl.style.display = user.verified ? "inline-block" : "none";

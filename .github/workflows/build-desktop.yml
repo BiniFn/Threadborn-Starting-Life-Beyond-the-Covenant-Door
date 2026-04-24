@@ -6,6 +6,10 @@ on:
       - main
     paths:
       - 'index.html'
+      - 'login.html'
+      - 'signup.html'
+      - 'profile.html'
+      - 'runtime-config.js'
       - 'assets/**'
       - 'manifest.json'
       - 'service-worker.js'

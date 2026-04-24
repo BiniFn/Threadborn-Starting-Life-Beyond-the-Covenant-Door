@@ -46,6 +46,7 @@
       min-height: 100vh;
       color: var(--bone);
       font-family: "Bricolage Grotesque", sans-serif;
+      -webkit-text-size-adjust: 100%;
       background:
         radial-gradient(circle at top, rgba(207, 47, 47, 0.22), transparent 28%),
         radial-gradient(circle at 80% 20%, rgba(132, 208, 199, 0.14), transparent 22%),
@@ -75,18 +76,18 @@
       top: 0;
       z-index: 50;
       backdrop-filter: blur(20px);
-      background: rgba(5, 5, 5, 0.78);
+      background: rgba(8, 10, 16, 0.9);
       border-bottom: 1px solid var(--line);
     }
 
     .header-shell {
       max-width: var(--content);
       margin: 0 auto;
-      padding: 18px 20px;
-      display: flex;
+      padding: 12px 20px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center;
-      justify-content: space-between;
-      gap: 18px;
+      gap: 14px;
     }
 
     .brand {
@@ -99,8 +100,8 @@
     }
 
     .brand-mark {
-      width: clamp(110px, 12vw, 150px);
-      height: 44px;
+      width: clamp(128px, 12vw, 162px);
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -117,9 +118,7 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      object-position: left center;
-      transform: scale(1.22);
-      transform-origin: left center;
+      object-position: center;
       filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.38));
     }
 
@@ -134,6 +133,18 @@
       align-items: center;
     }
 
+    .nav-row {
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      padding: 2px;
+      scrollbar-width: none;
+    }
+
+    .nav-row::-webkit-scrollbar {
+      display: none;
+    }
+
     .nav-btn {
       border: 1px solid transparent;
       background: transparent;
@@ -144,6 +155,7 @@
       font-weight: 700;
       cursor: pointer;
       transition: 0.25s ease;
+      flex: 0 0 auto;
     }
 
     .nav-btn:hover,
@@ -233,12 +245,11 @@
     .quote-card {
       position: relative;
       overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 45%),
-        var(--panel);
+      background: rgba(18, 20, 28, 0.96);
       border: 1px solid var(--line);
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .hero-card {
@@ -261,7 +272,7 @@
     .hero-card::after,
     .card::after,
     .quote-card::after {
-      content: "";
+      content: none;
       position: absolute;
       inset: auto -15% -45% auto;
       width: 180px;
@@ -269,6 +280,60 @@
       border-radius: 50%;
       background: radial-gradient(circle, rgba(207, 47, 47, 0.18), transparent 68%);
       pointer-events: none;
+    }
+
+    .chapter-card:hover,
+    .power-card:hover,
+    .character-card:hover,
+    .lore-card:hover,
+    .step-card:hover,
+    .mini-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--line-strong);
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.35);
+    }
+
+    @media (min-width: 1100px) {
+      .header-shell {
+        padding: 16px 28px;
+        gap: 24px;
+      }
+
+      .nav-row {
+        gap: 12px;
+      }
+
+      .nav-btn {
+        padding: 10px 16px;
+        font-size: 13.5px;
+      }
+
+      main {
+        padding: 40px 28px 120px;
+      }
+
+      .section-head {
+        margin-bottom: 24px;
+      }
+
+      .hero-shell {
+        grid-template-columns: minmax(0, 1fr) minmax(360px, 0.86fr);
+        gap: 36px;
+      }
+
+      .reader-toolbar {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+    }
+
+    @media (max-width: 1280px) {
+      .user-chip {
+        display: none;
+      }
+
+      .header-shell {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
     }
 
     .eyebrow {
@@ -284,7 +349,7 @@
       margin: 0;
       max-width: 12ch;
       font-family: "Cormorant Garamond", serif;
-      font-size: clamp(3rem, 7vw, 5.3rem);
+      font-size: clamp(2.4rem, 5.4vw, 4.1rem);
       line-height: 0.9;
       letter-spacing: -0.03em;
     }
@@ -297,8 +362,8 @@
     .hero-copy {
       max-width: 62ch;
       margin: 18px 0 0;
-      font-size: 16px;
-      line-height: 1.8;
+      font-size: 15px;
+      line-height: 1.65;
       color: var(--mist);
     }
 
@@ -320,7 +385,7 @@
       display: grid;
       grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.85fr);
       gap: 36px;
-      align-items: center;
+      align-items: start;
     }
 
     .hero-copy-block {
@@ -335,12 +400,12 @@
 
     .hero-logo-wrap {
       margin: 0;
-      max-width: 520px;
+      max-width: 420px;
       width: 100%;
     }
 
     .hero-logo {
-      width: min(100%, 520px);
+      width: min(100%, 420px);
     }
 
     .hero-title {
@@ -718,6 +783,140 @@
 
     .comments-shell {
       margin-top: 20px;
+    }
+
+    .community-shell {
+      display: grid;
+      grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .community-compose {
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+
+    .community-feed {
+      display: grid;
+      gap: 12px;
+    }
+
+    .community-post {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .community-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .community-head img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .community-meta {
+      color: var(--mist);
+      font-size: 12px;
+    }
+
+    .name-badges {
+      display: inline-flex;
+      gap: 6px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .blue-check {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #1d9bf0;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .owner-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(29, 155, 240, 0.55);
+      background: rgba(29, 155, 240, 0.16);
+      color: #8cc7ff;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .community-post h4 {
+      margin: 6px 0 8px;
+      font-size: 22px;
+    }
+
+    .community-post .post-image {
+      width: 100%;
+      max-height: 420px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      margin-top: 10px;
+    }
+
+    .volume-cover-art {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      margin: 6px 0 12px;
+      object-fit: cover;
+      max-height: 420px;
+    }
+
+    .spoiler-body {
+      filter: blur(10px);
+      user-select: none;
+      cursor: pointer;
+      transition: filter 0.2s ease;
+    }
+
+    .spoiler-body.revealed {
+      filter: blur(0);
+      user-select: text;
+    }
+
+    .post-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .post-comments {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .post-comment {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, 0.03);
+      font-size: 14px;
     }
 
     .comment-form {
@@ -1212,12 +1411,13 @@
 
     .reader-toolbar {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 12px;
       padding: 14px 22px;
       border-bottom: 1px solid var(--line);
       background: rgba(10, 10, 12, 0.92);
       backdrop-filter: blur(18px);
+      align-content: start;
     }
 
     .reader:not(.tools-open) .reader-toolbar {
@@ -1229,8 +1429,7 @@
       flex-direction: column;
       align-items: stretch;
       gap: 12px;
-      flex-wrap: wrap;
-      min-height: 152px;
+      min-height: 0;
       padding: 16px;
       border-radius: 22px;
       border: 1px solid var(--line);
@@ -1296,15 +1495,16 @@
     }
 
     .toolbar-actions {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
       align-items: stretch;
     }
 
     .toolbar-actions .ghost-btn {
-      flex: 1 1 calc(50% - 4px);
       min-height: 46px;
+      width: 100%;
+      white-space: normal;
     }
 
     .icon-btn {
@@ -1333,6 +1533,39 @@
       position: relative;
       z-index: 8;
       touch-action: manipulation;
+    }
+
+    .reader-tools-overlay {
+      display: none;
+    }
+
+    .reader.tools-open .reader-tools-overlay {
+      display: block;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 20;
+      border: none;
+      padding: 0;
+      margin: 0;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    .reader.tools-open .reader-toolbar {
+      display: grid;
+      position: fixed;
+      left: max(20px, env(safe-area-inset-left));
+      right: max(20px, env(safe-area-inset-right));
+      top: max(84px, env(safe-area-inset-top));
+      bottom: max(84px, env(safe-area-inset-bottom));
+      z-index: 21;
+      border-radius: 16px;
+      border: 1px solid var(--line-strong);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      overflow-y: auto;
+      align-content: start;
     }
 
     .mobile-only {
@@ -1372,6 +1605,13 @@
 
     .reader-content p {
       margin: 0 0 18px;
+    }
+
+    .tts-highlight {
+      background: rgba(255, 214, 120, 0.34);
+      color: #fff8e8;
+      border-radius: 4px;
+      box-shadow: 0 0 0 1px rgba(255, 214, 120, 0.22);
     }
 
     .reader-content .story-callout {
@@ -1636,13 +1876,17 @@
         left: 10px;
         right: 10px;
         bottom: calc(10px + env(safe-area-inset-bottom));
-        padding: 8px;
+        padding: 10px;
         gap: 8px;
         scroll-snap-type: x proximity;
+        border-radius: 18px;
+        background: rgba(8, 10, 16, 0.92);
+        border: 1px solid var(--line);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
       }
 
       main {
-        padding: 24px 16px calc(132px + env(safe-area-inset-bottom));
+        padding: 18px 14px calc(140px + env(safe-area-inset-bottom));
       }
 
       .header-shell,
@@ -1653,7 +1897,7 @@
       }
 
       .hero-card {
-        padding: 24px;
+        padding: 20px;
         min-height: auto;
       }
 
@@ -1670,10 +1914,13 @@
       .section-head {
         flex-direction: column;
         align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 14px;
       }
 
       .chapter-card {
         min-height: auto;
+        gap: 10px;
       }
 
       .chapter-card .meta {
@@ -1700,7 +1947,7 @@
       .mobile-nav .nav-btn,
       .hero-actions .btn,
       .chapter-actions .ghost-btn {
-        min-height: 46px;
+        min-height: 48px;
       }
 
       .subtab-btn,
@@ -1713,6 +1960,11 @@
 
       .hero-actions .btn {
         flex: 1 1 calc(50% - 6px);
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 18px;
       }
 
       .footer-shell {
@@ -1740,12 +1992,12 @@
       }
 
       .reader-toolbar {
-        grid-template-columns: 1fr;
-        gap: 8px;
-        padding: 10px 12px;
+        display: block;
+        padding: 12px;
         max-height: min(66vh, 520px);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
+        background: rgba(12, 14, 20, 0.98);
       }
 
       .reader-toolbar::-webkit-scrollbar,
@@ -1754,14 +2006,30 @@
         display: none;
       }
 
+      .reader:not(.tools-open) .reader-toolbar {
+        display: none;
+      }
+
+      .reader.tools-open .reader-toolbar {
+        left: 12px;
+        right: 12px;
+        top: max(66px, env(safe-area-inset-top));
+        bottom: max(92px, env(safe-area-inset-bottom));
+      }
+
       .toolbar-pill {
         width: 100%;
         min-width: 0;
-        min-height: 0;
+        min-height: auto;
         border-radius: 16px;
-        padding: 10px;
+        padding: 12px;
         gap: 8px;
         font-size: 12px;
+        margin-bottom: 10px;
+      }
+
+      .toolbar-pill:last-child {
+        margin-bottom: 0;
       }
 
       .toolbar-pill span,
@@ -1776,6 +2044,8 @@
 
       .toolbar-value {
         font-size: 16px;
+        line-height: 1.2;
+        margin: 0;
       }
 
       .toolbar-note {
@@ -1783,12 +2053,16 @@
         line-height: 1.45;
       }
 
+      .toolbar-note {
+        display: none;
+      }
+
       .toolbar-pill select,
       .toolbar-pill input[type="range"] {
         width: 100%;
         min-width: 0;
-        min-height: 40px;
-        padding: 10px 12px;
+        min-height: 44px;
+        padding: 12px;
       }
 
       .toolbar-pill.status,
@@ -1798,6 +2072,8 @@
       }
 
       .toolbar-actions {
+        display: flex;
+        flex-wrap: wrap;
         gap: 6px;
       }
 
@@ -1824,6 +2100,7 @@
         z-index: 4;
         padding-top: 14px;
         padding-bottom: calc(14px + env(safe-area-inset-bottom));
+        backdrop-filter: blur(16px);
       }
 
       .reader-footer .btn {
@@ -1846,7 +2123,7 @@
       }
 
       .reader-tools-btn {
-        min-height: 38px;
+        min-height: 44px;
         padding-left: 12px;
         padding-right: 12px;
         font-size: 13px;
@@ -1854,14 +2131,17 @@
 
       .mobile-nav .nav-btn {
         width: auto;
-        min-width: 108px;
-        padding: 12px 16px;
+        min-width: 102px;
+        padding: 12px 14px;
       }
     }
 
     @media (max-width: 560px) {
       .header-shell {
-        padding-top: calc(14px + env(safe-area-inset-top));
+        padding-top: calc(12px + env(safe-area-inset-top));
+        padding-bottom: 10px;
+        padding-left: 12px;
+        padding-right: 12px;
       }
 
       .brand-copy strong {
@@ -1877,11 +2157,11 @@
       .hero-card,
       .card,
       .quote-card {
-        border-radius: 22px;
+        border-radius: 16px;
       }
 
       .hero-card {
-        padding: 20px;
+        padding: 16px;
       }
 
       .hero-title {
@@ -1902,7 +2182,7 @@
       .power-card strong,
       .lore-card strong,
       .character-card strong {
-        font-size: 22px;
+        font-size: 20px;
       }
 
       .reader-title-wrap strong {
@@ -1917,6 +2197,14 @@
         gap: 10px;
       }
 
+      .community-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .community-compose {
+        position: static;
+      }
+
       .reader-controls {
         justify-content: flex-start;
       }
@@ -1926,16 +2214,20 @@
       }
 
       .reader-toolbar {
-        padding: 8px 10px;
+        padding: 10px;
       }
 
       .toolbar-pill {
-        padding: 9px;
+        padding: 10px;
+      }
+
+      .toolbar-value {
+        font-size: 15px;
       }
 
       .mobile-nav .nav-btn,
       .subtab-btn {
-        min-width: 96px;
+        min-width: 92px;
       }
 
       .toolbar-pill.status,
@@ -1953,7 +2245,7 @@
       }
 
       .loading-shell {
-        padding: 28px 22px 24px;
+        padding: 22px 16px 20px;
       }
 
       .toolbar-actions .ghost-btn {
@@ -2018,11 +2310,10 @@
             <p class="eyebrow">Threadborn — Starting Life Beyond the Covenant Door • dark fantasy • romance • gore • cosmic horror</p>
             <h1 class="hero-title">A boy dies, wakes in Lumera, and steps into a world that was never meant to survive him.</h1>
             <p class="hero-copy">
-              <strong>Threadborn</strong> follows <strong>Yono Kazeshima</strong> after a sudden death in Tokyo throws him into Lumera beside Violet, a dangerous goddess whose mistake changed both of their lives. What starts as survival turns into a dark fantasy story about love, debt, sealed monsters, and power that keeps climbing with every chapter.
+              <strong>Threadborn</strong> follows <strong>Yono Kazeshima</strong> after a sudden death throws him into Lumera beside Violet. Survival turns into dark fantasy, romance, and sealed monsters that get worse each chapter.
             </p>
             <div class="story-points">
               <div class="story-point"><strong>Volume 1:</strong> Yono learns Lumera’s rules, survives the Shade debt arc, and reaches the forest door hiding Velkor’s prison.</div>
-              <div class="story-point"><strong>Why it matters:</strong> The story mixes romance, gore, cosmic pressure, and an overpowered rise that keeps getting bigger without losing the emotional core.</div>
             </div>
             <div class="hero-actions">
               <button class="btn btn-primary" onclick="openChapter(0)">Start Reading</button>
@@ -2057,8 +2348,9 @@
           <strong>Download Android APK</strong>
           <p>Get the full offline Android app with the latest reader design, local chapter files, and direct PDF/EPUB saving.</p>
           <div class="link-cluster" style="margin-top:18px;">
-            <a class="btn btn-secondary" id="apk-download-link" href="Threadborn.apk" download>Download APK</a>
+            <a class="btn btn-secondary" id="apk-download-link" href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/Threadborn.apk" download>Download APK</a>
           </div>
+          <p class="apk-note" id="apk-version-note">Current APK version: checking latest build...</p>
           <p class="apk-note" id="apk-note">The APK is rebuilt to match the current website layout and content.</p>
         </article>
         <article class="card app-card">
@@ -2101,7 +2393,7 @@
             <p>Use the web app for quick home-screen access or install the Android APK if you want the fully bundled offline version with direct on-device saving.</p>
             <div class="link-cluster">
               <button class="btn btn-secondary" onclick="installWebApp()">Install Web App</button>
-              <a class="btn btn-secondary" id="apk-download-link-secondary" href="Threadborn.apk" download>Download APK</a>
+              <a class="btn btn-secondary" id="apk-download-link-secondary" href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/Threadborn.apk" download>Download APK</a>
             </div>
           </article>
           <article class="step-card">
@@ -2565,6 +2857,7 @@
         <div id="tts-status" class="toolbar-note">TTS ready</div>
       </div>
     </div>
+    <button class="reader-tools-overlay" id="reader-tools-overlay" onclick="toggleReaderTools(false)" aria-label="Close reader tools"></button>
 
     <div class="reader-body">
       <div class="reader-inner">
@@ -2580,12 +2873,14 @@
     </div>
   </div>
 
+  <script src="./runtime-config.js"></script>
   <script>
     const volumes = [
       {
         name: "Volume 1 • Reborn With Zero Dignity",
         status: "Complete",
         summary: "Yono dies in Tokyo, gets dragged into Lumera by Violet, survives the Shade debt arc, and finds Velkor's sealed prison standing alone in the forest.",
+        coverArt: "./assets/volume1-cover.png",
         chips: ["reincarnation", "shade debt", "forest confession", "Velkor door"],
         actionLabel: "Read Volume 1",
         action: "openVolumeStart('Volume 1')"
@@ -3484,10 +3779,26 @@ legacyEpisodes.push({
     let readerToolsOpen = false;
     let ttsUtterance = null;
     let ttsVoices = [];
+    let ttsKeepReading = false;
+    let ttsRenderTick = 0;
     let deferredInstallPrompt = null;
     const progressKey = "novelverse_reader_progress";
     const activeUserKey = "threadborn_user";
     const commentKey = "threadborn_volume_comments";
+    const communityImageState = { dataUrl: "" };
+    function resolveApiBase() {
+      const configured = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
+      if (configured) {
+        return configured;
+      }
+      const host = window.location.hostname;
+      if (host === "appassets.androidplatform.net") {
+        return "https://threadborn.vercel.app";
+      }
+      return "";
+    }
+
+    const apiBase = resolveApiBase();
 
     function getActiveUser() {
       try {
@@ -3506,7 +3817,7 @@ legacyEpisodes.push({
       }
 
       const displayName = user && (user.displayName || user.email) ? (user.displayName || user.email) : "Guest reader";
-      const avatar = user && user.avatarUrl ? user.avatarUrl : "assets/threadborn-logo.png";
+      const avatar = "assets/threadborn-logo.png";
       nameEl.textContent = displayName;
       avatarEl.src = avatar;
     }
@@ -3538,11 +3849,23 @@ legacyEpisodes.push({
         <article class="comment-item">
           <div class="comment-head">
             <span>${comment.author}</span>
-            <span>${comment.volume} • ${comment.createdAt}</span>
+            <span>
+              ${comment.volume} • ${comment.createdAt}
+              <button class="ghost-btn" style="margin-left:8px;padding:4px 8px;min-height:auto;" onclick="deleteVolumeComment('${comment.id || ""}')" aria-label="Delete comment" title="Delete comment">🗑</button>
+            </span>
           </div>
           <div>${comment.text}</div>
         </article>
       `).join("");
+    }
+
+    function deleteVolumeComment(commentId) {
+      if (!commentId) {
+        return;
+      }
+      const comments = readComments().filter(item => item.id !== commentId);
+      writeComments(comments);
+      renderVolumeComments();
     }
 
     function submitVolumeComment(event) {
@@ -3562,6 +3885,7 @@ legacyEpisodes.push({
       const author = user ? (user.displayName || user.email || "Reader") : "Guest";
       const comments = readComments();
       comments.push({
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         volume: volumeEl.value,
         text,
         author,
@@ -3570,6 +3894,214 @@ legacyEpisodes.push({
       writeComments(comments);
       textEl.value = "";
       renderVolumeComments();
+    }
+
+    async function apiJson(path, options = {}) {
+      const csrf = localStorage.getItem("threadborn_csrf_token") || "";
+      const headers = Object.assign({ "Content-Type": "application/json" }, options.headers || {});
+      if (csrf) {
+        headers["X-CSRF-Token"] = csrf;
+      }
+      const response = await fetch(`${apiBase}${path}`, Object.assign({}, options, { credentials: "include", headers }));
+      const json = await response.json().catch(() => ({}));
+      if (!response.ok || !json.success) {
+        throw new Error(json.error || "Request failed");
+      }
+      return json.data;
+    }
+
+    function formatCommunityTime(value) {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? "just now" : date.toLocaleString();
+    }
+
+    function renderNameBadges(item) {
+      const check = item && item.verified ? `<span class="blue-check" title="Verified">✓</span>` : "";
+      const owner = item && (item.role === "owner" || item.role === "admin")
+        ? `<span class="owner-badge">${item.role}</span>`
+        : "";
+      if (!check && !owner) {
+        return "";
+      }
+      return `<span class="name-badges">${check}${owner}</span>`;
+    }
+
+    function renderCommunityFeed(posts = []) {
+      const feed = document.getElementById("community-feed");
+      if (!feed) {
+        return;
+      }
+      if (!posts.length) {
+        feed.innerHTML = "<article class=\"card\">No community posts yet. Start the first thread.</article>";
+        return;
+      }
+      feed.innerHTML = posts.map(post => `
+        <article class="community-post">
+          <div class="community-head">
+            <img src="${post.avatar_url || "assets/threadborn-logo.png"}" alt="${post.username || "User"} avatar" />
+            <div>
+              <strong>${post.username || "Reader"}${renderNameBadges(post)}</strong>
+              <div class="community-meta">${post.category.replace("_", " ")} • ${formatCommunityTime(post.created_at)}</div>
+            </div>
+          </div>
+          <h4>${post.title}</h4>
+          <div class="${post.category === "spoiler" ? "spoiler-body" : ""}" onclick="this.classList.add('revealed')">${post.content}</div>
+          ${post.image_url ? `<img class="post-image" src="${post.image_url}" alt="Community image" loading="lazy" />` : ""}
+          <div class="post-actions">
+            <button class="btn btn-ghost" onclick="toggleCommunityLike('${post.id}')">${post.liked_by_me ? "Unlike" : "Like"} • ${post.like_count}</button>
+          </div>
+          <div class="post-comments">
+            ${(post.comments || []).map(comment => `
+              <div class="post-comment">
+                <strong>${comment.username || "reader"}${renderNameBadges(comment)}:</strong> ${comment.content}
+              </div>
+            `).join("")}
+            <div class="row-inline">
+              <input id="comment-input-${post.id}" placeholder="Reply to this post..." maxlength="1200" />
+              <button class="btn btn-ghost" onclick="addCommunityComment('${post.id}')">Reply</button>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    async function loadCommunityFeed() {
+      const status = document.getElementById("community-status");
+      try {
+        const data = await apiJson("/api/reader/community?limit=20");
+        const moderationBox = document.getElementById("community-moderation");
+        if (moderationBox) {
+          moderationBox.style.display = data.moderation && data.moderation.isModerator ? "block" : "none";
+        }
+        if (data.moderation && data.moderation.isCommunityBanned && status) {
+          status.textContent = `You are banned until ${new Date(data.moderation.bannedUntil).toLocaleString()}${data.moderation.banReason ? ` (${data.moderation.banReason})` : ""}`;
+        }
+        renderCommunityFeed(data.posts || []);
+      } catch (error) {
+        if (status) {
+          status.textContent = `Community unavailable: ${error.message}`;
+        }
+        renderCommunityFeed([]);
+      }
+    }
+
+    async function banCommunityUser() {
+      const username = (document.getElementById("mod-username")?.value || "").trim();
+      const reason = (document.getElementById("mod-reason")?.value || "").trim();
+      const hours = Number((document.getElementById("mod-hours")?.value || "72"));
+      const status = document.getElementById("community-status");
+      if (!username) {
+        if (status) status.textContent = "Username is required.";
+        return;
+      }
+      try {
+        await apiJson("/api/reader/community", {
+          method: "POST",
+          body: JSON.stringify({
+            action: "ban_user",
+            username,
+            reason,
+            hours
+          })
+        });
+        if (status) status.textContent = `${username} has been banned.`;
+      } catch (error) {
+        if (status) status.textContent = error.message;
+      }
+    }
+
+    async function unbanCommunityUser() {
+      const username = (document.getElementById("mod-username")?.value || "").trim();
+      const status = document.getElementById("community-status");
+      if (!username) {
+        if (status) status.textContent = "Username is required.";
+        return;
+      }
+      try {
+        await apiJson("/api/reader/community", {
+          method: "POST",
+          body: JSON.stringify({
+            action: "unban_user",
+            username
+          })
+        });
+        if (status) status.textContent = `${username} has been unbanned.`;
+      } catch (error) {
+        if (status) status.textContent = error.message;
+      }
+    }
+
+    async function toggleCommunityLike(postId) {
+      try {
+        await apiJson("/api/reader/community", {
+          method: "POST",
+          body: JSON.stringify({ action: "toggle_like", postId })
+        });
+        await loadCommunityFeed();
+      } catch (error) {
+        const status = document.getElementById("community-status");
+        if (status) status.textContent = error.message;
+      }
+    }
+
+    async function addCommunityComment(postId) {
+      const input = document.getElementById(`comment-input-${postId}`);
+      if (!input) return;
+      const content = input.value.trim();
+      if (!content) return;
+      try {
+        await apiJson("/api/reader/community", {
+          method: "POST",
+          body: JSON.stringify({ action: "add_comment", postId, content })
+        });
+        input.value = "";
+        await loadCommunityFeed();
+      } catch (error) {
+        const status = document.getElementById("community-status");
+        if (status) status.textContent = error.message;
+      }
+    }
+
+    async function submitCommunityPost() {
+      const status = document.getElementById("community-status");
+      const titleEl = document.getElementById("community-title");
+      const contentEl = document.getElementById("community-content");
+      const categoryEl = document.getElementById("community-category");
+      const title = titleEl.value.trim();
+      const content = contentEl.value.trim();
+      if (!title || !content) {
+        status.textContent = "Title and post text are required.";
+        return;
+      }
+      try {
+        let imageUrl = "";
+        if (communityImageState.dataUrl) {
+          const upload = await apiJson("/api/upload/avatar", {
+            method: "POST",
+            body: JSON.stringify({ dataUrl: communityImageState.dataUrl })
+          });
+          imageUrl = upload.url;
+        }
+        await apiJson("/api/reader/community", {
+          method: "POST",
+          body: JSON.stringify({
+            action: "create_post",
+            title,
+            content,
+            category: categoryEl.value,
+            imageUrl
+          })
+        });
+        titleEl.value = "";
+        contentEl.value = "";
+        communityImageState.dataUrl = "";
+        const preview = document.getElementById("community-image-preview");
+        if (preview) preview.style.display = "none";
+        status.textContent = "Posted.";
+        await loadCommunityFeed();
+      } catch (error) {
+        status.textContent = error.message;
+      }
     }
 
     function getThemeLabel(theme) {
@@ -3679,9 +4211,13 @@ legacyEpisodes.push({
 
     async function loadDesktopDownloadLinks() {
       const releasesUrl = "https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases";
+      const latestApkDirect = "https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/Threadborn.apk";
+      const latestReleaseApi = "https://api.github.com/repos/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest";
+      const latestApkReleaseApi = "https://api.github.com/repos/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/tags/latest-apk";
       const apkLink = document.getElementById("apk-download-link");
       const apkLinkSecondary = document.getElementById("apk-download-link-secondary");
       const apkNote = document.getElementById("apk-note");
+      const apkVersionNote = document.getElementById("apk-version-note");
       const windowsLink = document.getElementById("windows-download-link");
       const macLink = document.getElementById("mac-download-link");
       const windowsNote = document.getElementById("windows-download-note");
@@ -3691,13 +4227,44 @@ legacyEpisodes.push({
         return;
       }
 
+      if (apkLink) {
+        apkLink.href = latestApkDirect;
+        apkLink.setAttribute("download", "");
+      }
+      if (apkLinkSecondary) {
+        apkLinkSecondary.href = latestApkDirect;
+        apkLinkSecondary.setAttribute("download", "");
+      }
+      if (apkNote) {
+        apkNote.textContent = "Download points to the latest APK release.";
+      }
+      if (apkVersionNote) {
+        apkVersionNote.textContent = "Current APK version: checking latest build...";
+      }
+
       try {
-        const response = await fetch("https://api.github.com/repos/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases");
-        if (!response.ok) {
-          throw new Error("Could not load releases");
+        let latestRelease = null;
+        const latestReleaseResponse = await fetch(latestReleaseApi);
+        if (latestReleaseResponse.ok) {
+          latestRelease = await latestReleaseResponse.json();
+          if (apkVersionNote) {
+            const label = latestRelease.name || latestRelease.tag_name || "latest";
+            apkVersionNote.textContent = `Current APK version: ${label}`;
+          }
         }
 
-        const releases = await response.json();
+        let releases = [];
+        const taggedReleaseResponse = await fetch(latestApkReleaseApi);
+        if (taggedReleaseResponse.ok) {
+          const taggedRelease = await taggedReleaseResponse.json();
+          releases = [taggedRelease];
+        } else {
+          const response = await fetch("https://api.github.com/repos/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases");
+          if (!response.ok) {
+            throw new Error("Could not load releases");
+          }
+          releases = await response.json();
+        }
         let apkAsset = null;
         let windowsAsset = null;
         let macAsset = null;
@@ -3779,6 +4346,9 @@ legacyEpisodes.push({
         if (apkNote) {
           apkNote.textContent = "Could not check GitHub assets from this browser, so this button opens the Releases page.";
         }
+        if (apkVersionNote) {
+          apkVersionNote.textContent = "Current APK version: latest (unable to load label)";
+        }
         windowsLink.href = releasesUrl;
         macLink.href = releasesUrl;
         if (windowsNote) {
@@ -3820,6 +4390,7 @@ legacyEpisodes.push({
       grid.innerHTML = volumes.map(volume => `
         <article class="card power-card">
           <strong>${volume.name}</strong>
+          ${volume.coverArt ? `<img class="volume-cover-art" src="${volume.coverArt}" alt="${volume.name} cover art" loading="lazy" />` : ""}
           <p>${volume.summary}</p>
           <div class="chip-line" style="margin-top: 16px;">
             <span class="chip">${volume.status}</span>
@@ -4004,6 +4575,7 @@ legacyEpisodes.push({
 
     function closeReader() {
       stopSpeech(false);
+      toggleReaderTools(false);
       document.getElementById("reader").classList.remove("open");
       document.getElementById("reader").setAttribute("aria-hidden", "true");
       document.body.classList.remove("reader-open");
@@ -4016,13 +4588,19 @@ legacyEpisodes.push({
         return;
       }
       const totalPages = chapter.pages.length;
+      const hasPrevChapter = activeChapter > 0;
+      const hasNextChapter = activeChapter < (chapters.length - 1);
+      const prevButton = document.getElementById("prev-page");
+      const nextButton = document.getElementById("next-page");
 
       document.getElementById("reader-kicker").textContent = `${chapter.volume} • ${chapter.chapter}`;
       document.getElementById("reader-title").textContent = chapter.title;
       document.getElementById("reader-content").innerHTML = chapter.pages[activePage];
       document.getElementById("page-indicator").textContent = `Page ${activePage + 1} / ${totalPages}`;
-      document.getElementById("prev-page").disabled = activePage === 0;
-      document.getElementById("next-page").disabled = activePage === totalPages - 1;
+      prevButton.disabled = activePage === 0 && !hasPrevChapter;
+      nextButton.disabled = activePage === totalPages - 1 && !hasNextChapter;
+      prevButton.textContent = activePage === 0 && hasPrevChapter ? "Previous Chapter" : "Previous";
+      nextButton.textContent = activePage === totalPages - 1 && hasNextChapter ? "Next Chapter" : "Next";
       renderChapterJump();
       document.getElementById("page-jump").innerHTML = chapter.pages
         .map((_, index) => `<option value="${index}" ${index === activePage ? "selected" : ""}>Page ${index + 1}</option>`)
@@ -4040,7 +4618,19 @@ legacyEpisodes.push({
 
     function changePage(direction) {
       const chapter = chapters[activeChapter];
-      activePage = Math.max(0, Math.min(activePage + direction, chapter.pages.length - 1));
+      if (direction > 0 && activePage >= chapter.pages.length - 1) {
+        if (activeChapter < chapters.length - 1) {
+          activeChapter += 1;
+          activePage = 0;
+        }
+      } else if (direction < 0 && activePage <= 0) {
+        if (activeChapter > 0) {
+          activeChapter -= 1;
+          activePage = Math.max(0, chapters[activeChapter].pages.length - 1);
+        }
+      } else {
+        activePage = Math.max(0, Math.min(activePage + direction, chapter.pages.length - 1));
+      }
       stopSpeech(false);
       renderPage();
     }
@@ -4081,6 +4671,70 @@ legacyEpisodes.push({
       document.getElementById("tts-status").textContent = text;
     }
 
+    function clearTtsHighlight() {
+      const marks = document.querySelectorAll("#reader-content .tts-highlight");
+      marks.forEach(mark => {
+        const parent = mark.parentNode;
+        if (!parent) return;
+        while (mark.firstChild) {
+          parent.insertBefore(mark.firstChild, mark);
+        }
+        parent.removeChild(mark);
+      });
+    }
+
+    function highlightSpokenRange(charIndex = 0, charLength = 1) {
+      const container = document.getElementById("reader-content");
+      if (!container) return;
+      clearTtsHighlight();
+
+      const startIndex = Math.max(0, Number(charIndex) || 0);
+      const endIndex = startIndex + Math.max(1, Number(charLength) || 1);
+      const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+      let node;
+      let cursor = 0;
+      let startNode = null;
+      let endNode = null;
+      let startOffset = 0;
+      let endOffset = 0;
+
+      while ((node = walker.nextNode())) {
+        const length = node.textContent.length;
+        const next = cursor + length;
+
+        if (!startNode && startIndex <= next) {
+          startNode = node;
+          startOffset = Math.max(0, startIndex - cursor);
+        }
+        if (!endNode && endIndex <= next) {
+          endNode = node;
+          endOffset = Math.max(0, endIndex - cursor);
+          break;
+        }
+        cursor = next;
+      }
+
+      if (!startNode) return;
+      if (!endNode) {
+        endNode = startNode;
+        endOffset = Math.min(startNode.textContent.length, startOffset + 1);
+      }
+
+      const range = document.createRange();
+      range.setStart(startNode, Math.min(startOffset, startNode.textContent.length));
+      range.setEnd(endNode, Math.min(endOffset, endNode.textContent.length));
+
+      const mark = document.createElement("mark");
+      mark.className = "tts-highlight";
+      try {
+        const fragment = range.extractContents();
+        mark.appendChild(fragment);
+        range.insertNode(mark);
+      } catch (error) {
+        // If range extraction fails on odd node shapes, skip highlight for this boundary.
+      }
+    }
+
     function loadVoices() {
       if (!("speechSynthesis" in window)) {
         updateTtsStatus("TTS unavailable");
@@ -4108,13 +4762,16 @@ legacyEpisodes.push({
       }
     }
 
-    function speakCurrentPage() {
+    function speakCurrentPage(isContinuation = false) {
       if (!("speechSynthesis" in window)) {
         updateTtsStatus("TTS unavailable");
         return;
       }
 
       stopSpeech(false);
+      ttsKeepReading = true;
+      ttsRenderTick += 1;
+      const tick = ttsRenderTick;
       ttsUtterance = new SpeechSynthesisUtterance(getCurrentPageText());
 
       const selectedVoice = document.getElementById("voice-select").value;
@@ -4125,9 +4782,35 @@ legacyEpisodes.push({
 
       ttsUtterance.rate = Number(document.getElementById("rate-range").value);
       ttsUtterance.onstart = () => updateTtsStatus("Reading aloud");
-      ttsUtterance.onend = () => updateTtsStatus("TTS ready");
-      ttsUtterance.onerror = () => updateTtsStatus("TTS error");
+      ttsUtterance.onboundary = event => {
+        if (event.name === "word" || event.name === "sentence" || typeof event.charIndex === "number") {
+          highlightSpokenRange(event.charIndex, event.charLength || 8);
+        }
+      };
+      ttsUtterance.onend = () => {
+        if (tick !== ttsRenderTick) return;
+        clearTtsHighlight();
+        const chapter = chapters[activeChapter];
+        const atLastPage = activePage >= (chapter.pages.length - 1);
+        if (!ttsKeepReading || atLastPage) {
+          updateTtsStatus("TTS ready");
+          ttsKeepReading = false;
+          return;
+        }
+        activePage += 1;
+        renderPage();
+        updateTtsStatus("Next page...");
+        setTimeout(() => speakCurrentPage(true), 160);
+      };
+      ttsUtterance.onerror = () => {
+        clearTtsHighlight();
+        updateTtsStatus("TTS error");
+        ttsKeepReading = false;
+      };
       window.speechSynthesis.speak(ttsUtterance);
+      if (!isContinuation) {
+        highlightSpokenRange(0, 10);
+      }
     }
 
     function toggleSpeechPause() {
@@ -4148,6 +4831,9 @@ legacyEpisodes.push({
     }
 
     function stopSpeech(update = true) {
+      ttsKeepReading = false;
+      clearTtsHighlight();
+      ttsRenderTick += 1;
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
@@ -4351,6 +5037,54 @@ legacyEpisodes.push({
       });
     }
 
+    function bytesToHex(bytes) {
+      return Array.from(bytes).map(byte => byte.toString(16).padStart(2, "0")).join("");
+    }
+
+    let volumeOneCoverPromise = null;
+    async function getVolumeOneCoverForExport() {
+      if (volumeOneCoverPromise) {
+        return volumeOneCoverPromise;
+      }
+      volumeOneCoverPromise = (async () => {
+        const response = await fetch("./assets/volume1-cover.png");
+        if (!response.ok) {
+          throw new Error("Volume 1 cover image not found");
+        }
+        const blob = await response.blob();
+        const sourceDataUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(String(reader.result || ""));
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+        const image = await new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = sourceDataUrl;
+        });
+        const canvas = document.createElement("canvas");
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+        const context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0);
+        const jpegDataUrl = canvas.toDataURL("image/jpeg", 0.92);
+        const base64 = jpegDataUrl.split(",")[1] || "";
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i += 1) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        return {
+          bytes,
+          width: image.naturalWidth,
+          height: image.naturalHeight
+        };
+      })();
+      return volumeOneCoverPromise;
+    }
+
     async function downloadBlob(blob, filename) {
       if (window.AndroidBridge && typeof window.AndroidBridge.saveFile === "function") {
         const base64 = await blobToBase64(blob);
@@ -4386,7 +5120,7 @@ legacyEpisodes.push({
       }
     }
 
-    function buildPdfBlob(chapter) {
+    async function buildPdfBlob(chapter) {
       const pageWidth = 595;
       const pageHeight = 842;
       const bodyPages = paginateLines(getChapterTextLines(chapter, { includeHeader: false, wrapLength: 70 }), 34);
@@ -4394,6 +5128,21 @@ legacyEpisodes.push({
       const estimatedRead = estimateMinutesLeft(chapter, 0);
       const exportDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
       const pdfPages = [];
+      let volumeOneCover = null;
+      if (chapter.volume === "Volume 1") {
+        try {
+          volumeOneCover = await getVolumeOneCoverForExport();
+        } catch (error) {
+          volumeOneCover = null;
+        }
+      }
+
+      if (volumeOneCover) {
+        pdfPages.push({
+          stream: `q\n${pageWidth} 0 0 ${pageHeight} 0 0 cm\n/ImCover Do\nQ`,
+          hasImage: true
+        });
+      }
 
       const coverCommands = [];
       pushPdfRect(coverCommands, 0, 0, pageWidth, pageHeight, "#f5ede4");
@@ -4437,7 +5186,7 @@ legacyEpisodes.push({
       pushPdfText(coverCommands, `Exported ${normalizeAscii(exportDate)}`, 328, 354, "F1", 11, "#d9c7be");
       pushPdfText(coverCommands, "Official channels: @binifn / @binirbx / @binirx", 48, 72, "F1", 10, "#6d6259");
       pushPdfText(coverCommands, "Offline chapter export from the Threadborn reader.", 48, 52, "F3", 11, "#8a2333");
-      pdfPages.push(coverCommands.join("\n"));
+      pdfPages.push({ stream: coverCommands.join("\n"), hasImage: false });
 
       bodyPages.forEach((lines, pageIndex) => {
         const commands = [];
@@ -4477,7 +5226,7 @@ legacyEpisodes.push({
         pushPdfRect(commands, 48, 44, pageWidth - 96, 1.4, "#d7c7bc");
         pushPdfText(commands, `Reading page ${pageIndex + 1} of ${bodyPages.length}`, 54, 28, "F1", 10, "#6d6259");
         pushPdfText(commands, "Created by BiniFn", 442, 28, "F1", 10, "#6d6259");
-        pdfPages.push(commands.join("\n"));
+        pdfPages.push({ stream: commands.join("\n"), hasImage: false });
       });
 
       const creditsCommands = [];
@@ -4501,7 +5250,7 @@ legacyEpisodes.push({
       pushPdfText(creditsCommands, "Share the chapter freely, but keep BiniFn credited as creator.", 68, 180, "F3", 12, "#8a2333");
       pushPdfText(creditsCommands, "Main channel: youtube.com/@binifn", 68, 146, "F1", 11, "#251919");
       pushPdfText(creditsCommands, "GitHub: github.com/BiniFn", 68, 124, "F1", 11, "#251919");
-      pdfPages.push(creditsCommands.join("\n"));
+      pdfPages.push({ stream: creditsCommands.join("\n"), hasImage: false });
 
       const objects = [];
       const pageIds = [];
@@ -4515,20 +5264,26 @@ legacyEpisodes.push({
       const helveticaId = 3 + pdfPages.length * 2;
       const boldId = helveticaId + 1;
       const italicId = helveticaId + 2;
+      const imageId = volumeOneCover ? italicId + 1 : null;
 
       objects[1] = `<< /Type /Catalog /Pages 2 0 R >>`;
       objects[2] = `<< /Type /Pages /Count ${pdfPages.length} /Kids [${pageIds.map(id => `${id} 0 R`).join(" ")}] >>`;
 
-      pdfPages.forEach((stream, pageIndex) => {
+      pdfPages.forEach((page, pageIndex) => {
         const pageId = pageIds[pageIndex];
         const contentId = contentIds[pageIndex];
-        objects[pageId] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Contents ${contentId} 0 R /Resources << /Font << /F1 ${helveticaId} 0 R /F2 ${boldId} 0 R /F3 ${italicId} 0 R >> >> >>`;
-        objects[contentId] = `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`;
+        const xObject = page.hasImage && imageId ? ` /XObject << /ImCover ${imageId} 0 R >>` : "";
+        objects[pageId] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Contents ${contentId} 0 R /Resources << /Font << /F1 ${helveticaId} 0 R /F2 ${boldId} 0 R /F3 ${italicId} 0 R >>${xObject} >> >>`;
+        objects[contentId] = `<< /Length ${page.stream.length} >>\nstream\n${page.stream}\nendstream`;
       });
 
       objects[helveticaId] = `<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>`;
       objects[boldId] = `<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>`;
       objects[italicId] = `<< /Type /Font /Subtype /Type1 /BaseFont /Times-Italic >>`;
+      if (volumeOneCover && imageId) {
+        const imageHex = `${bytesToHex(volumeOneCover.bytes)}>`;
+        objects[imageId] = `<< /Type /XObject /Subtype /Image /Width ${volumeOneCover.width} /Height ${volumeOneCover.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter [/ASCIIHexDecode /DCTDecode] /Length ${imageHex.length} >>\nstream\n${imageHex}\nendstream`;
+      }
 
       let pdf = "%PDF-1.4\n";
       const offsets = [0];
@@ -4648,16 +5403,24 @@ legacyEpisodes.push({
       return new Blob([...localParts, ...centralParts, endRecord], { type: "application/epub+zip" });
     }
 
-    function buildEpubBlob(chapter) {
+    async function buildEpubBlob(chapter) {
       const encoder = new TextEncoder();
       const chapterSlug = sanitizeFilename(`${chapter.volume}-${chapter.chapter}-${chapter.title}`);
       const bookTitle = escapeXml(`${chapter.volume} ${chapter.chapter}: ${chapter.title}`);
       const bookId = `urn:uuid:${chapterSlug}-${Date.now()}`;
       const modifiedAt = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
       const exportCredits = getExportCredits(chapter);
-      const styleCss = `:root{--paper:#f5ede4;--paper-strong:#fffaf4;--ink:#231817;--muted:#6d5a52;--blood:#8a2333;--blood-deep:#190b0c;--thread:#2f736d;--line:#dccdc1;}body{margin:0;background:radial-gradient(circle at top,rgba(138,35,51,.08),transparent 26%),var(--paper);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.78;}a{color:var(--blood);text-decoration:none;}img{max-width:100%;height:auto;}.cover,.nav-page,.credits-page,.page{max-width:44rem;margin:0 auto;padding:2.6rem 2.2rem;}.cover{background:linear-gradient(180deg,var(--blood-deep) 0 34%,var(--paper) 34.1% 100%);}.cover-card,.nav-card,.credits-card,.page-frame{background:var(--paper-strong);border:1px solid var(--line);border-radius:1.4rem;box-shadow:0 18px 40px rgba(18,10,10,.08);}.cover-card{margin-top:2rem;padding:2rem 2rem 1.8rem;}.eyebrow,.page-eyebrow{margin:0 0 1rem;color:var(--thread);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;}.page-eyebrow{margin-bottom:1.2rem;display:flex;justify-content:space-between;gap:.75rem;flex-wrap:wrap;}.cover-title{margin:0;font-size:2.4rem;line-height:1.02;color:#1d1112;}.cover-summary{margin:1rem 0 0;color:var(--muted);}.tag-row{margin-top:1.2rem;}.tag{display:inline-block;margin:.2rem .45rem .2rem 0;padding:.45rem .75rem;border-radius:999px;border:1px solid var(--line);background:#f8efe6;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;}.credit-line,.note,.page-footer-note{color:var(--muted);}.nav-card,.credits-card,.page-frame{padding:1.8rem;}.nav-page h1,.credits-page h1{margin:0 0 .6rem;font-size:2rem;color:#1d1112;}.nav-page ol,.credits-page ol,.credits-page ul{padding-left:1.25rem;}.nav-page li,.credits-page li{margin-bottom:.75rem;}.page-frame{padding:2rem 1.8rem;}.chapter-head{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--line);}.chapter-num{display:block;margin-bottom:.75rem;color:var(--thread);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;}.chapter-title{margin:0 0 .6rem;font-size:2.1rem;line-height:1.05;color:#1b1011;}.chapter-subtitle{margin:0;color:var(--muted);font-style:italic;}.novel-p{margin:0 0 1rem;}.scene-title{margin:1.8rem 0 .85rem;color:var(--blood);font-weight:700;letter-spacing:.05em;text-transform:uppercase;}.system-box,.ep-intro-bar,.tbc{margin:1.3rem 0;padding:1rem 1.1rem;border-radius:1rem;border:1px solid var(--line);background:linear-gradient(135deg,rgba(138,35,51,.08),rgba(47,115,109,.08));}.system-box h5{margin:0 0 .65rem;color:var(--thread);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;}.big-sfx{display:block;margin:1.35rem 0;text-align:center;font-size:1.55rem;font-weight:700;letter-spacing:.16em;color:var(--blood);}.thought{font-style:italic;}.dialogue{color:#351b1d;}.shout{font-weight:700;letter-spacing:.05em;}.page-footer-note{margin-top:1.6rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.9rem;}`;
+      const styleCss = `:root{--paper:#f5ede4;--paper-strong:#fffaf4;--ink:#231817;--muted:#6d5a52;--blood:#8a2333;--blood-deep:#190b0c;--thread:#2f736d;--line:#dccdc1;}body{margin:0;background:radial-gradient(circle at top,rgba(138,35,51,.08),transparent 26%),var(--paper);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.78;}a{color:var(--blood);text-decoration:none;}img{max-width:100%;height:auto;}.cover,.nav-page,.credits-page,.page{max-width:44rem;margin:0 auto;padding:2.6rem 2.2rem;}.cover{background:linear-gradient(180deg,var(--blood-deep) 0 34%,var(--paper) 34.1% 100%);}.cover-card,.nav-card,.credits-card,.page-frame{background:var(--paper-strong);border:1px solid var(--line);border-radius:1.4rem;box-shadow:0 18px 40px rgba(18,10,10,.08);}.cover-card{margin-top:2rem;padding:2rem 2rem 1.8rem;}.cover-art{width:100%;display:block;border-radius:1rem;border:1px solid var(--line);margin:.75rem 0 1rem;}.eyebrow,.page-eyebrow{margin:0 0 1rem;color:var(--thread);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;}.page-eyebrow{margin-bottom:1.2rem;display:flex;justify-content:space-between;gap:.75rem;flex-wrap:wrap;}.cover-title{margin:0;font-size:2.4rem;line-height:1.02;color:#1d1112;}.cover-summary{margin:1rem 0 0;color:var(--muted);}.tag-row{margin-top:1.2rem;}.tag{display:inline-block;margin:.2rem .45rem .2rem 0;padding:.45rem .75rem;border-radius:999px;border:1px solid var(--line);background:#f8efe6;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;}.credit-line,.note,.page-footer-note{color:var(--muted);}.nav-card,.credits-card,.page-frame{padding:1.8rem;}.nav-page h1,.credits-page h1{margin:0 0 .6rem;font-size:2rem;color:#1d1112;}.nav-page ol,.credits-page ol,.credits-page ul{padding-left:1.25rem;}.nav-page li,.credits-page li{margin-bottom:.75rem;}.page-frame{padding:2rem 1.8rem;}.chapter-head{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--line);}.chapter-num{display:block;margin-bottom:.75rem;color:var(--thread);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;}.chapter-title{margin:0 0 .6rem;font-size:2.1rem;line-height:1.05;color:#1b1011;}.chapter-subtitle{margin:0;color:var(--muted);font-style:italic;}.novel-p{margin:0 0 1rem;}.scene-title{margin:1.8rem 0 .85rem;color:var(--blood);font-weight:700;letter-spacing:.05em;text-transform:uppercase;}.system-box,.ep-intro-bar,.tbc{margin:1.3rem 0;padding:1rem 1.1rem;border-radius:1rem;border:1px solid var(--line);background:linear-gradient(135deg,rgba(138,35,51,.08),rgba(47,115,109,.08));}.system-box h5{margin:0 0 .65rem;color:var(--thread);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;}.big-sfx{display:block;margin:1.35rem 0;text-align:center;font-size:1.55rem;font-weight:700;letter-spacing:.16em;color:var(--blood);}.thought{font-style:italic;}.dialogue{color:#351b1d;}.shout{font-weight:700;letter-spacing:.05em;}.page-footer-note{margin-top:1.6rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.9rem;}`;
+      let volumeOneCover = null;
+      if (chapter.volume === "Volume 1") {
+        try {
+          volumeOneCover = await getVolumeOneCoverForExport();
+        } catch (error) {
+          volumeOneCover = null;
+        }
+      }
 
-      const coverPage = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="cover">\n    <div class="cover-card">\n      <p class="eyebrow">Threadborn Collector EPUB</p>\n      <h1 class="cover-title">${bookTitle}</h1>\n      <p class="cover-summary">${escapeXml(chapter.summary)}</p>\n      <div class="tag-row">${chapter.tags.map(tag => `<span class="tag">${escapeXml(tag)}</span>`).join("")}</div>\n      <p class="credit-line">Created by BiniFn</p>\n      <p class="note">Official offline chapter export from the Threadborn web reader.</p>\n    </div>\n  </section>\n</body>\n</html>`;
+      const coverPage = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="cover">\n    <div class="cover-card">\n      <p class="eyebrow">Threadborn Collector EPUB</p>\n      <h1 class="cover-title">${bookTitle}</h1>\n      ${volumeOneCover ? `<img class="cover-art" src="images/volume1-cover.jpg" alt="Volume 1 cover art" />` : ""}\n      <p class="cover-summary">${escapeXml(chapter.summary)}</p>\n      <div class="tag-row">${chapter.tags.map(tag => `<span class="tag">${escapeXml(tag)}</span>`).join("")}</div>\n      <p class="credit-line">Created by BiniFn</p>\n      <p class="note">Official offline chapter export from the Threadborn web reader.</p>\n    </div>\n  </section>\n</body>\n</html>`;
 
       const creditsPage = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <title>${bookTitle} - Credits</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="credits-page">\n    <div class="credits-card">\n      <p class="eyebrow">Credits</p>\n      <h1>Release Credits</h1>\n      <ul>${exportCredits.map(line => `<li>${escapeXml(line)}</li>`).join("")}</ul>\n      <p class="note">Please keep the BiniFn credit attached if this EPUB is reposted or shared.</p>\n    </div>\n  </section>\n</body>\n</html>`;
 
@@ -4672,6 +5435,7 @@ legacyEpisodes.push({
         `<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>`,
         `<item id="css" href="styles.css" media-type="text/css"/>`,
         `<item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>`,
+        ...(volumeOneCover ? [`<item id="cover-art" href="images/volume1-cover.jpg" media-type="image/jpeg"/>`] : []),
         `<item id="credits" href="credits.xhtml" media-type="application/xhtml+xml"/>`,
         ...pageFiles.map((page, index) => `<item id="page-${index + 1}" href="text/page-${index + 1}.xhtml" media-type="${page.mediaType}"/>`)
       ].join("\n    ");
@@ -4693,6 +5457,7 @@ legacyEpisodes.push({
         { name: "META-INF/container.xml", data: encoder.encode(`<?xml version="1.0" encoding="UTF-8"?>\n<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">\n  <rootfiles>\n    <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>\n  </rootfiles>\n</container>`) },
         { name: "OEBPS/styles.css", data: encoder.encode(styleCss) },
         { name: "OEBPS/cover.xhtml", data: encoder.encode(coverPage) },
+        ...(volumeOneCover ? [{ name: "OEBPS/images/volume1-cover.jpg", data: volumeOneCover.bytes }] : []),
         { name: "OEBPS/credits.xhtml", data: encoder.encode(creditsPage) },
         { name: "OEBPS/nav.xhtml", data: encoder.encode(`<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">\n<head>\n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="nav-page">\n    <div class="nav-card">\n      <p class="eyebrow">Contents</p>\n      <nav epub:type="toc" id="toc">\n        <h1>${bookTitle}</h1>\n        <ol>${navLinks}</ol>\n      </nav>\n    </div>\n  </section>\n</body>\n</html>`) },
         { name: "OEBPS/content.opf", data: encoder.encode(`<?xml version="1.0" encoding="UTF-8"?>\n<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="book-id">\n  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">\n    <dc:identifier id="book-id">${escapeXml(bookId)}</dc:identifier>\n    <dc:title>${bookTitle}</dc:title>\n    <dc:language>en</dc:language>\n    <dc:creator>BiniFn</dc:creator>\n    <dc:publisher>BiniFn</dc:publisher>\n    <dc:description>${escapeXml(chapter.summary)}</dc:description>\n    <meta property="dcterms:modified">${modifiedAt}</meta>\n  </metadata>\n  <manifest>\n    ${manifestItems}\n  </manifest>\n  <spine>\n    ${spineItems}\n  </spine>\n</package>`) },
@@ -4705,14 +5470,20 @@ legacyEpisodes.push({
     async function downloadChapterPdf(index = activeChapter, button = null) {
       const chapter = chapters[index];
       const filename = `${sanitizeFilename(`${chapter.volume}-${chapter.chapter}-${chapter.title}`)}.pdf`;
-      const result = await withBusyButton(button, "Building PDF...", async () => downloadBlob(buildPdfBlob(chapter), filename));
+      const result = await withBusyButton(button, "Building PDF...", async () => {
+        const pdfBlob = await buildPdfBlob(chapter);
+        return downloadBlob(pdfBlob, filename);
+      });
       updateTtsStatus(result === "saved" ? "Collector PDF saved to device" : "Collector PDF downloaded");
     }
 
     async function downloadChapterEpub(index = activeChapter, button = null) {
       const chapter = chapters[index];
       const filename = `${sanitizeFilename(`${chapter.volume}-${chapter.chapter}-${chapter.title}`)}.epub`;
-      const result = await withBusyButton(button, "Building EPUB...", async () => downloadBlob(buildEpubBlob(chapter), filename));
+      const result = await withBusyButton(button, "Building EPUB...", async () => {
+        const epubBlob = await buildEpubBlob(chapter);
+        return downloadBlob(epubBlob, filename);
+      });
       updateTtsStatus(result === "saved" ? "Styled EPUB saved to device" : "Styled EPUB downloaded");
     }
 
@@ -4822,6 +5593,24 @@ legacyEpisodes.push({
         changePage(-1);
       }
     });
+
+    const communityImageInput = document.getElementById("community-image");
+    if (communityImageInput) {
+      communityImageInput.addEventListener("change", event => {
+        const file = event.target.files && event.target.files[0];
+        const preview = document.getElementById("community-image-preview");
+        if (!file || !preview) {
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          communityImageState.dataUrl = String(reader.result || "");
+          preview.src = communityImageState.dataUrl;
+          preview.style.display = communityImageState.dataUrl ? "block" : "none";
+        };
+        reader.readAsDataURL(file);
+      });
+    }
 
     loadProgress();
     renderChapters();
