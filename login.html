@@ -30,129 +30,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Threadborn Login</title>
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #07090f;
-      --card: #111521;
-      --text: #eef3ff;
-      --muted: #99a4bf;
-      --accent: #6da8ff;
-      --danger: #ff7d7d;
-      --border: rgba(255, 255, 255, 0.14);
-    }
-
-    * {
-      box-sizing: border-box;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #1a2440, var(--bg) 52%);
-      color: var(--text);
-      display: grid;
-      place-items: center;
-      padding: 24px;
-    }
-
-    .card {
-      width: min(100%, 420px);
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px;
-      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.32);
-    }
-
-    h1 {
-      margin: 0 0 8px;
-      font-size: 1.5rem;
-    }
-
-    p {
-      margin: 0 0 20px;
-      color: var(--muted);
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 0.92rem;
-      color: var(--muted);
-    }
-
-    input {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 11px 12px;
-      margin-bottom: 14px;
-      background: #0a0f1c;
-      color: var(--text);
-      outline: none;
-    }
-
-    input:focus {
-      border-color: var(--accent);
-    }
-
-    button {
-      width: 100%;
-      border: 0;
-      border-radius: 10px;
-      padding: 12px 14px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      background: var(--accent);
-      color: #071427;
-      cursor: pointer;
-    }
-
-    .status {
-      min-height: 22px;
-      margin-top: 14px;
-      font-size: 0.92rem;
-      color: var(--muted);
-    }
-
-    .status.error {
-      color: var(--danger);
-    }
-
-    .status.ok {
-      color: #89e79e;
-    }
-
-    .back {
-      margin-top: 16px;
-      text-align: center;
-    }
-
-    .back a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-  </style>
+  
+  <link rel="stylesheet" href="./global.css" />
 </head>
 <body>
-  <main class="card">
-    <h1>Login</h1>
-    <p>Sign in with your Threadborn account.</p>
+  <main class="auth-shell">
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 32px; margin-top: 0;">Login</h1>
+    <p style="color: var(--mist); margin-bottom: 24px;">Sign in with your Threadborn account.</p>
 
     <form id="login-form">
       <label for="email">Email</label>
-      <input id="email" name="email" type="email" required autocomplete="email" />
+      <input id="email" class="input-field" name="email" type="email" required autocomplete="email" />
 
       <label for="password">Password</label>
-      <input id="password" name="password" type="password" required autocomplete="current-password" />
+      <input id="password" class="input-field" name="password" type="password" required autocomplete="current-password" />
 
-      <button id="submit-btn" type="submit">Sign In</button>
+      <button id="submit-btn" class="btn-form" type="submit" style="margin-top: 10px;">Sign In</button>
     </form>
 
     <div id="status" class="status" aria-live="polite"></div>
-    <div class="back"><a href="./signup.html">Create account</a> · <a href="./index.html">Back to Reader</a></div>
+    <div class="back" style="margin-top: 24px;">
+      <a href="./signup.html" class="back-link" style="margin-top: 0;">Create account</a> · <a href="./index.html" class="back-link" style="margin-top: 0;">Back to Reader</a>
+    </div>
   </main>
 
   <script src="./runtime-config.js"></script>

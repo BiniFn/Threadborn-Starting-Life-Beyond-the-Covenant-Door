@@ -1,0 +1,104 @@
+
+/* --- Added Authentication & Profile Styles --- */
+
+.shell {
+  max-width: 920px;
+  margin: 0 auto;
+  display: grid;
+  gap: 20px;
+  padding: 32px 20px 100px;
+}
+
+.auth-shell {
+  max-width: 480px;
+  margin: 100px auto;
+  padding: 32px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.input-field {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--bone);
+  padding: 14px 16px;
+  margin-top: 6px;
+  margin-bottom: 18px;
+  font-family: inherit;
+  font-size: 15px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--ember);
+  box-shadow: 0 0 0 2px rgba(255, 140, 90, 0.2);
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  color: var(--mist);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: "Space Mono", monospace;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.btn-form {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--ember), var(--blood));
+  color: #160607;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-form:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(207, 47, 47, 0.25);
+}
+
+.muted { color: var(--mist); font-size: 0.95rem; }
+.badge { display: inline-block; font-size: 0.8rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.05); }
+.ok { color: var(--void); }
+.error { color: var(--blood); }
+
+.back-link {
+  display: inline-block;
+  margin-top: 24px;
+  color: var(--mist);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: var(--bone);
+}

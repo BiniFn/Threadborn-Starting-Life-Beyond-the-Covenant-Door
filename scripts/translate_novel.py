@@ -95,25 +95,30 @@ def process_file(filepath):
         content = f.read()
         
     # 1. Translate legacyEpisodes HTML strings
-    # We find all ` ... ` blocks inside legacyEpisodes
     legacy_start = content.find('const legacyEpisodes = [')
     chapters_start = content.find('const chapters = [')
+    characters_start = content.find('const characters = [')
     
+    def html_replacer(match):
+        html = match.group(1)
+        translated = translate_html_content(html)
+        return f'`{translated}`'
+        
     if legacy_start != -1 and chapters_start != -1:
         legacy_block = content[legacy_start:chapters_start]
-        # find all backtick strings
-        def html_replacer(match):
-            html = match.group(1)
-            translated = translate_html_content(html)
-            return f'`{translated}`'
-            
         translated_legacy = re.sub(r'`(.*?)`', html_replacer, legacy_block, flags=re.DOTALL)
         content = content[:legacy_start] + translated_legacy + content[chapters_start:]
+        print("Done translating legacyEpisodes HTML.")
+        
+    chapters_start = content.find('const chapters = [')
+    if chapters_start != -1 and characters_start != -1:
+        chapters_block = content[chapters_start:characters_start]
+        translated_chapters = re.sub(r'`(.*?)`', html_replacer, chapters_block, flags=re.DOTALL)
+        content = content[:chapters_start] + translated_chapters + content[characters_start:]
+        print("Done translating chapters HTML.")
 
     # Write incrementally
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(content)
-        
-    print("Done translating legacyEpisodes HTML.")
     
 process_file('index-jp.html')

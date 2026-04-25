@@ -30,54 +30,40 @@ html
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Threadborn Profile</title>
-<style>
-    :root { color-scheme: dark; --bg:#07090f; --card:#111521; --text:#eef3ff; --muted:#99a4bf; --accent:#6da8ff; --border:rgba(255,255,255,.14); }
-    * { box-sizing: border-box; font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
-    body { margin:0; background:radial-gradient(circle at top, #1a2440, var(--bg) 52%); color:var(--text); padding:24px; }
-    .shell { max-width: 920px; margin: 0 auto; display:grid; gap:14px; }
-    .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px; }
-    .row { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
-    .avatar { width:84px; height:84px; border-radius:50%; object-fit:cover; border:1px solid var(--border); }
-    input, textarea, button, select { width:100%; border-radius:10px; border:1px solid var(--border); background:#0a0f1c; color:var(--text); padding:10px 12px; }
-    button { background:var(--accent); color:#081427; font-weight:700; cursor:pointer; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
-    .muted { color:var(--muted); font-size:.93rem; }
-    .badge { display:inline-block; font-size:.8rem; padding:4px 8px; border-radius:999px; border:1px solid var(--border); }
-    .ok { color:#8ceba1; }
-  </style>
+
+  <link rel="stylesheet" href="./global.css" />
 </head>
 <body>
-<main class="shell">
-<article class="card">
+<main class="auth-shell">
+<article class="card" style="margin-bottom: 24px; text-align: left;">
 <div class="row">
 <img alt="Avatar" class="avatar" id="avatar" src="./assets/threadborn-logo.png"/>
 <div>
-<h1 id="name" style="margin:0;">プロフィール</h1>
+<h1 id="name" style="margin:0; font-family: 'Cormorant Garamond', serif; font-size: 28px;">プロフィール</h1>
 <p class="muted" id="meta" style="margin:6px 0 0;">読み込み中...</p>
-<span class="badge" id="verified" style="display:none;">確認済み</span>
+<span class="badge" id="verified" style="display:none; margin-top: 8px;">確認済み</span>
 </div>
 </div>
 </article>
-<article class="card">
-<h2 style="margin-top:0;">プロファイル設定</h2>
+<article class="card" style="text-align: left; margin-bottom: 24px;">
+<h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">プロファイル設定</h2>
 <div class="grid">
 <div>
 <label>ユーザー名</label>
-<input id="username" maxlength="24" pattern="[A-Za-z0-9_]{3,24}"/>
+<input id="username" class="input-field" maxlength="24" pattern="[A-Za-z0-9_]{3,24}"/>
 </div>
 </div>
 <div class="row" style="margin-top:10px;">
-<button id="save-profile">プロファイルの保存</button>
-<a class="muted" href="./index.html">読者に戻る</a>
+<button id="save-profile" class="btn-form" style="width: auto; padding: 12px 24px;">プロファイルの保存</button>
 </div>
 <p class="muted" id="profile-status"></p>
 </article>
-<article class="card">
-<h2 style="margin-top:0;">読み取り設定</h2>
+<article class="card" style="text-align: left; margin-bottom: 24px;">
+<h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">読み取り設定</h2>
 <div class="grid">
 <div>
 <label>テーマ</label>
-<select id="setting-theme">
+<select id="setting-theme" class="input-field">
 <option value="night">夜</option>
 <option value="paper">紙</option>
 <option value="ember">残り火</option>
@@ -85,20 +71,21 @@ html
 </div>
 <div>
 <label>文字サイズ</label>
-<input id="setting-size" max="24" min="15" step="1" type="number"/>
+<input id="setting-size" class="input-field" max="24" min="15" step="1" type="number"/>
 </div>
 </div>
-<button id="save-settings" style="margin-top:10px;">設定の保存</button>
+<button id="save-settings" class="btn-form" style="margin-top:10px; width: auto; padding: 12px 24px;">設定の保存</button>
 <p class="muted" id="settings-status"></p>
 </article>
-<article class="card">
-<h2 style="margin-top:0;">ブックマーク</h2>
+<article class="card" style="text-align: left; margin-bottom: 24px;">
+<h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">ブックマーク</h2>
 <div class="muted" id="bookmarks">ブックマークを読み込んでいます...</div>
 </article>
-<article class="card">
-<h2 style="margin-top:0;">読書分析</h2>
+<article class="card" style="text-align: left;">
+<h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">読書分析</h2>
 <div class="muted" id="analytics">分析を読み込んでいます...</div>
 </article>
+<a href="./index-jp.html" class="back-link">← 読者に戻る</a>
 </main>
 <script src="./runtime-config.js"></script>
 <script>
@@ -178,20 +165,46 @@ html
     });
 
     async function loadProfile() {
-      const me = await apiFetch("/api/auth/me");
-      csrfToken = me.csrfToken || "";
-      const user = me.user;
-      avatarEl.src = "./assets/threadborn-logo.png";
-      nameEl.textContent = user.username;
-      metaEl.textContent = `${user.email} • role: ${user.role}`;
-      verifiedEl.style.display = user.verified ? "inline-block" : "none";
-      document.getElementById("username").value = user.username;
+      let user;
+      try {
+        const me = await apiFetch("/api/auth/me");
+        csrfToken = me.csrfToken || "";
+        user = me.user;
+        
+        localStorage.setItem("threadborn_user", JSON.stringify({
+          id: user.id,
+          email: user.email,
+          displayName: user.username,
+          avatarUrl: user.avatarUrl || "./assets/threadborn-logo.png",
+          verified: user.verified,
+          role: user.role
+        }));
+      } catch (error) {
+        // Fallback to offline local storage
+        const localUser = localStorage.getItem("threadborn_user");
+        if (localUser) {
+          user = JSON.parse(localUser);
+          user.username = user.displayName;
+        } else {
+          throw error;
+        }
+      }
 
-      const profile = await apiFetch("/api/user/profile");
-      const posts = Array.isArray(profile.posts) ? profile.posts : [];
-      if (posts.length) {
-        const lines = posts.map(post => `<div>• ${post.title} (${post.category || "post"})</div>`).join("");
-        document.getElementById("analytics").insertAdjacentHTML("beforebegin", `<article class="card"><h2 style="margin-top:0;">User Posts</h2>${lines}</article>`);
+      avatarEl.src = user.avatarUrl || "./assets/threadborn-logo.png";
+      nameEl.textContent = user.username || user.displayName;
+      metaEl.textContent = `${user.email} • role: ${user.role || 'user'}`;
+      verifiedEl.style.display = user.verified ? "inline-block" : "none";
+      document.getElementById("username").value = user.username || user.displayName;
+
+      try {
+        const profile = await apiFetch("/api/user/profile");
+        const posts = Array.isArray(profile.posts) ? profile.posts : [];
+        if (posts.length) {
+          const lines = posts.map(post => `<div>• ${post.title} (${post.category || "post"})</div>`).join("");
+          document.getElementById("analytics").insertAdjacentHTML("beforebegin", `<article class="card" style="text-align: left; margin-bottom: 24px;"><h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">User Posts</h2>${lines}</article>`);
+        }
+      } catch (e) {
+        // ignore profile posts if offline
       }
     }
 
