@@ -1634,10 +1634,23 @@
     }
 
     .tts-highlight {
-      background: rgba(255, 214, 120, 0.34);
+      background: linear-gradient(135deg, rgba(255, 214, 120, 0.6), rgba(255, 193, 7, 0.4));
       color: #fff8e8;
       border-radius: 4px;
-      box-shadow: 0 0 0 1px rgba(255, 214, 120, 0.22);
+      box-shadow: 0 2px 8px rgba(255, 214, 120, 0.4), 0 0 0 1px rgba(255, 214, 120, 0.3);
+      transition: all 0.2s ease-in-out;
+      animation: ttsPulse 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes ttsPulse {
+      0% {
+        background: linear-gradient(135deg, rgba(255, 214, 120, 0.6), rgba(255, 193, 7, 0.4));
+        box-shadow: 0 2px 8px rgba(255, 214, 120, 0.4), 0 0 0 1px rgba(255, 214, 120, 0.3);
+      }
+      100% {
+        background: linear-gradient(135deg, rgba(255, 214, 120, 0.8), rgba(255, 193, 7, 0.6));
+        box-shadow: 0 4px 12px rgba(255, 214, 120, 0.6), 0 0 0 2px rgba(255, 214, 120, 0.5);
+      }
     }
 
     .reader-content .story-callout {
@@ -5737,10 +5750,17 @@ Last chapter's ceiling is always this chapter's floor.</div>
     function highlightSpokenRange(charIndex = 0, charLength = 1) {
       const container = document.getElementById("reader-content");
       if (!container) return;
-      clearTtsHighlight();
-
+      
+      // Smooth transition: don't clear immediately if highlighting the same area
+      const currentHighlight = container.querySelector(".tts-highlight");
       const startIndex = Math.max(0, Number(charIndex) || 0);
       const endIndex = startIndex + Math.max(1, Number(charLength) || 1);
+      
+      // Only clear if this is a significantly different position
+      if (!currentHighlight || Math.abs(startIndex - (currentHighlight.dataset.startIndex || 0)) > 10) {
+        clearTtsHighlight();
+      }
+
       const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
       let node;
       let cursor = 0;
@@ -5777,12 +5797,22 @@ Last chapter's ceiling is always this chapter's floor.</div>
 
       const mark = document.createElement("mark");
       mark.className = "tts-highlight";
+      mark.dataset.startIndex = startIndex;
+      mark.dataset.endIndex = endIndex;
+      
       try {
         const fragment = range.extractContents();
         mark.appendChild(fragment);
         range.insertNode(mark);
-      } catch (error) {
-        // If range extraction fails on odd node shapes, skip highlight for this boundary.
+        
+        // Smooth scroll to highlight if it's outside viewport
+        const rect = mark.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        if (rect.top < containerRect.top || rect.bottom > containerRect.bottom) {
+          mark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      } catch (e) {
+        console.warn("TTS highlight error:", e);
       }
     }
 
@@ -5803,13 +5833,24 @@ Last chapter's ceiling is always this chapter's floor.</div>
         return;
       }
 
+      // Filter voices to only show Google Japanese and Google English voices
+      const filteredVoices = ttsVoices.filter(voice => {
+        const voiceName = voice.name.toLowerCase();
+        const voiceLang = voice.lang.toLowerCase();
+        return (voiceName.includes('google') && voiceLang.includes('ja')) || 
+               (voiceName.includes('google') && voiceLang.includes('en'));
+      });
+
       const current = select.value;
-      select.innerHTML = ttsVoices
-        .map(voice => `<option value="${voice.name}">${voice.name}</option>`)
+      select.innerHTML = filteredVoices
+        .map(voice => `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`)
         .join("");
 
-      if (ttsVoices.some(voice => voice.name === current)) {
+      if (filteredVoices.some(voice => voice.name === current)) {
         select.value = current;
+      } else if (filteredVoices.length > 0) {
+        // Auto-select the first available voice
+        select.value = filteredVoices[0].name;
       }
     }
 
