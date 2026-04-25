@@ -204,6 +204,19 @@ html
       color: var(--bone);
     }
 
+    .lang-toggle {
+      background: linear-gradient(135deg, rgba(132, 208, 199, 0.15), rgba(132, 208, 199, 0.08)) !important;
+      border-color: rgba(132, 208, 199, 0.3) !important;
+      color: #a8ddd6 !important;
+    }
+
+    .lang-toggle:hover {
+      background: linear-gradient(135deg, rgba(132, 208, 199, 0.25), rgba(132, 208, 199, 0.15)) !important;
+      border-color: rgba(132, 208, 199, 0.5) !important;
+      color: #c0e4de !important;
+      box-shadow: 0 0 20px rgba(132, 208, 199, 0.2) !important;
+    }
+
     .user-chip {
       display: inline-flex;
       align-items: center;
@@ -2320,7 +2333,7 @@ html
 <a class="nav-btn" href="./signup.html" id="nav-signup">サインアップ</a>
 <a class="nav-btn" href="./profile.html" id="nav-profile" style="display:none;">プロフィール</a>
 <button class="nav-btn" id="nav-logout" onclick="logoutUser()" style="display:none;">ログアウト</button>
-<a class="nav-btn" href="./index.html" id="lang-en" onclick="localStorage.setItem('threadborn_lang', 'en')">JP</a>
+<button class="nav-btn lang-toggle" id="lang-toggle" onclick="switchLanguage()" title="言語を切り替える (日本語 / English)">🌐 日本語</button>
 </nav>
 <div class="user-chip" id="user-chip">
 <img alt="Profile picture" id="user-avatar" src="assets/threadborn-logo.png"/>
@@ -2343,7 +2356,7 @@ html
 </div>
 <div class="hero-actions">
 <button class="btn btn-primary" onclick="openChapter(0)">読み始める</button>
-<button class="btn btn-secondary" onclick="localStorage.setItem('threadborn_lang', 'en'); window.location.href='./index.html'">🇺🇸英語版</button>
+<button class="btn btn-secondary" onclick="switchLanguage()">🌐 英語版に切り替える</button>
 </div>
 </div>
 <div class="hero-media">
