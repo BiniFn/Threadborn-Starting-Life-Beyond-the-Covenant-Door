@@ -52,11 +52,18 @@
       --line: rgba(255, 255, 255, 0.08);
       --line-strong: rgba(255, 255, 255, 0.16);
       --shadow: 0 25px 70px rgba(0, 0, 0, 0.45);
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.4);
+      --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.5);
       --radius-xl: 28px;
       --radius-lg: 22px;
       --radius-md: 16px;
+      --radius-sm: 12px;
+      --radius-xs: 8px;
       --content: 1180px;
       --reader-size: 18px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     * {
@@ -65,6 +72,38 @@
 
     html {
       scroll-behavior: smooth;
+      font-display: swap;
+    }
+
+    /* Performance optimizations */
+    img {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+
+    /* Reduce motion for users who prefer it */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* GPU acceleration for smooth animations */
+    .reader,
+    .toolbar-pill,
+    .ghost-btn,
+    .card {
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      perspective: 1000px;
+    }
+
+    /* Optimize scrolling performance */
+    body {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
 
     body {
@@ -1075,10 +1114,31 @@
       background: rgba(255, 255, 255, 0.04);
       color: var(--bone);
       border-radius: 999px;
-      padding: 10px 14px;
+      padding: 12px 18px;
       cursor: pointer;
       font-weight: 700;
-      transition: 0.25s ease;
+      transition: var(--transition-fast);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(5px);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 13px;
+    }
+
+    .ghost-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: var(--transition-fast);
+    }
+
+    .ghost-btn:hover::before {
+      left: 100%;
     }
 
     .ghost-btn.download-btn {
@@ -1088,9 +1148,15 @@
     }
 
     .ghost-btn:hover {
-      transform: translateY(-1px);
-      border-color: rgba(255, 255, 255, 0.22);
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.3);
       background: rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ghost-btn:active {
+      transform: translateY(0);
+      box-shadow: var(--shadow-sm);
     }
 
     .ghost-btn.pdf-btn {
@@ -1482,17 +1548,40 @@
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      gap: 12px;
-      min-height: 0;
-      padding: 16px;
-      border-radius: 22px;
       border: 1px solid var(--line);
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 68%),
-        rgba(255, 255, 255, 0.04);
-      color: var(--mist);
-      font-size: 13px;
+      background: var(--panel);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      gap: 12px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
       touch-action: auto;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .toolbar-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--line-strong);
+      background: rgba(21, 10, 12, 0.85);
+    }
+
+    .toolbar-pill::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--blood), var(--void), var(--ember));
+      opacity: 0;
+      transition: var(--transition-fast);
+    }
+
+    .toolbar-pill:hover::before {
+      opacity: 0.8;
     }
 
     .toolbar-pill span {
@@ -1519,21 +1608,34 @@
     .toolbar-pill input[type="range"] {
       width: 100%;
       min-width: 0;
-      min-height: 46px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.05);
+      min-height: 48px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.06);
       color: var(--bone);
       font-family: "Bricolage Grotesque", sans-serif;
-      touch-action: auto;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-fast);
       pointer-events: auto;
+      backdrop-filter: blur(5px);
+    }
+
+    .toolbar-pill select:hover,
+    .toolbar-pill input[type="range"]:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--line-strong);
+      transform: translateY(-1px);
     }
 
     .toolbar-pill select:focus,
     .toolbar-pill input:focus {
-      outline: 2px solid rgba(132, 208, 199, 0.35);
-      outline-offset: 1px;
+      outline: none;
+      border-color: var(--void);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 0 3px rgba(132, 208, 199, 0.2);
     }
 
     .toolbar-pill.status {
@@ -2263,6 +2365,170 @@
         width: auto;
         min-width: 102px;
         padding: 12px 14px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-shell {
+        padding: 8px 16px;
+        grid-template-columns: auto 1fr;
+      }
+
+      .brand-mark {
+        width: 120px;
+        height: 32px;
+      }
+
+      .nav-row {
+        display: none;
+      }
+
+      .mobile-nav {
+        display: flex;
+      }
+
+      .content-shell {
+        padding: 20px 16px;
+      }
+
+      .toolbar-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .toolbar-pill {
+        width: 100%;
+        min-width: 0;
+        min-height: auto;
+        padding: 12px;
+        margin-bottom: 10px;
+      }
+
+      .toolbar-pill:last-child {
+        margin-bottom: 0;
+      }
+
+      .toolbar-pill span,
+      .toolbar-actions .ghost-btn {
+        width: 100%;
+      }
+
+      .toolbar-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+
+      .toolbar-actions .ghost-btn {
+        min-height: 40px;
+        flex: 1 1 calc(50% - 3px);
+      }
+
+      .reader-content {
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      .chapter-title {
+        font-size: 24px;
+      }
+
+      .scene-title {
+        font-size: 18px;
+      }
+
+      .nav-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .hero-title {
+        font-size: 28px;
+      }
+
+      .hero-copy {
+        font-size: 16px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .toolbar-pill.status,
+      .toolbar-pill.chapter-card,
+      .toolbar-pill.export-card {
+        grid-column: 1 / -1;
+      }
+
+      /* Touch optimizations */
+      .ghost-btn,
+      .toolbar-pill select,
+      .toolbar-pill input {
+        min-height: 44px;
+        touch-action: manipulation;
+      }
+
+      /* Better mobile scrolling */
+      .reader-content {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+      }
+
+      /* Improved mobile reader toolbar */
+      .reader-toolbar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 50vh;
+        overflow-y: auto;
+        z-index: 1000;
+      }
+
+      /* Mobile-specific animations */
+      .toolbar-pill:hover {
+        transform: none;
+      }
+
+      .ghost-btn:hover {
+        transform: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title {
+        font-size: 24px;
+      }
+
+      .hero-copy {
+        font-size: 15px;
+      }
+
+      .reader-content {
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      .toolbar-actions {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .toolbar-actions .ghost-btn {
+        flex: 1 1 100%;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -3613,8 +3879,11 @@ legacyEpisodes.push({
         chapter: "Chapter 1",
         label: "Rebirth",
         title: "The Goddess Who Pushed Me Off The Bridge",
+        title_jp: "私を橋から突き落とした女神",
         summary: "A goddess kills Yono by accident, compensates him with absurd powers, and throws him into Lumera with a rocket racket and a problem that already knows his name.",
+        summary_jp: "女神が陽乃を偶然殺害し、ばかげた力で補償し、ロケットラケットと彼の名前を知っている問題でルメラに投げ込む。",
         tags: ["isekai", "goddess", "rocket racket"],
+        tags_jp: ["異世界", "女神", "ロケットラケット"],
         pages: legacyEpisodes[0].pages
       },
       {
@@ -3622,8 +3891,11 @@ legacyEpisodes.push({
         chapter: "Chapter 2",
         label: "Lumera",
         title: "Rocket Tennis and a City on Fire",
+        title_jp: "ロケットテニスと燃える街",
         summary: "Yono lands in Lumera, saves a child, and learns that his gifts make him useful, hunted, and immediately involved in the city's worst night.",
+        summary_jp: "陽乃はルメラに着地し、子供を救い、彼の贈り物が彼を有用にし、追跡され、街の最悪の夜にすぐに関与することを学ぶ。",
         tags: ["city fire", "shade", "first battle"],
+        tags_jp: ["街火事", "シェイド", "初戦闘"],
         pages: legacyEpisodes[1].pages
       },
       {
@@ -3631,8 +3903,11 @@ legacyEpisodes.push({
         chapter: "Chapter 3",
         label: "Turning Point",
         title: "When the Warden Knocks",
+        title_jp: "監獄長がノックする時",
         summary: "The Shade Warden hits hard, Violet and Yono stop pretending the chemistry is accidental, and the debt arc starts getting personal.",
+        summary_jp: "シェイド監獄長が激しく攻撃し、バイオレットと陽乃は化学が偶然であるふりをやめ、負債編が個人的になる。",
         tags: ["warden", "kiss", "pressure"],
+        tags_jp: ["監獄長", "キス", "圧力"],
         pages: legacyEpisodes[2].pages
       },
       {
@@ -3640,8 +3915,11 @@ legacyEpisodes.push({
         chapter: "Chapter 4",
         label: "Debt Inversion",
         title: "The Price of Warm Things",
+        title_jp: "温かいものの代償",
         summary: "At Meryn's safehouse the cast grows, the oath behind the Shade is finally understood, and Yono helps turn the debt back on the thing hunting him.",
+        summary_jp: "メリンの安全ハウスでキャストが成長し、シェイドの背後にある誓いがついに理解され、陽乃は負債を彼を追いかけるものに返すのを助ける。",
         tags: ["safehouse", "new cast", "oath lore"],
+        tags_jp: ["安全ハウス", "新キャスト", "誓い伝承"],
         pages: legacyEpisodes[3].pages
       },
       {
@@ -3649,8 +3927,11 @@ legacyEpisodes.push({
         chapter: "Chapter 5",
         label: "Forest Finale",
         title: "What the Forest Keeps",
+        title_jp: "森が保つもの",
         summary: "Yono and Violet finally become real in the forest, then discover the sealed prison that starts the next volume's catastrophe.",
+        summary_jp: "陽乃とバイオレットは森でついに本物になり、次の巻の大惨事を始める封印された監獄を発見する。",
         tags: ["forest", "confession", "Velkor"],
+        tags_jp: ["森", "告白", "ヴェルコア"],
         pages: legacyEpisodes[4].pages
       },
       {
@@ -3658,8 +3939,11 @@ legacyEpisodes.push({
         chapter: "Chapter 1",
         label: "The Door Opens",
         title: "When the Seal Breathes",
+        title_jp: "封印が呼吸する時",
         summary: "The party returns to Velkor's prison, the Old Covenant seal answers Yono directly, and his next layer of power wakes up in front of everyone.",
+        summary_jp: "パーティーはヴェルコアの監獄に戻り、旧契約の封印が陽乃に直接答え、彼の次の力の層が皆の前で目覚める。",
         tags: ["Velkor", "seal break", "team return", "power climb"],
+        tags_jp: ["ヴェルコア", "封印破壊", "チーム帰還", "力の上昇"],
         pages: [
           `<div class="chapter-head">
             <span class="chapter-num">Volume 02 · Chapter 01</span>
@@ -5726,24 +6010,35 @@ Last chapter's ceiling is always this chapter's floor.</div>
     }
 
     function switchLeaksTab(tab) {
-      document.querySelectorAll("[data-leaks-tab]").forEach(button => {
-        button.classList.toggle("active", button.dataset.leaksTab === tab);
-      });
+      try {
+        document.querySelectorAll("[data-leaks-tab]").forEach(button => {
+          button.classList.toggle("active", button.dataset.leaksTab === tab);
+        });
 
-      document.querySelectorAll(".leaks-panel").forEach(panel => {
-        panel.classList.toggle("active", panel.id === `leaks-panel-${tab}`);
-      });
+        document.querySelectorAll(".leaks-panel").forEach(panel => {
+          panel.classList.toggle("active", panel.id === `leaks-panel-${tab}`);
+        });
+      } catch (error) {
+        console.error('Error switching leaks tab:', error);
+        showNotification('Failed to switch leaks tab', 'error');
+      }
     }
 
     function switchView(view) {
-      document.querySelectorAll(".view").forEach(section => {
-        section.classList.toggle("active", section.id === `view-${view}`);
-      });
+      try {
+        document.querySelectorAll(".view").forEach(section => {
+          section.classList.toggle("active", section.id === `view-${view}`);
+        });
 
-      document.querySelectorAll(".nav-btn").forEach(button => {
-        button.classList.toggle("active", button.dataset.view === view);
-      });
+        document.querySelectorAll(".nav-btn").forEach(button => {
+          button.classList.toggle("active", button.dataset.view === view);
+        });
 
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch (error) {
+        console.error('Error switching view:', error);
+        showNotification('Failed to switch view', 'error');
+      }
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -5845,29 +6140,53 @@ Last chapter's ceiling is always this chapter's floor.</div>
     }
 
     function jumpToPage(value) {
-      activePage = Number(value);
-      stopSpeech(false);
-      renderPage();
+      try {
+        activePage = Number(value);
+        stopSpeech(false);
+        renderPage();
+        
+      } catch (error) {
+        console.error('Error jumping to page:', error);
+        showNotification('Failed to jump to page', 'error');
+      }
     }
 
     function applyReaderSize() {
-      document.documentElement.style.setProperty("--reader-size", `${readerSize}px`);
-      const sizeOutput = document.getElementById("size-output");
-      const sizeRange = document.getElementById("size-range");
-      if (sizeOutput) {
-        sizeOutput.textContent = `${readerSize}px`;
-      }
-      if (sizeRange) {
-        sizeRange.value = String(readerSize);
+      try {
+        document.documentElement.style.setProperty("--reader-size", `${readerSize}px`);
+        const sizeOutput = document.getElementById("size-output");
+        const sizeRange = document.getElementById("size-range");
+        if (sizeOutput) {
+          sizeOutput.textContent = `${readerSize}px`;
+        }
+        if (sizeRange) {
+          sizeRange.value = String(readerSize);
+        }
+        
+      } catch (error) {
+        console.error('Error applying reader size:', error);
+        showNotification('Failed to apply reader size', 'error');
       }
     }
 
     function changeReaderSize(delta) {
-      setReaderSize(readerSize + delta);
+      try {
+        setReaderSize(readerSize + delta);
+        
+      } catch (error) {
+        console.error('Error changing reader size:', error);
+        showNotification('Failed to change reader size', 'error');
+      }
     }
 
     function resetReaderSize() {
-      setReaderSize(18);
+      try {
+        setReaderSize(18);
+        
+      } catch (error) {
+        console.error('Error resetting reader size:', error);
+        showNotification('Failed to reset reader size', 'error');
+      }
     }
 
     function getCurrentPageText() {

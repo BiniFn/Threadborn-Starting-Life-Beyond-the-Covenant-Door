@@ -30,220 +30,690 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Threadborn Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root { color-scheme: dark; --bg:#07090f; --card:#111521; --text:#eef3ff; --muted:#99a4bf; --accent:#6da8ff; --border:rgba(255,255,255,.14); }
-    * { box-sizing: border-box; font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; }
-    body { margin:0; background:radial-gradient(circle at top, #1a2440, var(--bg) 52%); color:var(--text); padding:24px; }
-    .shell { max-width: 920px; margin: 0 auto; display:grid; gap:14px; }
-    .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px; }
-    .row { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
-    .avatar { width:84px; height:84px; border-radius:50%; object-fit:cover; border:1px solid var(--border); }
-    input, textarea, button, select { width:100%; border-radius:10px; border:1px solid var(--border); background:#0a0f1c; color:var(--text); padding:10px 12px; }
-    button { background:var(--accent); color:#081427; font-weight:700; cursor:pointer; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
-    .muted { color:var(--muted); font-size:.93rem; }
-    .badge { display:inline-block; font-size:.8rem; padding:4px 8px; border-radius:999px; border:1px solid var(--border); }
-    .ok { color:#8ceba1; }
+    :root {
+      --bg: #050505;
+      --bg-soft: #12090a;
+      --panel: rgba(21, 10, 12, 0.78);
+      --panel-strong: rgba(12, 12, 16, 0.88);
+      --blood: #cf2f2f;
+      --blood-soft: rgba(207, 47, 47, 0.14);
+      --ember: #ff8c5a;
+      --void: #84d0c7;
+      --bone: #f6eee8;
+      --mist: #afa095;
+      --line: rgba(255, 255, 255, 0.08);
+      --line-strong: rgba(255, 255, 255, 0.16);
+      --shadow: 0 25px 70px rgba(0, 0, 0, 0.45);
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.4);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --radius-xs: 8px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { 
+      box-sizing: border-box; 
+      font-family: "Bricolage Grotesque", sans-serif;
+    }
+
+    body { 
+      margin:0; 
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(207, 47, 47, 0.22), transparent 28%),
+        radial-gradient(circle at 80% 20%, rgba(132, 208, 199, 0.14), transparent 22%),
+        linear-gradient(180deg, #090607 0%, #050505 45%, #0b0708 100%);
+      color:var(--bone); 
+      padding:24px;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.28;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: radial-gradient(circle at center, black, transparent 95%);
+    }
+
+    .shell { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      display:grid; 
+      gap:24px; 
+      position: relative;
+      z-index: 1;
+    }
+
+    .card { 
+      background:var(--panel); 
+      border:1px solid var(--line); 
+      border-radius:var(--radius-md); 
+      padding:24px;
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--line-strong);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0;
+      color: var(--bone);
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--mist);
+      margin: 4px 0 0 0;
+    }
+
+    .row { 
+      display:flex; 
+      gap:16px; 
+      align-items:center; 
+      flex-wrap:wrap; 
+    }
+
+    .avatar { 
+      width:96px; 
+      height:96px; 
+      border-radius:50%; 
+      object-fit:cover; 
+      border:2px solid var(--line-strong); 
+      box-shadow: var(--shadow-sm);
+    }
+
+    .profile-header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .profile-name {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--bone);
+      margin: 0;
+    }
+
+    .profile-level {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, var(--blood-soft), rgba(132, 208, 199, 0.1));
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--bone);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      text-align: center;
+      transition: var(--transition-fast);
+    }
+
+    .stat-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--line-strong);
+      transform: translateY(-1px);
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--ember);
+      margin: 0 0 8px 0;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--mist);
+      margin: 0;
+    }
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 16px;
+    }
+
+    .achievement {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      text-align: center;
+      transition: var(--transition-fast);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .achievement:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--line-strong);
+      transform: translateY(-2px);
+    }
+
+    .achievement.unlocked {
+      border-color: var(--void);
+      background: rgba(132, 208, 199, 0.1);
+    }
+
+    .achievement-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .achievement-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--bone);
+      margin: 0;
+    }
+
+    .achievement-desc {
+      font-size: 10px;
+      color: var(--mist);
+      margin: 4px 0 0 0;
+      line-height: 1.4;
+    }
+
+    input, textarea, select { 
+      width:100%; 
+      border-radius:var(--radius-sm); 
+      border:1px solid var(--line); 
+      background:rgba(255, 255, 255, 0.06); 
+      color:var(--bone); 
+      padding:12px 16px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 14px;
+      transition: var(--transition-fast);
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--void);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(132, 208, 199, 0.2);
+    }
+
+    button { 
+      background: linear-gradient(135deg, var(--blood), var(--ember)); 
+      color:var(--bone); 
+      font-weight:700; 
+      cursor:pointer;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 12px 24px;
+      font-size: 14px;
+      transition: var(--transition-fast);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .grid { 
+      display:grid; 
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); 
+      gap:20px; 
+    }
+
+    .muted { 
+      color:var(--mist); 
+      font-size:.93rem; 
+    }
+
+    .badge { 
+      display:inline-block; 
+      font-size:.8rem; 
+      padding:6px 12px; 
+      border-radius:999px; 
+      border:1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.04);
+      font-weight: 700;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blood), var(--void), var(--ember));
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--mist);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: var(--transition-fast);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 24px;
+    }
+
+    .nav-back:hover {
+      color: var(--bone);
+      background: rgba(255, 255, 255, 0.04);
+      transform: translateX(-4px);
+    }
+
+    @media (max-width: 768px) {
+      .shell {
+        padding: 16px;
+        gap: 16px;
+      }
+      
+      .profile-header {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .achievements-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+    }
   </style>
 </head>
 <body>
+  <a href="./index.html" class="nav-back">← Back to Reader</a>
+  
   <main class="shell">
     <article class="card">
-      <div class="row">
-        <img id="avatar" class="avatar" alt="Avatar" src="./assets/threadborn-logo.png" />
+      <div class="profile-header">
         <div>
-          <h1 id="name" style="margin:0;">Profile</h1>
-          <p id="meta" class="muted" style="margin:6px 0 0;">Loading...</p>
-          <span id="verified" class="badge" style="display:none;">Verified</span>
+          <img id="avatar" class="avatar" alt="Avatar" src="./assets/threadborn-logo.png" />
+        </div>
+        <div class="profile-info">
+          <h1 id="name" class="profile-name">Guest Reader</h1>
+          <div class="profile-level">
+            <span>📖</span>
+            <span id="reader-level">Level 1 Reader</span>
+          </div>
+          <p id="meta" class="muted">Threadborn Reader since today</p>
         </div>
       </div>
     </article>
 
     <article class="card">
-      <h2 style="margin-top:0;">Profile Settings</h2>
-      <div class="grid">
+      <div class="card-header">
         <div>
-          <label>Username</label>
-          <input id="username" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" />
+          <h2 class="card-title">Reading Statistics</h2>
+          <p class="card-subtitle">Track your reading journey through Lumera</p>
         </div>
       </div>
-      <div class="row" style="margin-top:10px;">
-        <button id="save-profile">Save Profile</button>
-        <a href="./index.html" class="muted">Back to reader</a>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="chapters-read">0</div>
+          <p class="stat-label">Chapters Read</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="time-spent">0h</div>
+          <p class="stat-label">Time Spent Reading</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="bookmark-count">0</div>
+          <p class="stat-label">Bookmarks Created</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="pages-read">0</div>
+          <p class="stat-label">Pages Read</p>
+        </div>
       </div>
-      <p id="profile-status" class="muted"></p>
+      <div style="margin-top: 20px;">
+        <div class="row" style="justify-content: space-between; margin-bottom: 8px;">
+          <span style="font-size: 14px; font-weight: 500;">Reading Progress</span>
+          <span style="font-size: 14px; color: var(--mist);" id="progress-percent">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+        </div>
+        <p class="muted" style="margin-top: 8px; font-size: 12px;">Last read: <span id="last-read">Never</span></p>
+      </div>
     </article>
 
     <article class="card">
-      <h2 style="margin-top:0;">Reading Settings</h2>
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Achievements</h2>
+          <p class="card-subtitle">Unlock milestones as you explore Threadborn</p>
+        </div>
+      </div>
+      <div class="achievements-grid">
+        <div class="achievement unlocked" data-achievement="first-chapter">
+          <div class="achievement-icon">📖</div>
+          <p class="achievement-name">First Steps</p>
+          <p class="achievement-desc">Read your first chapter</p>
+        </div>
+        <div class="achievement" data-achievement="bookworm">
+          <div class="achievement-icon">📚</div>
+          <p class="achievement-name">Bookworm</p>
+          <p class="achievement-desc">Read 5 chapters</p>
+        </div>
+        <div class="achievement" data-achievement="night-owl">
+          <div class="achievement-icon">🦉</div>
+          <p class="achievement-name">Night Owl</p>
+          <p class="achievement-desc">Read for 2 hours</p>
+        </div>
+        <div class="achievement" data-achievement="explorer">
+          <div class="achievement-icon">🗺️</div>
+          <p class="achievement-name">Explorer</p>
+          <p class="achievement-desc">Try all themes</p>
+        </div>
+        <div class="achievement" data-achievement="collector">
+          <div class="achievement-icon">💾</div>
+          <p class="achievement-name">Collector</p>
+          <p class="achievement-desc">Export 3 files</p>
+        </div>
+        <div class="achievement" data-achievement="bilingual">
+          <div class="achievement-icon">🌏</div>
+          <p class="achievement-name">Bilingual</p>
+          <p class="achievement-desc">Switch languages</p>
+        </div>
+        <div class="achievement" data-achievement="speed-reader">
+          <div class="achievement-icon">⚡</div>
+          <p class="achievement-name">Speed Reader</p>
+          <p class="achievement-desc">Read 10 chapters</p>
+        </div>
+        <div class="achievement" data-achievement="veteran">
+          <div class="achievement-icon">🏆</div>
+          <p class="achievement-name">Veteran</p>
+          <p class="achievement-desc">Complete Volume 1</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Settings</h2>
+          <p class="card-subtitle">Customize your reading experience</p>
+        </div>
+      </div>
       <div class="grid">
         <div>
-          <label>Theme</label>
-          <select id="setting-theme">
+          <label class="muted">Display Name</label>
+          <input id="display-name" type="text" placeholder="Enter your name" />
+        </div>
+        <div>
+          <label class="muted">Reader Theme</label>
+          <select id="theme-select">
             <option value="night">Night</option>
             <option value="paper">Paper</option>
             <option value="ember">Ember</option>
+            <option value="forest">Forest</option>
+            <option value="ocean">Ocean</option>
+            <option value="sunset">Sunset</option>
+            <option value="midnight">Midnight</option>
           </select>
         </div>
         <div>
-          <label>Text size</label>
-          <input id="setting-size" type="number" min="15" max="24" step="1" />
+          <label class="muted">Language</label>
+          <select id="lang-select">
+            <option value="en">English</option>
+            <option value="ja">Japanese</option>
+            <option value="bilingual">Bilingual</option>
+          </select>
+        </div>
+        <div>
+          <label class="muted">Text Size</label>
+          <input id="reader-size" type="range" min="15" max="24" value="18" />
+          <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+            <span style="font-size: 12px; color: var(--mist);">Small</span>
+            <span style="font-size: 12px; color: var(--mist);" id="size-value">18px</span>
+            <span style="font-size: 12px; color: var(--mist);">Large</span>
+          </div>
         </div>
       </div>
-      <button id="save-settings" style="margin-top:10px;">Save Settings</button>
-      <p id="settings-status" class="muted"></p>
+      <div style="margin-top: 20px;">
+        <button onclick="saveSettings()">Save Settings</button>
+        <button onclick="resetProgress()" style="background: var(--blood); margin-left: 12px;">Reset Progress</button>
+      </div>
     </article>
 
     <article class="card">
-      <h2 style="margin-top:0;">Bookmarks</h2>
-      <div id="bookmarks" class="muted">Loading bookmarks...</div>
-    </article>
-
-    <article class="card">
-      <h2 style="margin-top:0;">Reading Analytics</h2>
-      <div id="analytics" class="muted">Loading analytics...</div>
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Recent Activity</h2>
+          <p class="card-subtitle">Your latest reading sessions</p>
+        </div>
+      </div>
+      <div id="recent-activity">
+        <p class="muted" style="text-align: center; padding: 20px;">No recent activity yet. Start reading to see your history here!</p>
+      </div>
     </article>
   </main>
 
-  <script src="./runtime-config.js"></script>
   <script>
-    function resolveApiBase() {
-      const configured = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
-      if (configured) {
-        return configured;
-      }
-      const host = window.location.hostname;
-      if (host === "appassets.androidplatform.net") {
-        return "https://threadborn.vercel.app";
-      }
-      return "";
+    function loadProfile() {
+      const name = localStorage.getItem('threadborn_display_name') || 'Guest Reader';
+      const theme = localStorage.getItem('threadborn_theme') || 'night';
+      const lang = localStorage.getItem('threadborn_lang') || 'en';
+      const size = localStorage.getItem('threadborn_reader_size') || '18';
+      
+      document.getElementById('name').textContent = name;
+      document.getElementById('display-name').value = name;
+      document.getElementById('theme-select').value = theme;
+      document.getElementById('lang-select').value = lang;
+      document.getElementById('reader-size').value = size;
+      document.getElementById('size-value').textContent = size + 'px';
+      
+      // Load stats
+      const chaptersRead = parseInt(localStorage.getItem('threadborn_chapters_read') || '0');
+      const timeSpent = parseInt(localStorage.getItem('threadborn_time_spent') || '0');
+      const bookmarkCount = JSON.parse(localStorage.getItem('threadborn_bookmarks') || '[]').length;
+      const pagesRead = parseInt(localStorage.getItem('threadborn_pages_read') || '0');
+      const lastRead = localStorage.getItem('threadborn_last_read') || 'Never';
+      
+      document.getElementById('chapters-read').textContent = chaptersRead;
+      document.getElementById('time-spent').textContent = formatTime(timeSpent);
+      document.getElementById('bookmark-count').textContent = bookmarkCount;
+      document.getElementById('pages-read').textContent = pagesRead;
+      document.getElementById('last-read').textContent = lastRead;
+      
+      // Update level
+      const level = calculateLevel(chaptersRead);
+      document.getElementById('reader-level').textContent = `Level ${level} Reader`;
+      
+      // Update progress
+      const totalChapters = 10; // Update this with actual total
+      const progress = Math.min(100, Math.round((chaptersRead / totalChapters) * 100));
+      document.getElementById('progress-percent').textContent = progress + '%';
+      document.getElementById('progress-fill').style.width = progress + '%';
+      
+      // Load achievements
+      loadAchievements(chaptersRead, timeSpent, bookmarkCount);
+      
+      // Load recent activity
+      loadRecentActivity();
+      
+      document.getElementById('meta').textContent = `Threadborn Reader since ${new Date().toLocaleDateString()}`;
     }
-
-    const API_BASE = resolveApiBase();
-    const avatarEl = document.getElementById("avatar");
-    const nameEl = document.getElementById("name");
-    const metaEl = document.getElementById("meta");
-    const verifiedEl = document.getElementById("verified");
-    const profileStatus = document.getElementById("profile-status");
-    const settingsStatus = document.getElementById("settings-status");
-    let csrfToken = "";
-
-    async function apiFetch(path, options = {}) {
-      const headers = Object.assign({ "Content-Type": "application/json" }, options.headers || {});
-      if (csrfToken) headers["X-CSRF-Token"] = csrfToken;
-      const response = await fetch(`${API_BASE}${path}`, Object.assign({}, options, { credentials: "include", headers }));
-      const json = await response.json();
-      if (!response.ok || !json.success) throw new Error(json.error || "Request failed");
-      return json.data;
-    }
-
-    function setMessage(target, message, ok) {
-      target.textContent = message;
-      target.className = ok ? "muted ok" : "muted";
-    }
-
-    document.getElementById("save-profile").addEventListener("click", async () => {
-      try {
-        const username = document.getElementById("username").value.trim();
-        if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) {
-          throw new Error("Username must be 3-24 letters, numbers, or underscores.");
-        }
-        const profile = await apiFetch("/api/user/profile", {
-          method: "PATCH",
-          body: JSON.stringify({ username })
-        });
-        nameEl.textContent = profile.user.username;
-        avatarEl.src = "./assets/threadborn-logo.png";
-        localStorage.setItem("threadborn_user", JSON.stringify({
-          id: profile.user.id,
-          email: profile.user.email,
-          displayName: profile.user.username,
-          avatarUrl: "./assets/threadborn-logo.png",
-          verified: profile.user.verified,
-          role: profile.user.role
-        }));
-        setMessage(profileStatus, "Profile saved.", true);
-      } catch (error) {
-        setMessage(profileStatus, error.message, false);
+    
+    function formatTime(seconds) {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      if (hours > 0) {
+        return `${hours}h ${minutes}m`;
       }
-    });
-
-    document.getElementById("save-settings").addEventListener("click", async () => {
-      const settings = {
-        readerTheme: document.getElementById("setting-theme").value,
-        readerSize: Number(document.getElementById("setting-size").value || 18)
+      return `${minutes}m`;
+    }
+    
+    function calculateLevel(chaptersRead) {
+      if (chaptersRead >= 10) return 5;
+      if (chaptersRead >= 7) return 4;
+      if (chaptersRead >= 5) return 3;
+      if (chaptersRead >= 3) return 2;
+      return 1;
+    }
+    
+    function loadAchievements(chaptersRead, timeSpent, bookmarkCount) {
+      const achievements = {
+        'first-chapter': chaptersRead >= 1,
+        'bookworm': chaptersRead >= 5,
+        'night-owl': timeSpent >= 7200, // 2 hours
+        'explorer': JSON.parse(localStorage.getItem('threadborn_themes_tried') || '[]').length >= 4,
+        'collector': parseInt(localStorage.getItem('threadborn_exports_count') || '0') >= 3,
+        'bilingual': localStorage.getItem('threadborn_lang_switched') === 'true',
+        'speed-reader': chaptersRead >= 10,
+        'veteran': chaptersRead >= 5 // Volume 1 has 5 chapters
       };
-      try {
-        await apiFetch("/api/user/settings", { method: "PUT", body: JSON.stringify({ settings }) });
-        localStorage.setItem("threadborn_reader_settings_cache", JSON.stringify(settings));
-        setMessage(settingsStatus, "Settings saved.", true);
-      } catch (error) {
-        setMessage(settingsStatus, error.message, false);
-      }
-    });
-
-    async function loadProfile() {
-      const me = await apiFetch("/api/auth/me");
-      csrfToken = me.csrfToken || "";
-      const user = me.user;
-      avatarEl.src = "./assets/threadborn-logo.png";
-      nameEl.textContent = user.username;
-      metaEl.textContent = `${user.email} • role: ${user.role}`;
-      verifiedEl.style.display = user.verified ? "inline-block" : "none";
-      document.getElementById("username").value = user.username;
-
-      const profile = await apiFetch("/api/user/profile");
-      const posts = Array.isArray(profile.posts) ? profile.posts : [];
-      if (posts.length) {
-        const lines = posts.map(post => `<div>• ${post.title} (${post.category || "post"})</div>`).join("");
-        document.getElementById("analytics").insertAdjacentHTML("beforebegin", `<article class="card"><h2 style="margin-top:0;">User Posts</h2>${lines}</article>`);
-      }
-    }
-
-    async function loadBookmarks() {
-      const data = await apiFetch("/api/reader/bookmarks?novelId=threadborn");
-      const bookmarks = data.bookmarks || [];
-      if (!bookmarks.length) {
-        document.getElementById("bookmarks").textContent = "No bookmarks yet.";
-        return;
-      }
-      document.getElementById("bookmarks").innerHTML = bookmarks.map(item =>
-        `<div>• ${item.label || `${item.volume_id} ${item.chapter_id}`} (page ${Math.floor(item.scroll_position) + 1})</div>`
-      ).join("");
-    }
-
-    async function loadAnalytics() {
-      const data = await apiFetch("/api/reader/analytics");
-      const rows = data.volumes || [];
-      if (!rows.length) {
-        document.getElementById("analytics").textContent = "No reading analytics yet.";
-        return;
-      }
-      document.getElementById("analytics").innerHTML = rows.map(row =>
-        `<div>• ${row.volume_id}: ${row.total_time}s (last read ${new Date(row.last_read_at).toLocaleString()})</div>`
-      ).join("");
-    }
-
-    (async () => {
-      try {
-        await loadProfile();
-        try {
-          const settings = await apiFetch("/api/user/settings");
-          const reader = settings.settings || {};
-          document.getElementById("setting-theme").value = reader.readerTheme || "night";
-          document.getElementById("setting-size").value = String(reader.readerSize || 18);
-        } catch (error) {
-          const local = JSON.parse(localStorage.getItem("threadborn_reader_settings_cache") || "{}");
-          document.getElementById("setting-theme").value = local.readerTheme || "night";
-          document.getElementById("setting-size").value = String(local.readerSize || 18);
+      
+      Object.keys(achievements).forEach(id => {
+        const element = document.querySelector(`[data-achievement="${id}"]`);
+        if (element && achievements[id]) {
+          element.classList.add('unlocked');
         }
-        await loadBookmarks();
-        await loadAnalytics();
-      } catch (error) {
-        metaEl.textContent = "Login required.";
-        setMessage(profileStatus, "Please login first.", false);
+      });
+    }
+    
+    function loadRecentActivity() {
+      const activity = JSON.parse(localStorage.getItem('threadborn_recent_activity') || '[]');
+      const container = document.getElementById('recent-activity');
+      
+      if (activity.length === 0) {
+        container.innerHTML = '<p class="muted" style="text-align: center; padding: 20px;">No recent activity yet. Start reading to see your history here!</p>';
+        return;
       }
-    })();
+      
+      container.innerHTML = activity.slice(0, 5).map(item => `
+        <div style="padding: 12px 0; border-bottom: 1px solid var(--line);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <p style="margin: 0; font-weight: 500;">${item.action}</p>
+              <p class="muted" style="margin: 4px 0 0; font-size: 12px;">${item.details}</p>
+            </div>
+            <span class="muted" style="font-size: 12px;">${item.time}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function saveSettings() {
+      const name = document.getElementById('display-name').value;
+      const theme = document.getElementById('theme-select').value;
+      const lang = document.getElementById('lang-select').value;
+      const size = document.getElementById('reader-size').value;
+      
+      localStorage.setItem('threadborn_display_name', name);
+      localStorage.setItem('threadborn_theme', theme);
+      localStorage.setItem('threadborn_lang', lang);
+      localStorage.setItem('threadborn_reader_size', size);
+      
+      // Track theme usage
+      const themesTried = JSON.parse(localStorage.getItem('threadborn_themes_tried') || '[]');
+      if (!themesTried.includes(theme)) {
+        themesTried.push(theme);
+        localStorage.setItem('threadborn_themes_tried', JSON.stringify(themesTried));
+      }
+      
+      // Add activity
+      addActivity('Settings Updated', `Changed theme to ${theme} and size to ${size}px`);
+      
+      alert('Settings saved successfully!');
+      loadProfile();
+    }
+    
+    function resetProgress() {
+      if (confirm('Are you sure you want to reset all reading progress? This cannot be undone.')) {
+        localStorage.removeItem('threadborn_chapters_read');
+        localStorage.removeItem('threadborn_time_spent');
+        localStorage.removeItem('threadborn_pages_read');
+        localStorage.removeItem('threadborn_last_read');
+        localStorage.removeItem('threadborn_bookmarks');
+        localStorage.removeItem('threadborn_recent_activity');
+        
+        addActivity('Progress Reset', 'All reading progress was cleared');
+        loadProfile();
+        alert('Progress reset successfully!');
+      }
+    }
+    
+    function addActivity(action, details) {
+      const activity = JSON.parse(localStorage.getItem('threadborn_recent_activity') || '[]');
+      activity.unshift({
+        action,
+        details,
+        time: new Date().toLocaleString()
+      });
+      localStorage.setItem('threadborn_recent_activity', JSON.stringify(activity.slice(0, 20)));
+    }
+    
+    // Update size display
+    document.getElementById('reader-size').addEventListener('input', function() {
+      document.getElementById('size-value').textContent = this.value + 'px';
+    });
+    
+    loadProfile();
   </script>
 </body>
 </html>
