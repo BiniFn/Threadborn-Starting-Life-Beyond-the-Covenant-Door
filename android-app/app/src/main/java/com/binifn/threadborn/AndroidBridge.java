@@ -2,6 +2,7 @@ package com.binifn.threadborn;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -16,9 +17,11 @@ import java.io.OutputStream;
 
 public class AndroidBridge {
   private final MainActivity activity;
+  private final SharedPreferences preferences;
 
   public AndroidBridge(MainActivity activity) {
     this.activity = activity;
+    this.preferences = activity.getSharedPreferences("threadborn_prefs", 0);
   }
 
   @JavascriptInterface
@@ -75,6 +78,43 @@ public class AndroidBridge {
 
   private String safeFilename(String filename) {
     return filename.replaceAll("[^A-Za-z0-9._-]", "_");
+  }
+
+  @JavascriptInterface
+  public void setStringPreference(String key, String value) {
+    preferences.edit().putString(key, value).apply();
+  }
+
+  @JavascriptInterface
+  public String getStringPreference(String key, String defaultValue) {
+    return preferences.getString(key, defaultValue);
+  }
+
+  @JavascriptInterface
+  public void setIntPreference(String key, int value) {
+    preferences.edit().putInt(key, value).apply();
+  }
+
+  @JavascriptInterface
+  public int getIntPreference(String key, int defaultValue) {
+    return preferences.getInt(key, defaultValue);
+  }
+
+  @JavascriptInterface
+  public void syncDataStore(String data) {
+    // Store synchronized data for cross-device compatibility
+    preferences.edit().putString("data_store", data).apply();
+    activity.showToast("Data synchronized");
+  }
+
+  @JavascriptInterface
+  public String getDataStore() {
+    return preferences.getString("data_store", "{}");
+  }
+
+  @JavascriptInterface
+  public String getDeviceInfo() {
+    return "Android " + Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + ")";
   }
 }
 

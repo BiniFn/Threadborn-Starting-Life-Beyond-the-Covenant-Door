@@ -1330,6 +1330,34 @@
         linear-gradient(180deg, #120708, #090607 50%, #140a0d 100%);
     }
 
+    body.reader-theme-forest .reader {
+      background:
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.15), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.1), transparent 25%),
+        linear-gradient(180deg, #0a1f0a, #0d2d0d 55%, #0f3d0f 100%);
+    }
+
+    body.reader-theme-ocean .reader {
+      background:
+        radial-gradient(circle at top center, rgba(59, 130, 246, 0.2), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.15), transparent 28%),
+        linear-gradient(180deg, #0c1929, #0f2444 55%, #122f5f 100%);
+    }
+
+    body.reader-theme-sunset .reader {
+      background:
+        radial-gradient(circle at top right, rgba(251, 146, 60, 0.25), transparent 32%),
+        radial-gradient(circle at bottom left, rgba(239, 68, 68, 0.15), transparent 28%),
+        linear-gradient(180deg, #1a0f08, #2d1810 55%, #402118 100%);
+    }
+
+    body.reader-theme-midnight .reader {
+      background:
+        radial-gradient(circle at center, rgba(99, 102, 241, 0.1), transparent 40%),
+        radial-gradient(circle at top left, rgba(139, 92, 246, 0.08), transparent 30%),
+        linear-gradient(180deg, #000000, #0a0a0f 55%, #141420 100%);
+    }
+
     .reader-top,
     .reader-footer {
       display: flex;
@@ -1702,6 +1730,69 @@
       color: rgba(246, 238, 232, 0.38);
       font-family: "Space Mono", monospace;
       font-size: 13px;
+    }
+
+    /* Bilingual Layout Styles */
+    .bilingual-container {
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    .bilingual-block {
+      margin: 20px 0;
+      border-left: 3px solid rgba(255, 214, 120, 0.3);
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .bilingual-en, .bilingual-ja {
+      padding: 16px 20px;
+      line-height: 1.6;
+    }
+
+    .bilingual-en {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .bilingual-ja {
+      font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+      font-size: 0.95em;
+      color: #ffe8df;
+    }
+
+    .bilingual-en p, .bilingual-ja p {
+      margin: 0 0 12px 0;
+    }
+
+    .bilingual-en p:last-child, .bilingual-ja p:last-child {
+      margin-bottom: 0;
+    }
+
+    .bilingual-en .chapter-title {
+      font-size: 1.8em;
+      margin-bottom: 8px;
+    }
+
+    .bilingual-ja .chapter-title {
+      font-size: 1.6em;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .bilingual-block {
+        margin: 16px 0;
+      }
+      
+      .bilingual-en, .bilingual-ja {
+        padding: 12px 16px;
+      }
+      
+      .bilingual-ja {
+        font-size: 0.9em;
+      }
     }
 
     .reader-content .scene-title {
@@ -2828,6 +2919,7 @@
         <div class="toolbar-value">Playback controls</div>
         <p class="toolbar-note">Listen to the current page with built-in text to speech.</p>
         <div class="toolbar-actions">
+          <button class="ghost-btn" onclick="createBookmark()">📝 Bookmark</button>
           <button class="ghost-btn" onclick="speakCurrentPage()">Play</button>
           <button class="ghost-btn" onclick="toggleSpeechPause()">Pause</button>
           <button class="ghost-btn" onclick="stopSpeech()">Stop</button>
@@ -2855,6 +2947,16 @@
       </div>
 
       <label class="toolbar-pill chapter-card">
+        <span class="pill-label">Language</span>
+        <div class="toolbar-value">Bilingual mode</div>
+        <select id="language-toggle" onchange="toggleLanguage(this.value)" aria-label="Toggle language">
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+          <option value="both">Side-by-Side</option>
+        </select>
+      </label>
+
+      <label class="toolbar-pill chapter-card">
         <span class="pill-label">Jump to chapter</span>
         <div class="toolbar-value">Move faster</div>
         <select id="chapter-jump" onchange="jumpToChapter(this.value)" aria-label="Jump to chapter"></select>
@@ -2879,7 +2981,17 @@
           <option value="night">Night</option>
           <option value="paper">Paper</option>
           <option value="ember">Ember</option>
+          <option value="forest">Forest</option>
+          <option value="ocean">Ocean</option>
+          <option value="sunset">Sunset</option>
+          <option value="midnight">Midnight</option>
         </select>
+      </label>
+
+      <label class="toolbar-pill">
+        <span class="pill-label">Theme brightness</span>
+        <div class="toolbar-value" id="brightness-output">100%</div>
+        <input id="brightness-range" type="range" min="60" max="120" step="5" value="100" oninput="updateBrightness(this.value)" aria-label="Theme brightness" />
       </label>
 
       <label class="toolbar-pill">
@@ -2891,7 +3003,23 @@
       <label class="toolbar-pill">
         <span class="pill-label">Reading speed</span>
         <div class="toolbar-value" id="rate-output">1.0x</div>
-        <input id="rate-range" type="range" min="0.8" max="1.4" step="0.1" value="1" oninput="updateRateLabel(this.value)" aria-label="Text to speech speed" />
+        <input id="rate-range" type="range" min="0.5" max="2.0" step="0.1" value="1" oninput="updateRateLabel(this.value)" aria-label="Text to speech speed" />
+      </label>
+
+      <label class="toolbar-pill">
+        <span class="pill-label">Voice pitch</span>
+        <div class="toolbar-value" id="pitch-output">1.0</div>
+        <input id="pitch-range" type="range" min="0.5" max="2.0" step="0.1" value="1" oninput="updatePitchLabel(this.value)" aria-label="Voice pitch" />
+      </label>
+
+      <label class="toolbar-pill">
+        <span class="pill-label">Reading mode</span>
+        <div class="toolbar-value">TTS settings</div>
+        <select id="reading-mode" onchange="setReadingMode(this.value)" aria-label="Reading mode">
+          <option value="continuous">Continuous</option>
+          <option value="sentence">Sentence-by-sentence</option>
+          <option value="word">Word-by-word</option>
+        </select>
       </label>
 
       <div class="toolbar-pill status">
@@ -4849,6 +4977,8 @@ Last chapter's ceiling is always this chapter's floor.</div>
     let activeHomeVolume = "Volume 1";
     let readerTheme = "night";
     let readerToolsOpen = false;
+    let currentLanguage = "en";
+    let bilingualMode = false;
     let ttsUtterance = null;
     let ttsVoices = [];
     let ttsKeepReading = false;
@@ -5201,7 +5331,7 @@ Last chapter's ceiling is always this chapter's floor.</div>
     }
 
     function applyReaderTheme() {
-      document.body.classList.remove("reader-theme-night", "reader-theme-paper", "reader-theme-ember");
+      document.body.classList.remove("reader-theme-night", "reader-theme-paper", "reader-theme-ember", "reader-theme-forest", "reader-theme-ocean", "reader-theme-sunset", "reader-theme-midnight");
       document.body.classList.add(`reader-theme-${readerTheme}`);
 
       const themeSelect = document.getElementById("theme-select");
@@ -5658,9 +5788,23 @@ Last chapter's ceiling is always this chapter's floor.</div>
       const prevButton = document.getElementById("prev-page");
       const nextButton = document.getElementById("next-page");
 
-      document.getElementById("reader-kicker").textContent = `${chapter.volume} • ${chapter.chapter}`;
-      document.getElementById("reader-title").textContent = chapter.title;
-      document.getElementById("reader-content").innerHTML = chapter.pages[activePage];
+      // Apply language localization
+      let localizedVolume = getLocalizedContent(chapter.volume, currentLanguage);
+      let localizedChapter = getLocalizedContent(chapter.chapter, currentLanguage);
+      let localizedTitle = getLocalizedContent(chapter.title, currentLanguage);
+      
+      document.getElementById("reader-kicker").textContent = `${localizedVolume} • ${localizedChapter}`;
+      document.getElementById("reader-title").textContent = localizedTitle;
+      
+      // Handle bilingual content display
+      let pageContent = chapter.pages[activePage];
+      if (bilingualMode) {
+        pageContent = createBilingualContent(pageContent);
+      } else {
+        pageContent = getLocalizedContent(pageContent, currentLanguage);
+      }
+      
+      document.getElementById("reader-content").innerHTML = pageContent;
       document.getElementById("page-indicator").textContent = `Page ${activePage + 1} / ${totalPages}`;
       prevButton.disabled = activePage === 0 && !hasPrevChapter;
       nextButton.disabled = activePage === totalPages - 1 && !hasNextChapter;
@@ -5672,8 +5816,8 @@ Last chapter's ceiling is always this chapter's floor.</div>
         .join("");
 
       document.getElementById("reader-meta").innerHTML = `
-        <span class="tag">${chapter.label}</span>
-        ${chapter.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}
+        <span class="tag">${getLocalizedContent(chapter.label, currentLanguage)}</span>
+        ${chapter.tags.map(tag => `<span class="tag">${getLocalizedContent(tag, currentLanguage)}</span>`).join("")}
       `;
 
       updateReaderSummary(chapter);
@@ -5873,9 +6017,17 @@ Last chapter's ceiling is always this chapter's floor.</div>
       }
 
       ttsUtterance.rate = Number(document.getElementById("rate-range").value);
+      ttsUtterance.pitch = Number(document.getElementById("pitch-range").value);
+      const readingMode = getReadingMode();
+      
       ttsUtterance.onstart = () => updateTtsStatus("Reading aloud");
       ttsUtterance.onboundary = event => {
-        if (event.name === "word" || event.name === "sentence" || typeof event.charIndex === "number") {
+        const mode = getReadingMode();
+        if (mode === "word" && event.name === "word") {
+          highlightSpokenRange(event.charIndex, event.charLength || 8);
+        } else if (mode === "sentence" && event.name === "sentence") {
+          highlightSpokenRange(event.charIndex, event.charLength || 20);
+        } else if (mode === "continuous" && (event.name === "word" || event.name === "sentence" || typeof event.charIndex === "number")) {
           highlightSpokenRange(event.charIndex, event.charLength || 8);
         }
       };
@@ -5963,6 +6115,215 @@ Last chapter's ceiling is always this chapter's floor.</div>
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&apos;");
+    }
+
+    function toggleLanguage(lang) {
+      currentLanguage = lang;
+      bilingualMode = (lang === "both");
+      localStorage.setItem("threadborn_language", lang);
+      
+      // Update TTS voice selection based on language
+      if (lang === "ja") {
+        // Prefer Japanese voices for Japanese content
+        const select = document.getElementById("voice-select");
+        if (select) {
+          const japaneseVoice = Array.from(select.options).find(option => 
+            option.value.toLowerCase().includes('japanese') || 
+            option.value.toLowerCase().includes('ja')
+          );
+          if (japaneseVoice) {
+            select.value = japaneseVoice.value;
+          }
+        }
+      }
+      
+      // Re-render current page with new language
+      renderPage();
+      updateTtsStatus(`Language: ${lang === 'en' ? 'English' : lang === 'ja' ? '日本語' : 'Bilingual'}`);
+    }
+
+    function getLocalizedContent(content, lang) {
+      if (lang === "en") {
+        return content;
+      }
+      
+      // Japanese translations for key content
+      const translations = {
+        "Volume 01 · Chapter 01": "巻01 · 第01章",
+        "Volume 01 · Chapter 02": "巻01 · 第02章", 
+        "Volume 01 · Chapter 03": "巻01 · 第03章",
+        "Volume 01 · Chapter 04": "巻01 · 第04章",
+        "Volume 02 · Chapter 01": "巻02 · 第01章",
+        "Volume 02 · Chapter 02": "巻02 · 第02章",
+        "The Goddess Who Pushed Me Off The Bridge": "私を橋から突き落とした女神",
+        "Rocket Tennis and a City on Fire": "ロケットテニスと燃える街",
+        "When the Warden Knocks": "看守がノックする時",
+        "The Price of Warm Things": "温かいものの代価",
+        "When the Seal Breathes": "封印が呼吸する時",
+        "The Strongest Chapter Yet": "最強の章",
+        "In which a young man learns that cats are a divine concern.": "若者が猫は神聖な関心事であることを学ぶ章。",
+        "In which the weapon works exactly as advertised, and that is the problem.": "武器が広告通りに機能し、それが問題である章。",
+        "In which the city introduces its opinion at volume.": "街が音量で意見を紹介する章。",
+        "In which healing is not always comfortable, a wall develops an opinion, and an old debt finds a new shape.": "治療が常に快適とは限らない章、壁が意見を持ち、古い債務が新しい形を見つける。",
+        "The door from the forest was never going to stay quiet once it learned who was standing in front of it.": "森からのドアは、その前に立っているのが誰かを学んだら、静まり続けることはなかった。",
+        "Velkor gets out a little. Yono gets out of limits a lot.": "ヴェルコールが少し外に出る。世乃が制限からたくさん出る。"
+      };
+      
+      let translated = content;
+      for (const [en, ja] of Object.entries(translations)) {
+        translated = translated.replace(new RegExp(en, 'g'), ja);
+      }
+      
+      return translated;
+    }
+
+    function createBilingualContent(content) {
+      // Extract text content from HTML and create side-by-side layout
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = content;
+      
+      // Get all text nodes and create bilingual pairs
+      const textNodes = [];
+      const walker = document.createTreeWalker(tempDiv, NodeFilter.SHOW_TEXT);
+      let node;
+      while (node = walker.nextNode()) {
+        if (node.textContent.trim()) {
+          textNodes.push(node.textContent.trim());
+        }
+      }
+      
+      // Create bilingual layout
+      let bilingualHTML = '<div class="bilingual-container">';
+      
+      // Process each paragraph or major text block
+      const paragraphs = tempDiv.querySelectorAll('p, h1, h2, h3, h4, h5, h6');
+      if (paragraphs.length > 0) {
+        paragraphs.forEach(p => {
+          const originalText = p.textContent.trim();
+          const translatedText = getLocalizedContent(originalText, 'ja');
+          
+          bilingualHTML += `
+            <div class="bilingual-block">
+              <div class="bilingual-en">
+                ${p.outerHTML}
+              </div>
+              <div class="bilingual-ja">
+                ${p.outerHTML.replace(originalText, translatedText)}
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        // Fallback for simple text
+        const originalText = tempDiv.textContent.trim();
+        const translatedText = getLocalizedContent(originalText, 'ja');
+        
+        bilingualHTML += `
+          <div class="bilingual-block">
+            <div class="bilingual-en">${content}</div>
+            <div class="bilingual-ja">${getLocalizedContent(content, 'ja')}</div>
+          </div>
+        `;
+      }
+      
+      bilingualHTML += '</div>';
+      return bilingualHTML;
+    }
+
+    function initializeLanguage() {
+      const savedLanguage = localStorage.getItem("threadborn_language") || "en";
+      currentLanguage = savedLanguage;
+      bilingualMode = (savedLanguage === "both");
+      
+      const languageSelect = document.getElementById("language-toggle");
+      if (languageSelect) {
+        languageSelect.value = savedLanguage;
+      }
+    }
+
+    function updatePitchLabel(value) {
+      document.getElementById("pitch-output").textContent = value;
+      if (ttsUtterance) {
+        ttsUtterance.pitch = parseFloat(value);
+      }
+    }
+
+    function setReadingMode(mode) {
+      localStorage.setItem("threadborn_reading_mode", mode);
+      updateTtsStatus(`Reading mode: ${mode}`);
+    }
+
+    function getReadingMode() {
+      return localStorage.getItem("threadborn_reading_mode") || "continuous";
+    }
+
+    function enhanceTTSFeatures() {
+      const pitchRange = document.getElementById("pitch-range");
+      const readingMode = document.getElementById("reading-mode");
+      
+      if (pitchRange) {
+        const savedPitch = localStorage.getItem("threadborn_voice_pitch") || "1.0";
+        pitchRange.value = savedPitch;
+        updatePitchLabel(savedPitch);
+      }
+      
+      if (readingMode) {
+        const savedMode = getReadingMode();
+        readingMode.value = savedMode;
+      }
+    }
+
+    function createBookmark() {
+      const chapter = chapters[activeChapter];
+      const bookmark = {
+        id: Date.now().toString(),
+        chapterIndex: activeChapter,
+        pageIndex: activePage,
+        chapterTitle: chapter.title,
+        chapterLabel: chapter.label,
+        timestamp: new Date().toISOString(),
+        note: prompt("Add a note for this bookmark (optional):") || ""
+      };
+      
+      let bookmarks = JSON.parse(localStorage.getItem("threadborn_bookmarks") || "[]");
+      bookmarks.push(bookmark);
+      localStorage.setItem("threadborn_bookmarks", JSON.stringify(bookmarks));
+      
+      updateTtsStatus("Bookmark created");
+      renderBookmarks();
+    }
+
+    function deleteBookmark(bookmarkId) {
+      let bookmarks = JSON.parse(localStorage.getItem("threadborn_bookmarks") || "[]");
+      bookmarks = bookmarks.filter(b => b.id !== bookmarkId);
+      localStorage.setItem("threadborn_bookmarks", JSON.stringify(bookmarks));
+      
+      updateTtsStatus("Bookmark deleted");
+      renderBookmarks();
+    }
+
+    function jumpToBookmark(bookmarkId) {
+      const bookmarks = JSON.parse(localStorage.getItem("threadborn_bookmarks") || "[]");
+      const bookmark = bookmarks.find(b => b.id === bookmarkId);
+      
+      if (bookmark) {
+        activeChapter = bookmark.chapterIndex;
+        activePage = bookmark.pageIndex;
+        renderPage();
+        updateTtsStatus(`Jumped to bookmark: ${bookmark.chapterTitle}`);
+      }
+    }
+
+    function renderBookmarks() {
+      const bookmarks = JSON.parse(localStorage.getItem("threadborn_bookmarks") || "[]");
+      const bookmarkJump = document.getElementById("bookmark-jump");
+      
+      if (bookmarkJump) {
+        bookmarkJump.innerHTML = '<option value="">Select a bookmark</option>' +
+          bookmarks.map(bookmark => 
+            `<option value="${bookmark.id}">${bookmark.chapterLabel} - Page ${bookmark.pageIndex + 1}${bookmark.note ? ' 📝' : ''}</option>`
+          ).join('');
+      }
     }
 
     function normalizeAscii(text) {
@@ -6587,6 +6948,160 @@ Last chapter's ceiling is always this chapter's floor.</div>
     }
 
     function saveProgress() {
+      const progress = {
+        chapter: activeChapter,
+        page: activePage,
+        size: readerSize,
+        theme: readerTheme,
+        language: currentLanguage,
+        voicePitch: document.getElementById("pitch-range")?.value || "1.0",
+        readingMode: getReadingMode(),
+        timestamp: new Date().toISOString(),
+        deviceId: getDeviceId()
+      };
+      
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+      
+      // Save to data store for cross-device sync
+      saveToDataStore(progress);
+    }
+
+    function loadProgress() {
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        try {
+          const progress = JSON.parse(saved);
+          activeChapter = progress.chapter || 0;
+          activePage = progress.page || 0;
+          readerSize = progress.size || 18;
+          readerTheme = progress.theme || "night";
+          currentLanguage = progress.language || "en";
+          
+          // Apply loaded settings
+          if (progress.voicePitch) {
+            localStorage.setItem("threadborn_voice_pitch", progress.voicePitch);
+          }
+          if (progress.readingMode) {
+            localStorage.setItem("threadborn_reading_mode", progress.readingMode);
+          }
+        } catch (e) {
+          console.warn("Failed to load progress:", e);
+        }
+      }
+      
+      // Try to load from data store
+      loadFromDataStore();
+    }
+
+    function getDeviceId() {
+      let deviceId = localStorage.getItem("threadborn_device_id");
+      if (!deviceId) {
+        deviceId = 'device_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+        localStorage.setItem("threadborn_device_id", deviceId);
+      }
+      return deviceId;
+    }
+
+    function saveToDataStore(progress) {
+      // Save to a shared data store for cross-device synchronization
+      try {
+        const dataStore = JSON.parse(localStorage.getItem("threadborn_data_store") || "{}");
+        const userKey = `user_${getDeviceId()}`;
+        
+        dataStore[userKey] = {
+          ...progress,
+          lastUpdated: new Date().toISOString()
+        };
+        
+        localStorage.setItem("threadborn_data_store", JSON.stringify(dataStore));
+        localStorage.setItem("threadborn_last_sync", new Date().toISOString());
+        
+        console.log("Progress saved to data store");
+      } catch (e) {
+        console.warn("Failed to save to data store:", e);
+      }
+    }
+
+    function loadFromDataStore() {
+      try {
+        const dataStore = JSON.parse(localStorage.getItem("threadborn_data_store") || "{}");
+        const userKey = `user_${getDeviceId()}`;
+        const storedProgress = dataStore[userKey];
+        
+        if (storedProgress) {
+          const localTime = localStorage.getItem("threadborn_last_sync");
+          const storedTime = storedProgress.lastUpdated;
+          
+          if (storedTime && (!localTime || new Date(storedTime) > new Date(localTime))) {
+            // Use data from store if it's newer
+            activeChapter = storedProgress.chapter || 0;
+            activePage = storedProgress.page || 0;
+            readerSize = storedProgress.size || 18;
+            readerTheme = storedProgress.theme || "night";
+            currentLanguage = storedProgress.language || "en";
+            
+            updateTtsStatus("Progress synchronized from data store");
+          }
+        }
+      } catch (e) {
+        console.warn("Failed to load from data store:", e);
+      }
+    }
+
+    function syncAllData() {
+      // Manual sync function
+      const progress = {
+        chapter: activeChapter,
+        page: activePage,
+        size: readerSize,
+        theme: readerTheme,
+        language: currentLanguage,
+        voicePitch: document.getElementById("pitch-range")?.value || "1.0",
+        readingMode: getReadingMode(),
+        timestamp: new Date().toISOString(),
+        deviceId: getDeviceId()
+      };
+      
+      saveToDataStore(progress);
+      updateTtsStatus("Data synchronized");
+    }
+
+    function updateBrightness(value) {
+      document.getElementById("brightness-output").textContent = value + "%";
+      document.documentElement.style.setProperty("--brightness-factor", value / 100);
+      localStorage.setItem("threadborn_brightness", value);
+    }
+
+    function initializeBrightness() {
+      const savedBrightness = localStorage.getItem("threadborn_brightness") || "100";
+      const brightnessRange = document.getElementById("brightness-range");
+      if (brightnessRange) {
+        brightnessRange.value = savedBrightness;
+        updateBrightness(savedBrightness);
+      }
+    }
+
+    async function downloadChapterPdf(index = activeChapter, button = null) {
+      const chapter = chapters[index];
+      const filename = `${sanitizeFilename(`${chapter.volume}-${chapter.chapter}-${chapter.title}`)}.pdf`;
+      const result = await withBusyButton(button, "Building PDF...", async () => {
+        const pdfBlob = await buildPdfBlob(chapter);
+        return downloadBlob(pdfBlob, filename);
+      });
+      updateTtsStatus(result === "saved" ? "Collector PDF saved to device" : "Collector PDF downloaded");
+    }
+
+    async function downloadChapterEpub(index = activeChapter, button = null) {
+      const chapter = chapters[index];
+      const filename = `${sanitizeFilename(`${chapter.volume}-${chapter.chapter}-${chapter.title}`)}.epub`;
+      const result = await withBusyButton(button, "Building EPUB...", async () => {
+        const epubBlob = await buildEpubBlob(chapter);
+        return downloadBlob(epubBlob, filename);
+      });
+      updateTtsStatus(result === "saved" ? "Styled EPUB saved to device" : "Styled EPUB downloaded");
+    }
+
+    function saveProgress() {
       const payload = {
         chapter: activeChapter,
         page: activePage,
@@ -6720,6 +7235,10 @@ Last chapter's ceiling is always this chapter's floor.</div>
     renderUserChip();
     renderVolumeComments();
     renderHomeChapters();
+    initializeLanguage();
+    enhanceTTSFeatures();
+    renderBookmarks();
+    initializeBrightness();
     applyReaderSize();
     applyReaderTheme();
     updateResumeButton();
