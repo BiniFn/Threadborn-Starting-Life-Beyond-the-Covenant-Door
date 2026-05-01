@@ -46,6 +46,9 @@ def sync_site_assets() -> None:
 def main() -> None:
   sync_site_assets()
   separator = ";" if os.name == "nt" else ":"
+  icon_ext = "ico" if os.name == "nt" else "icns"
+  icon_path = ROOT / "assets" / f"app-icon.{icon_ext}"
+
   cmd = [
     sys.executable,
     "-m",
@@ -55,6 +58,8 @@ def main() -> None:
     "--windowed",
     "--name",
     "Threadborn",
+    "--icon",
+    str(icon_path),
     "--collect-all",
     "webview",
     "--add-data",
