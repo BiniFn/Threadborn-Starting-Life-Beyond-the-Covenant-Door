@@ -601,9 +601,8 @@
         cdBanner.style.display = "none";
       }
 
-      // If owner dashboard is visible, populate inputs with the selected lang config
-      const dashboardView = document.getElementById("view-dashboard");
-      if (dashboardView && dashboardView.classList.contains("active")) {
+      // Populate owner dashboard inputs if dashboard elements exist
+      if (document.getElementById("dashboard-announcements-list")) {
         const ownerData = await apiFetch(`/api/dashboard?action=config&lang=${lang}`);
         const ownerNotifs = Array.isArray(ownerData.notifications) ? ownerData.notifications : (ownerData.notification ? [ownerData.notification] : []);
         const notifContainer = document.getElementById("dashboard-announcements-list");
