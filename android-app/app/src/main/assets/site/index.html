@@ -44,7 +44,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./global.css?v=21" />
+  <link rel="stylesheet" href="./global.css?v=22" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <style>
@@ -136,7 +136,10 @@
       <div id="global-countdown-banner" class="global-banner" style="display:none; background:#222; color:#fff; padding:10px; text-align:center; margin-bottom:24px; border-radius:8px; border:1px solid rgba(255, 107, 107, 0.4);">
         <strong id="global-countdown-title"></strong>: <span id="global-countdown-timer" style="color:#ff6b6b; font-family: 'Space Mono', monospace;"></span>
       </div>
-      <div id="global-polls-container" style="display: grid; gap: 16px;"></div>
+      <div id="global-polls-container" style="display: grid; gap: 16px; margin-bottom: 24px;"></div>
+      <div style="text-align:center;">
+        <button id="check-updates-btn" class="ghost-btn" onclick="checkUpdates()"><span style="margin-right:6px">🔄</span> Check for Updates</button>
+      </div>
     </section>
 
     <section id="view-app" class="view">
@@ -8310,7 +8313,47 @@
       updateTtsStatus("TTS unavailable");
     }
   </script>
-  <script src="./assets/phase1-client.js?v=21"></script>
+  <div id="update-banner" style="display:none; position:fixed; bottom:20px; right:20px; background:rgba(20,20,30,0.95); border:1px solid rgba(138,43,226,0.6); padding:16px; border-radius:12px; z-index:1000; box-shadow:0 8px 32px rgba(0,0,0,0.6); animation: slideUp 0.3s ease;">
+    <p style="margin:0 0 10px; color:#fff; font-family:'Space Mono',monospace; font-size:14px;">A new version is available!</p>
+    <button class="btn btn-primary" onclick="forceAppUpdate()" style="width:100%;">Update Now</button>
+  </div>
+  <style>
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+
+  <script src="./assets/phase1-client.js?v=22"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      let newWorker;
+      navigator.serviceWorker.register("./service-worker.js").then(reg => {
+        reg.addEventListener("updatefound", () => {
+          newWorker = reg.installing;
+          newWorker.addEventListener("statechange", () => {
+            if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+              document.getElementById("update-banner").style.display = "block";
+            }
+          });
+        });
+      });
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
+      window.forceAppUpdate = function() {
+        if (newWorker) {
+          newWorker.postMessage({ action: "skipWaiting" });
+        } else {
+          window.location.reload(true);
+        }
+      };
+    }
+  </script>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       const dp = document.getElementById("dashboard-countdown-date");

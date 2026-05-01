@@ -290,6 +290,24 @@
     }
   };
 
+  window.checkUpdates = function() {
+    const btn = document.getElementById("check-updates-btn");
+    if (btn) btn.textContent = "Checking...";
+    
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for(let registration of registrations) {
+          registration.update();
+        }
+      });
+    }
+    
+    // Force a hard reload bypassing cache
+    setTimeout(() => {
+      window.location.reload(true);
+    }, 500);
+  };
+
   window.syncBookmarkToAccount = async function syncBookmarkToAccount(bookmark) {
     if (!authUser || !bookmark) {
       return;
