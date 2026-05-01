@@ -2915,6 +2915,8 @@ label {
 }
 
 .poll-option {
+  position: relative;
+  overflow: hidden;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -2925,6 +2927,14 @@ label {
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.poll-bg {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  background: rgba(138, 43, 226, 0.2);
+  transition: width 0.4s ease;
+  z-index: 0;
 }
 
 .poll-option:hover {

@@ -53,6 +53,7 @@
     }
     const response = await fetch(apiPath(path), Object.assign({}, options, {
       credentials: "include",
+      cache: "no-store",
       headers
     }));
     let payload = {};
@@ -615,15 +616,19 @@
       let html = "";
       (data.polls || []).forEach(poll => {
         let optsHtml = "";
+        const totalVotes = poll.options.reduce((sum, o) => sum + parseInt(o.votes || 0), 0);
         poll.options.forEach(opt => {
           const votedKey = `voted_poll_${poll.id}`;
-          const isVoted = localStorage.getItem(votedKey) === opt.id;
+          const isVoted = localStorage.getItem(votedKey) === String(opt.id);
           const hasVotedAny = !!localStorage.getItem(votedKey);
+          const votesCount = parseInt(opt.votes || 0);
+          const percent = totalVotes > 0 ? Math.round((votesCount / totalVotes) * 100) : 0;
           
           optsHtml += `
             <div class="poll-option ${isVoted ? 'voted' : ''}" onclick="votePoll('${poll.id}', '${opt.id}')" style="${hasVotedAny ? 'cursor:default;' : ''}">
-              <span>${opt.option_text}</span>
-              <span class="votes">${opt.votes}</span>
+              <div class="poll-bg" style="width: ${hasVotedAny ? percent : 0}%;"></div>
+              <span style="position:relative; z-index:1;">${opt.option_text}</span>
+              <span class="votes" style="position:relative; z-index:1;">${votesCount} votes ${hasVotedAny ? `(${percent}%)` : ''}</span>
             </div>
           `;
         });
