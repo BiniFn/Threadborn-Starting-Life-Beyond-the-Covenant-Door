@@ -131,6 +131,8 @@
     const isOwner = loggedIn && authUser.role === "owner";
     const dashEl = document.getElementById("nav-dashboard");
     if (dashEl) dashEl.style.display = isOwner ? "" : "none";
+    const mDashEl = document.getElementById("mobile-nav-dashboard");
+    if (mDashEl) mDashEl.style.display = isOwner ? "" : "none";
     const loginEl = document.getElementById("nav-login");
     const signupEl = document.getElementById("nav-signup");
     const profileEl = document.getElementById("nav-profile");

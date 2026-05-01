@@ -486,30 +486,30 @@
     <section id="view-dashboard" class="view">
       <div class="section-head">
         <div>
-          <h2>Owner Dashboard</h2>
-          <p class="section-copy">Manage site content, global announcements, and art gallery.</p>
+          <h2>オーナーダッシュボード</h2>
+          <p class="section-copy">サイトコンテンツ、グローバルアナウンスメント、アートギャラリーを管理します。</p>
         </div>
       </div>
       <div class="grid">
         <article class="card">
-          <h3>Global Announcement</h3>
-          <p>Set a persistent banner at the top of the main menus.</p>
-          <input type="text" id="dashboard-announcement" placeholder="Announcement text..." style="width:100%; margin-bottom:10px; padding:8px;" />
-          <button class="nav-btn" onclick="saveDashboardConfig()">Save Config</button>
+          <h3>グローバルアナウンスメント</h3>
+          <p>メインメニューの上部に持続的なバナーを設定します。</p>
+          <input type="text" id="dashboard-announcement" placeholder="アナウンスメントのテキスト..." style="width:100%; margin-bottom:10px; padding:8px;" />
+          <button class="nav-btn" onclick="saveDashboardConfig()">設定を保存</button>
         </article>
         <article class="card">
-          <h3>Global Countdown</h3>
-          <input type="text" id="dashboard-countdown-title" placeholder="Countdown Title..." style="width:100%; margin-bottom:10px; padding:8px;" />
+          <h3>グローバルカウントダウン</h3>
+          <input type="text" id="dashboard-countdown-title" placeholder="カウントダウンのタイトル..." style="width:100%; margin-bottom:10px; padding:8px;" />
           <input type="datetime-local" id="dashboard-countdown-date" style="width:100%; margin-bottom:10px; padding:8px;" />
-          <button class="nav-btn" onclick="saveDashboardConfig()">Save Config</button>
+          <button class="nav-btn" onclick="saveDashboardConfig()">設定を保存</button>
         </article>
         <article class="card">
-          <h3>Upload Art</h3>
-          <p>Add new art to the Drawings gallery.</p>
-          <input type="text" id="dashboard-art-char" placeholder="Character Name (e.g. Yono)" style="width:100%; margin-bottom:10px; padding:8px;" />
-          <input type="text" id="dashboard-art-label" placeholder="Label (e.g. Official Concept)" style="width:100%; margin-bottom:10px; padding:8px;" />
+          <h3>アートをアップロード</h3>
+          <p>アートギャラリーに新しいアートを追加します。</p>
+          <input type="text" id="dashboard-art-char" placeholder="キャラクター名（例: ヨノ）" style="width:100%; margin-bottom:10px; padding:8px;" />
+          <input type="text" id="dashboard-art-label" placeholder="ラベル（例: 公式コンセプト）" style="width:100%; margin-bottom:10px; padding:8px;" />
           <input type="file" id="dashboard-art-file" accept="image/*" style="margin-bottom:10px;" />
-          <button class="nav-btn" onclick="uploadDashboardArt()">Upload Art</button>
+          <button class="nav-btn" onclick="uploadDashboardArt()">アートをアップロード</button>
           <p id="dashboard-art-status" style="margin-top:10px;font-size:12px;"></p>
         </article>
       </div>
@@ -532,19 +532,20 @@
 
   <nav class="mobile-nav">
     <button class="nav-btn active" data-view="home" onclick="switchView('home')">ホーム</button>
-    <button class="nav-btn" data-view="volumes" onclick="switchView('volumes')">Vols</button>
+    <button class="nav-btn" data-view="volumes" onclick="switchView('volumes')">巻</button>
     <button class="nav-btn" data-view="chapters" onclick="switchView('chapters')">チャプター</button>
     <button class="nav-btn" data-view="app" onclick="switchView('app')">アプリ</button>
-    <button class="nav-btn" data-view="characters" onclick="switchView('characters')">Cast</button>
+    <button class="nav-btn" data-view="characters" onclick="switchView('characters')">キャラクター</button>
     <button class="nav-btn" data-view="powers" onclick="switchView('powers')">能力</button>
     <button class="nav-btn" data-view="leaks" onclick="switchView('leaks')">リーク</button>
     <button class="nav-btn" data-view="lore" onclick="switchView('lore')">世界観</button>
-    <button class="nav-btn" data-view="drawings" onclick="switchView('drawings')">Art</button>
+    <button class="nav-btn" data-view="drawings" onclick="switchView('drawings')">アート</button>
     <button class="nav-btn" data-view="credits" onclick="switchView('credits')">クレジット</button>
     <a class="nav-btn" id="mobile-nav-login" href="./login.html">ログイン</a>
     <a class="nav-btn" id="mobile-nav-signup" href="./signup.html">登録</a>
     <a class="nav-btn" id="mobile-nav-profile" href="./profile.html" style="display:none;">プロフィール</a>
     <button class="nav-btn" id="mobile-nav-logout" onclick="logoutUser()" style="display:none;">ログアウト</button>
+    <button class="nav-btn" id="mobile-nav-dashboard" data-view="dashboard" onclick="switchView('dashboard')" style="display:none;">ダッシュボード</button>
     <a class="nav-btn" id="lang-jp" href="./index-jp.html" onclick="localStorage.setItem('threadborn_lang', 'ja')">JP</a>
       </nav>
 
