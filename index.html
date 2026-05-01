@@ -523,12 +523,10 @@
 
       <div class="grid">
         <article class="card">
-          <h3>Global Announcement</h3>
-          <p>Set a persistent banner at the top of the main menus.</p>
-          <div class="input-row">
-            <input type="text" id="dashboard-announcement" placeholder="Announcement text..." style="padding:8px;" />
-            <button class="btn-clear" onclick="clearDashboardAnnouncement()">Clear</button>
-          </div>
+          <h3>Global Announcements</h3>
+          <p>Set persistent banners at the top of the main menus. Stack multiple announcements.</p>
+          <div id="dashboard-announcements-list"></div>
+          <button class="btn btn-secondary" onclick="addDashboardAnnouncement()" style="margin-bottom:12px; width:100%;">+ Add Announcement</button>
           <button class="nav-btn" onclick="saveDashboardConfig()">Save Config</button>
         </article>
         

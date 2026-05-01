@@ -546,8 +546,11 @@
       const data = await apiFetch(`/api/dashboard?action=config&lang=${displayLang}`);
       
       const notifBanner = document.getElementById("global-announcement-banner");
-      if (data.notification) {
-        notifBanner.innerHTML = `<strong>BiniFn:</strong> ${data.notification}`;
+      let notifs = Array.isArray(data.notifications) ? data.notifications : [];
+      if (data.notification && notifs.length === 0) notifs = [data.notification]; // fallback
+      
+      if (notifs.length > 0) {
+        notifBanner.innerHTML = notifs.map(n => `<div style="margin-bottom:8px;"><strong>BiniFn:</strong> ${n}</div>`).join("");
         notifBanner.style.display = "";
       } else {
         if(notifBanner) notifBanner.style.display = "none";
@@ -581,8 +584,16 @@
       const dashboardView = document.getElementById("view-dashboard");
       if (dashboardView && dashboardView.classList.contains("active")) {
         const ownerData = await apiFetch(`/api/dashboard?action=config&lang=${lang}`);
-        const notifInput = document.getElementById("dashboard-announcement");
-        if (notifInput) notifInput.value = ownerData.notification || "";
+        const ownerNotifs = Array.isArray(ownerData.notifications) ? ownerData.notifications : (ownerData.notification ? [ownerData.notification] : []);
+        const notifContainer = document.getElementById("dashboard-announcements-list");
+        if (notifContainer) {
+          notifContainer.innerHTML = ownerNotifs.map((n, idx) => `
+            <div class="announcement-item" style="display:flex; gap:8px; margin-bottom:8px;">
+              <input type="text" class="dashboard-announcement-input" value="${escapeHtml(n)}" style="flex:1;" />
+              <button class="ghost-btn" type="button" onclick="this.parentElement.remove()">Remove</button>
+            </div>
+          `).join("");
+        }
         
         const cdTitleInput = document.getElementById("dashboard-countdown-title");
         const cdDateInput = document.getElementById("dashboard-countdown-date");
@@ -597,13 +608,14 @@
   window.saveDashboardConfig = async function saveDashboardConfig() {
     try {
       const lang = window.getDashboardLang();
-      const notification = document.getElementById("dashboard-announcement").value;
+      const inputs = document.querySelectorAll(".dashboard-announcement-input");
+      const notifications = Array.from(inputs).map(inp => inp.value.trim()).filter(v => v !== "");
       const title = document.getElementById("dashboard-countdown-title").value;
       const target_date = document.getElementById("dashboard-countdown-date").value;
       
       await apiFetch(`/api/dashboard?action=config&lang=${lang}`, {
         method: "PUT",
-        body: JSON.stringify({ notification, countdown: { title, target_date } })
+        body: JSON.stringify({ notifications, countdown: { title, target_date } })
       });
       alert("Dashboard config saved!");
       loadDashboardConfig();
@@ -612,8 +624,19 @@
     }
   };
 
-  window.clearDashboardAnnouncement = function() {
-    document.getElementById("dashboard-announcement").value = "";
+  window.addDashboardAnnouncement = function() {
+    const container = document.getElementById("dashboard-announcements-list");
+    if (!container) return;
+    const div = document.createElement("div");
+    div.className = "announcement-item";
+    div.style.display = "flex";
+    div.style.gap = "8px";
+    div.style.marginBottom = "8px";
+    div.innerHTML = `
+      <input type="text" class="dashboard-announcement-input" placeholder="New announcement..." style="flex:1;" />
+      <button class="ghost-btn" type="button" onclick="this.parentElement.remove()">Remove</button>
+    `;
+    container.appendChild(div);
   };
 
   window.clearDashboardTimer = function() {

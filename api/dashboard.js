@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
       if (req.method === "GET") {
         const { rows } = await pool.query("select value from dashboard_config where key = $1", [configKey]);
         if (!rows.length) {
-          return success(res, { notification: "", countdown: { title: "", target_date: "" } });
+          return success(res, { notification: "", notifications: [], countdown: { title: "", target_date: "" } });
         }
         return success(res, rows[0].value);
       }
@@ -37,7 +37,8 @@ module.exports = async (req, res) => {
 
         const body = await parseJsonBody(req);
         const payload = {
-          notification: String(body.notification || ""),
+          notification: String(body.notification || ""), // legacy fallback
+          notifications: Array.isArray(body.notifications) ? body.notifications.map(n => String(n)) : [],
           countdown: {
             title: String(body.countdown?.title || ""),
             target_date: String(body.countdown?.target_date || "")
