@@ -579,7 +579,8 @@
 
         countdowns.forEach((cd, idx) => {
           const interval = setInterval(() => {
-            const target = new Date(cd.target_date).getTime();
+            const dateStr = String(cd.target_date || "").replace(" ", "T");
+            const target = new Date(dateStr).getTime();
             const now = new Date().getTime();
             const distance = target - now;
             const timerEl = document.getElementById(`global-countdown-timer-${idx}`);
@@ -628,7 +629,7 @@
           if (typeof flatpickr !== "undefined") {
             flatpickr(".dashboard-cd-date", {
               enableTime: true,
-              dateFormat: "Y-m-d H:i",
+              dateFormat: "Y-m-d\\TH:i",
               time_24hr: false
             });
           }
@@ -709,7 +710,7 @@
     if (typeof flatpickr !== "undefined") {
       flatpickr(div.querySelector(".dashboard-cd-date"), {
         enableTime: true,
-        dateFormat: "Y-m-d H:i",
+        dateFormat: "Y-m-d\\TH:i",
         time_24hr: false
       });
     }
