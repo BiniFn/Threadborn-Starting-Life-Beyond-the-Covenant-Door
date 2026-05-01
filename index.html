@@ -75,6 +75,7 @@
         <a class="nav-btn" id="nav-signup" href="./signup.html">Sign Up</a>
         <a class="nav-btn" id="nav-profile" href="./profile.html" style="display:none;">Profile</a>
         <button class="nav-btn" id="nav-logout" onclick="logoutUser()" style="display:none;">Logout</button>
+        <button class="nav-btn" id="nav-dashboard" data-view="dashboard" onclick="switchView(\'dashboard\')" style="display:none;">Dashboard</button>
         <button class="nav-btn lang-toggle" id="lang-toggle" onclick="switchLanguage()" title="Switch language (日本語 / English)">🌐 EN</button>
       </nav>
 
@@ -86,6 +87,12 @@
   </header>
 
   <main>
+
+    <div id="global-announcement-banner" class="global-banner" style="display:none; background:#8a2be2; color:#fff; padding:10px; text-align:center; font-weight:bold; margin-bottom:16px; border-radius:8px;"></div>
+    <div id="global-countdown-banner" class="global-banner" style="display:none; background:#222; color:#fff; padding:10px; text-align:center; margin-bottom:16px; border-radius:8px; border:1px solid #444;">
+      <strong id="countdown-title"></strong>: <span id="countdown-timer"></span>
+    </div>
+
     <section id="view-home" class="view active">
       <article class="hero-card" style="margin-bottom: 24px;">
         <div class="hero-shell">
@@ -396,6 +403,7 @@
       <div id="lore-grid" class="grid lore-grid"></div>
     </section>
 
+    
     <section id="view-drawings" class="view">
       <div class="section-head">
         <div>
@@ -403,68 +411,17 @@
           <p class="section-copy">Character art for Threadborn will be shown here.</p>
         </div>
       </div>
-      <div class="grid drawings-grid">
+      <div id="dynamic-art-gallery" class="grid drawings-grid">
         <article class="card app-card">
           <div>
             <strong style="display:block;margin-bottom:10px;font-size:24px;font-family:'Cormorant Garamond',serif;">Character Gallery</strong>
             <p>Official character designs, concept art, and illustrations for the Threadborn cast.</p>
           </div>
         </article>
-        <article class="card chapter-card">
-          <div class="chapter-label">
-            <span>Yono</span>
-            <span>Art Slot</span>
-          </div>
-          <strong>Yono Kazeshima</strong>
-          <p>The main lead's official designs and weapon concepts.</p>
-          <div class="character-gallery" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px;">
-            <img src="assets/characters/yono/yono_art_1.jpg" alt="Yono Kazeshima art 1" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/yono/yono_art_1.jpg', '_blank')" />
-            <img src="assets/characters/yono/yono_art_2.jpg" alt="Yono Kazeshima art 2" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/yono/yono_art_2.jpg', '_blank')" />
-            <img src="assets/characters/yono/yono_art_3.jpg" alt="Yono Kazeshima art 3" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/yono/yono_art_3.jpg', '_blank')" />
-          </div>
-          <div class="chip-line" style="margin-top: 16px;">
-            <span class="chip">character art</span>
-            <span class="chip">official design</span>
-          </div>
-        </article>
-        <article class="card chapter-card">
-          <div class="chapter-label">
-            <span>Violet</span>
-            <span>Art Slot</span>
-          </div>
-          <strong>Violet Arden</strong>
-          <p>Goddess of Flowers character design and official artwork.</p>
-          <div class="character-gallery" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px;">
-            <img src="assets/characters/violet/violet_art_1.jpeg" alt="Violet Arden art 1" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/violet/violet_art_1.jpeg', '_blank')" />
-            <img src="assets/characters/violet/violet_art_2.jpeg" alt="Violet Arden art 2" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/violet/violet_art_2.jpeg', '_blank')" />
-            <img src="assets/characters/violet/violet_art_3.jpeg" alt="Violet Arden art 3" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/violet/violet_art_3.jpeg', '_blank')" />
-            <img src="assets/characters/violet/violet_art_4.jpeg" alt="Violet Arden art 4" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/violet/violet_art_4.jpeg', '_blank')" />
-            <img src="assets/characters/violet/violet_art_5.jpg" alt="Violet Arden art 5" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/violet/violet_art_5.jpg', '_blank')" />
-          </div>
-          <div class="chip-line" style="margin-top: 16px;">
-            <span class="chip">character art</span>
-            <span class="chip">official design</span>
-          </div>
-        </article>
-        <article class="card chapter-card">
-          <div class="chapter-label">
-            <span>Velkor</span>
-            <span>Art Slot</span>
-          </div>
-          <strong>Velkor</strong>
-          <p>The sealed threat of Lumera. Official concept art and designs.</p>
-          <div class="character-gallery" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px;">
-            <img src="assets/characters/velkor/velkor_art_1.jpg" alt="Velkor art 1" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/velkor/velkor_art_1.jpg', '_blank')" />
-            <img src="assets/characters/velkor/velkor_art_2.jpg" alt="Velkor art 2" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/velkor/velkor_art_2.jpg', '_blank')" />
-            <img src="assets/characters/velkor/velkor_art_3.jpg" alt="Velkor art 3" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('assets/characters/velkor/velkor_art_3.jpg', '_blank')" />
-          </div>
-          <div class="chip-line" style="margin-top: 16px;">
-            <span class="chip">character art</span>
-            <span class="chip">official design</span>
-          </div>
-        </article>
+        <!-- Art will be injected here by JS -->
       </div>
     </section>
+
 
     <section id="view-credits" class="view">
       <div class="section-head">
@@ -526,7 +483,40 @@
         </article>
       </div>
     </section>
-  </main>
+  
+    <section id="view-dashboard" class="view" style="display:none;">
+      <div class="section-head">
+        <div>
+          <h2>Owner Dashboard</h2>
+          <p class="section-copy">Manage site content, global announcements, and art gallery.</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <h3>Global Announcement</h3>
+          <p>Set a persistent banner at the top of the main menus.</p>
+          <input type="text" id="dashboard-announcement" placeholder="Announcement text..." style="width:100%; margin-bottom:10px; padding:8px;" />
+          <button class="nav-btn" onclick="saveDashboardConfig()">Save Config</button>
+        </article>
+        <article class="card">
+          <h3>Global Countdown</h3>
+          <input type="text" id="dashboard-countdown-title" placeholder="Countdown Title..." style="width:100%; margin-bottom:10px; padding:8px;" />
+          <input type="datetime-local" id="dashboard-countdown-date" style="width:100%; margin-bottom:10px; padding:8px;" />
+          <button class="nav-btn" onclick="saveDashboardConfig()">Save Config</button>
+        </article>
+        <article class="card">
+          <h3>Upload Art</h3>
+          <p>Add new art to the Drawings gallery.</p>
+          <input type="text" id="dashboard-art-char" placeholder="Character Name (e.g. Yono)" style="width:100%; margin-bottom:10px; padding:8px;" />
+          <input type="text" id="dashboard-art-label" placeholder="Label (e.g. Official Concept)" style="width:100%; margin-bottom:10px; padding:8px;" />
+          <input type="file" id="dashboard-art-file" accept="image/*" style="margin-bottom:10px;" />
+          <button class="nav-btn" onclick="uploadDashboardArt()">Upload Art</button>
+          <p id="dashboard-art-status" style="margin-top:10px;font-size:12px;"></p>
+        </article>
+      </div>
+    </section>
+
+</main>
 
   <footer>
     <div class="footer-shell">
@@ -5370,11 +5360,13 @@
         const contentClass = reaction.category === "spoiler" ? "spoiler-body" : "";
         const content = escapeHtml(reaction.content || "");
         const when = reaction.createdAt ? formatCommunityTime(reaction.createdAt) : "just now";
+        const isOwner = localStorage.getItem("threadborn_user") && JSON.parse(localStorage.getItem("threadborn_user")).role === "owner";
+        const deleteBtn = isOwner ? `<button onclick="deleteReaction(\'${reaction.id}\')" style="background:none;border:none;color:red;cursor:pointer;font-size:12px;margin-left:10px;">[Delete]</button>` : "";
         return `
           <article class="comment-item reaction-item">
             <div class="comment-head">
               <span>${escapeHtml(user.username || "Reader")}${renderNameBadges(user)}</span>
-              <span>${rating} ${category} • ${when}</span>
+              <span>${rating} ${category} • ${when}</span>${deleteBtn}
             </div>
             <div class="${contentClass}" ${contentClass ? 'onclick="this.classList.add(\'revealed\')"' : ""}>${content || "<em>Rating only.</em>"}</div>
           </article>`;
@@ -5578,7 +5570,7 @@
           <div class="post-comments">
             ${(post.comments || []).map(comment => `
               <div class="post-comment">
-                <strong>${comment.username || "reader"}${renderNameBadges(comment)}:</strong> ${comment.content}
+                <strong>${comment.username || "reader"}${renderNameBadges(comment)}:</strong> ${isModerator ? `<button onclick="deleteCommunityComment(\'${comment.id}\')" style="background:none;border:none;color:red;cursor:pointer;font-size:12px;float:right;">[Delete]</button>` : ""} ${comment.content}
               </div>
             `).join("")}
             <div class="row-inline">

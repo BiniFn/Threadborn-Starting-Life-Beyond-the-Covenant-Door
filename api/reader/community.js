@@ -215,5 +215,37 @@ module.exports = async (req, res) => {
     return;
   }
 
+  if (req.method === "POST" && action === "delete_post") {
+    if (!isModerator) {
+      fail(res, 403, "Only owner/admin can delete posts");
+      return;
+    }
+    const postId = cleanText(body.postId, 80);
+    if (!postId) {
+      fail(res, 400, "postId is required");
+      return;
+    }
+    await pool.query("delete from likes where post_id = $1", [postId]);
+    await pool.query("delete from comments where post_id = $1", [postId]);
+    await pool.query("delete from posts where id = $1", [postId]);
+    success(res, { ok: true });
+    return;
+  }
+
+  if (req.method === "POST" && action === "delete_comment") {
+    if (!isModerator) {
+      fail(res, 403, "Only owner/admin can delete comments");
+      return;
+    }
+    const commentId = cleanText(body.commentId, 80);
+    if (!commentId) {
+      fail(res, 400, "commentId is required");
+      return;
+    }
+    await pool.query("delete from comments where id = $1", [commentId]);
+    success(res, { ok: true });
+    return;
+  }
+
   fail(res, 405, "Method not allowed");
 };

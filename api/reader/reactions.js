@@ -163,7 +163,7 @@ module.exports = async (req, res) => {
       return;
     }
 
-    if (req.method !== "POST") {
+    if (req.method !== "POST" && req.method !== "DELETE") {
       fail(res, 405, "Method not allowed");
       return;
     }
@@ -178,6 +178,21 @@ module.exports = async (req, res) => {
     }
 
     const body = await parseJsonBody(req);
+    if (req.method === "DELETE") {
+      if (session.role !== "owner" && session.role !== "admin") {
+        fail(res, 403, "Only owner/admin can delete reactions");
+        return;
+      }
+      const reactionId = cleanText(body.reactionId, 80);
+      if (!reactionId) {
+        fail(res, 400, "reactionId is required");
+        return;
+      }
+      await pool.query("delete from reader_reactions where id = $1", [reactionId]);
+      success(res, { ok: true });
+      return;
+    }
+
     const target = cleanTarget(body);
     const category = cleanText(body.category, 20).toLowerCase() || "comment";
     const content = cleanText(body.content, 1600);
