@@ -44,7 +44,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./global.css?v=16" />
+  <link rel="stylesheet" href="./global.css?v=17" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <style>
+    .flatpickr-calendar { font-family: 'Space Mono', monospace; }
+  </style>
 </head>
 <body>
 
@@ -8601,17 +8606,71 @@
       }
 
       const coverPage = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>
-  \n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="cover">\n    <div class="cover-card">\n      <p class="eyebrow">Threadborn Collector EPUB</p>\n      <h1 class="cover-title">${bookTitle}</h1>\n      ${volumeCover ? `<img class="cover-art" src="images/volume-cover.jpg" alt="${chapter.volume} cover art" />` : ""}\n      <p class="cover-summary">${escapeXml(chapter.summary)}</p>\n      <div class="tag-row">${chapter.tags.map(tag => `<span class="tag">${escapeXml(tag)}</span>`).join("")}</div>\n      <p class="credit-line">作成：BiniFn</p>\n      <p class="note">Official offline chapter export from the Threadborn web reader.</p>\n    </div>\n  </section>\n</body>\n</html>`;
+  \n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <style>
+    .flatpickr-calendar { font-family: 'Space Mono', monospace; }
+  </style>
+</head>\n<body>\n  <section class="cover">\n    <div class="cover-card">\n      <p class="eyebrow">Threadborn Collector EPUB</p>\n      <h1 class="cover-title">${bookTitle}</h1>\n      ${volumeCover ? `<img class="cover-art" src="images/volume-cover.jpg" alt="${chapter.volume} cover art" />` : ""}\n      <p class="cover-summary">${escapeXml(chapter.summary)}</p>\n      <div class="tag-row">${chapter.tags.map(tag => `<span class="tag">${escapeXml(tag)}</span>`).join("")}</div>\n      <p class="credit-line">作成：BiniFn</p>\n      <p class="note">Official offline chapter export from the Threadborn web reader.</p>\n    </div>\n  </section>\n
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const dp = document.getElementById("dashboard-countdown-date");
+      if (dp && typeof flatpickr !== "undefined") {
+        flatpickr(dp, {
+          enableTime: true,
+          dateFormat: "Y-m-d H:i",
+          time_24hr: false
+        });
+      }
+    });
+  </script>
+</body>\n</html>`;
 
       const creditsPage = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>
-  \n  <title>${bookTitle} - Credits</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="credits-page">\n    <div class="credits-card">\n      <p class="eyebrow">クレジット</p>\n      <h1>リリースクレジット</h1>\n      <ul>${exportCredits.map(line => `<li>${escapeXml(line)}</li>`).join("")}</ul>\n      <p class="note">Please keep the BiniFn credit attached if this EPUB is reposted or shared.</p>\n    </div>\n  </section>\n</body>\n</html>`;
+  \n  <title>${bookTitle} - Credits</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <style>
+    .flatpickr-calendar { font-family: 'Space Mono', monospace; }
+  </style>
+</head>\n<body>\n  <section class="credits-page">\n    <div class="credits-card">\n      <p class="eyebrow">クレジット</p>\n      <h1>リリースクレジット</h1>\n      <ul>${exportCredits.map(line => `<li>${escapeXml(line)}</li>`).join("")}</ul>\n      <p class="note">Please keep the BiniFn credit attached if this EPUB is reposted or shared.</p>\n    </div>\n  </section>\n
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const dp = document.getElementById("dashboard-countdown-date");
+      if (dp && typeof flatpickr !== "undefined") {
+        flatpickr(dp, {
+          enableTime: true,
+          dateFormat: "Y-m-d H:i",
+          time_24hr: false
+        });
+      }
+    });
+  </script>
+</body>\n</html>`;
 
       const pageFiles = chapter.pages.map((pageHtml, index) => ({
         name: `OEBPS/text/page-${index + 1}.xhtml`,
         mediaType: "application/xhtml+xml",
         title: `${chapter.title} - Page ${index + 1}`,
         content: `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>
-  \n  <title>${escapeXml(`${chapter.title} - Page ${index + 1}`)}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="../styles.css" />\n</head>\n<body>\n  <section class="page">\n    <div class="page-frame">\n      <p class="page-eyebrow"><span>${escapeXml(`${chapter.volume} • ${chapter.chapter}`)}</span><span>Page ${index + 1} of ${chapter.pages.length}</span></p>\n      ${chapter.pages[index]}\n      <p class="page-footer-note">作成：BiniFn • Official Threadborn EPUB export</p>\n    </div>\n  </section>\n</body>\n</html>`
+  \n  <title>${escapeXml(`${chapter.title} - Page ${index + 1}`)}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="../styles.css" />\n  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <style>
+    .flatpickr-calendar { font-family: 'Space Mono', monospace; }
+  </style>
+</head>\n<body>\n  <section class="page">\n    <div class="page-frame">\n      <p class="page-eyebrow"><span>${escapeXml(`${chapter.volume} • ${chapter.chapter}`)}</span><span>Page ${index + 1} of ${chapter.pages.length}</span></p>\n      ${chapter.pages[index]}\n      <p class="page-footer-note">作成：BiniFn • Official Threadborn EPUB export</p>\n    </div>\n  </section>\n
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const dp = document.getElementById("dashboard-countdown-date");
+      if (dp && typeof flatpickr !== "undefined") {
+        flatpickr(dp, {
+          enableTime: true,
+          dateFormat: "Y-m-d H:i",
+          time_24hr: false
+        });
+      }
+    });
+  </script>
+</body>\n</html>`
       }));
 
       const manifestItems = [
@@ -8643,8 +8702,26 @@
         ...(volumeCover ? [{ name: "OEBPS/images/volume-cover.jpg", data: volumeCover.bytes }] : []),
         { name: "OEBPS/credits.xhtml", data: encoder.encode(creditsPage) },
         { name: "OEBPS/nav.xhtml", data: encoder.encode(`<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">\n<head>
-  \n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="nav-page">\n    <div class="nav-card">\n      <p class="eyebrow">Contents</p>\n      <nav epub:type="toc" id="toc">\n        <h1>${bookTitle}</h1>\n        <ol>${navLinks}</ol>\n        <a class="nav-btn" id="lang-jp" href="./index-jp.html" onclick="localStorage.setItem('threadborn_lang', 'ja')">JP</a>
-      </nav>\n    </div>\n  </section>\n</body>\n</html>`) },
+  \n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <style>
+    .flatpickr-calendar { font-family: 'Space Mono', monospace; }
+  </style>
+</head>\n<body>\n  <section class="nav-page">\n    <div class="nav-card">\n      <p class="eyebrow">Contents</p>\n      <nav epub:type="toc" id="toc">\n        <h1>${bookTitle}</h1>\n        <ol>${navLinks}</ol>\n        <a class="nav-btn" id="lang-jp" href="./index-jp.html" onclick="localStorage.setItem('threadborn_lang', 'ja')">JP</a>
+      </nav>\n    </div>\n  </section>\n
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const dp = document.getElementById("dashboard-countdown-date");
+      if (dp && typeof flatpickr !== "undefined") {
+        flatpickr(dp, {
+          enableTime: true,
+          dateFormat: "Y-m-d H:i",
+          time_24hr: false
+        });
+      }
+    });
+  </script>
+</body>\n</html>`) },
         { name: "OEBPS/content.opf", data: encoder.encode(`<?xml version="1.0" encoding="UTF-8"?>\n<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="book-id">\n  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">\n    <dc:identifier id="book-id">${escapeXml(bookId)}</dc:identifier>\n    <dc:title>${bookTitle}</dc:title>\n    <dc:language>en</dc:language>\n    <dc:クリエイター>BiniFn</dc:クリエイター>\n    <dc:publisher>BiniFn</dc:publisher>\n    <dc:description>${escapeXml(chapter.summary)}</dc:description>\n    <meta property="dcterms:modified">${modifiedAt}</meta>\n  </metadata>\n  <manifest>\n    ${manifestItems}\n  </manifest>\n  <spine>\n    ${spineItems}\n  </spine>\n</package>`) },
         ...pageFiles.map(page => ({ name: page.name, data: encoder.encode(page.content) }))
       ];
@@ -8984,5 +9061,18 @@
     }
   </script>
   <script src="./assets/phase1-client.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const dp = document.getElementById("dashboard-countdown-date");
+      if (dp && typeof flatpickr !== "undefined") {
+        flatpickr(dp, {
+          enableTime: true,
+          dateFormat: "Y-m-d H:i",
+          time_24hr: false
+        });
+      }
+    });
+  </script>
 </body>
 </html>

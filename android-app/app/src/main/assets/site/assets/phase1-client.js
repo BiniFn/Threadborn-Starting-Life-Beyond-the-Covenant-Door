@@ -607,7 +607,7 @@
     try {
       const isJp = window.location.pathname.indexOf('-jp') !== -1;
       const displayLang = isJp ? "ja" : "en";
-      const data = await apiFetch(`/api/polls?lang=${displayLang}`);
+      const data = await apiFetch(`/api/dashboard?action=polls&lang=${displayLang}`);
       
       const container = document.getElementById("global-polls-container");
       if (!container) return;
@@ -642,7 +642,7 @@
       const dashList = document.getElementById("dashboard-active-polls-list");
       if (dashList) {
         const lang = window.getDashboardLang();
-        const ownerData = await apiFetch(`/api/polls?lang=${lang}`);
+        const ownerData = await apiFetch(`/api/dashboard?action=polls&lang=${lang}`);
         let dashHtml = "";
         (ownerData.polls || []).forEach(poll => {
           dashHtml += `
@@ -664,7 +664,7 @@
     if (localStorage.getItem(votedKey)) return; // Already voted
 
     try {
-      await apiFetch("/api/polls", {
+      await apiFetch("/api/dashboard?action=polls", {
         method: "POST",
         body: JSON.stringify({ optionId })
       });
@@ -687,7 +687,7 @@
         return;
       }
 
-      await apiFetch("/api/polls", {
+      await apiFetch("/api/dashboard?action=polls", {
         method: "PUT",
         body: JSON.stringify({ question, lang, options })
       });
@@ -704,7 +704,7 @@
   window.deletePoll = async function deletePoll(pollId) {
     if (!confirm("Are you sure you want to delete this poll?")) return;
     try {
-      await apiFetch("/api/polls", {
+      await apiFetch("/api/dashboard?action=polls", {
         method: "DELETE",
         body: JSON.stringify({ id: pollId })
       });
