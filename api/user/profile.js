@@ -73,6 +73,35 @@ module.exports = async (req, res) => {
     return;
   }
 
+  // Handle settings routing
+  if (req.query?.action === "settings" || req.body?.action === "settings") {
+    if (req.method === "GET") {
+      const { rows } = await pool.query(
+        "select settings_json from user_settings where user_id = $1 limit 1",
+        [session.user_id]
+      );
+      return success(res, { settings: rows[0]?.settings_json || {} });
+    }
+
+    if (req.method === "PUT") {
+      if (!validateCsrf(req, session)) {
+        return fail(res, 403, "Invalid CSRF token");
+      }
+      const body = await parseJsonBody(req);
+      const settings = typeof body.settings === "object" && body.settings ? body.settings : {};
+      const { rows } = await pool.query(
+        `insert into user_settings (user_id, settings_json, updated_at)
+         values ($1, $2::jsonb, now())
+         on conflict (user_id)
+         do update set settings_json = excluded.settings_json, updated_at = now()
+         returning settings_json`,
+        [session.user_id, JSON.stringify(settings)]
+      );
+      return success(res, { settings: rows[0].settings_json });
+    }
+    return fail(res, 405, "Method not allowed for settings");
+  }
+
   if (req.method === "GET") {
     const postsResult = await pool.query(
       "select id, title, content, category, created_at from posts where user_id = $1 order by created_at desc limit 20",

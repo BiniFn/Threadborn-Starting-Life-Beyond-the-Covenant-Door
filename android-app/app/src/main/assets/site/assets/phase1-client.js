@@ -508,7 +508,7 @@
   // Dashboard Logic
   window.loadDashboardConfig = async function loadDashboardConfig() {
     try {
-      const data = await apiFetch("/api/dashboard/config");
+      const data = await apiFetch("/api/dashboard?action=config");
       
       const notifBanner = document.getElementById("global-announcement-banner");
       if (data.notification) {
@@ -555,7 +555,7 @@
       const title = document.getElementById("dashboard-countdown-title").value;
       const target_date = document.getElementById("dashboard-countdown-date").value;
       
-      await apiFetch("/api/dashboard/config", {
+      await apiFetch("/api/dashboard?action=config", {
         method: "PUT",
         body: JSON.stringify({ notification, countdown: { title, target_date } })
       });
@@ -568,7 +568,7 @@
 
   window.loadDashboardArt = async function loadDashboardArt() {
     try {
-      const data = await apiFetch("/api/dashboard/art");
+      const data = await apiFetch("/api/dashboard?action=art");
       const gallery = document.getElementById("dynamic-art-gallery");
       if (!gallery || !data.art) return;
       
@@ -630,7 +630,7 @@
     reader.onload = async (e) => {
       try {
         status.textContent = "Uploading...";
-        await apiFetch("/api/dashboard/art", {
+        await apiFetch("/api/dashboard?action=art", {
           method: "POST",
           body: JSON.stringify({ characterName: char, label: label, dataUrl: e.target.result })
         });
@@ -646,7 +646,7 @@
   window.deleteDashboardArt = async function deleteDashboardArt(id) {
     if (!confirm("Delete this art?")) return;
     try {
-      await apiFetch("/api/dashboard/art", {
+      await apiFetch("/api/dashboard?action=art", {
         method: "DELETE",
         body: JSON.stringify({ id })
       });
