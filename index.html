@@ -44,7 +44,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./global.css?v=22" />
+  <link rel="stylesheet" href="./global.css?v=24" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <style>
@@ -531,12 +531,10 @@
         </article>
         
         <article class="card">
-          <h3>Global Countdown</h3>
-          <div class="input-row">
-            <input type="text" id="dashboard-countdown-title" placeholder="Countdown Title..." style="padding:8px;" />
-            <button class="btn-clear" onclick="clearDashboardTimer()">Clear</button>
-          </div>
-          <input type="datetime-local" id="dashboard-countdown-date" style="width:100%; margin-bottom:10px; padding:8px;" />
+          <h3>Global Countdowns</h3>
+          <p>Set persistent timers at the top of the main menus. Stack multiple countdowns.</p>
+          <div id="dashboard-countdowns-list"></div>
+          <button class="btn btn-secondary" onclick="addDashboardTimer()" style="margin-bottom:12px; width:100%;">+ Add Timer</button>
           <button class="nav-btn" onclick="saveDashboardConfig()">Save Config</button>
         </article>
         
@@ -8322,7 +8320,7 @@
     }
   </style>
 
-  <script src="./assets/phase1-client.js?v=22"></script>
+  <script src="./assets/phase1-client.js?v=24"></script>
   <script>
     if ("serviceWorker" in navigator) {
       let newWorker;
@@ -8354,6 +8352,12 @@
   </script>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
+      const savedView = sessionStorage.getItem("threadborn_active_view");
+      if (savedView) {
+        if (typeof switchView === "function") switchView(savedView);
+        sessionStorage.removeItem("threadborn_active_view");
+      }
+
       const dp = document.getElementById("dashboard-countdown-date");
       if (dp && typeof flatpickr !== "undefined") {
         flatpickr(dp, {

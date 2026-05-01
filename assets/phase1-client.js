@@ -294,6 +294,9 @@
     const btn = document.getElementById("check-updates-btn");
     if (btn) btn.textContent = "Checking...";
     
+    // Remember community tab
+    sessionStorage.setItem("threadborn_active_view", "community");
+    
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         for(let registration of registrations) {
@@ -557,27 +560,45 @@
       }
 
       const cdBanner = document.getElementById("global-countdown-banner");
-      if (data.countdown && data.countdown.target_date) {
-        document.getElementById("global-countdown-title").textContent = data.countdown.title;
+      let countdowns = Array.isArray(data.countdowns) ? data.countdowns : [];
+      if (data.countdown && data.countdown.title && countdowns.length === 0) countdowns = [data.countdown]; // fallback
+
+      if (window._cdIntervals) {
+        window._cdIntervals.forEach(clearInterval);
+      }
+      window._cdIntervals = [];
+
+      if (countdowns.length > 0 && cdBanner) {
+        cdBanner.innerHTML = countdowns.map((cd, idx) => `
+          <div style="background:#222; color:#fff; padding:10px; text-align:center; margin-bottom:8px; border-radius:8px; border:1px solid rgba(255, 107, 107, 0.4);">
+            <strong id="global-countdown-title-${idx}">${escapeHtml(cd.title)}</strong>
+            <div id="global-countdown-timer-${idx}" style="font-size:1.2rem; font-weight:bold; margin-top:5px; color:#ff6b6b;">Loading timer...</div>
+          </div>
+        `).join("");
         cdBanner.style.display = "";
 
-        if (window._cdInterval) clearInterval(window._cdInterval);
-        window._cdInterval = setInterval(() => {
-          const target = new Date(data.countdown.target_date).getTime();
-          const now = new Date().getTime();
-          const distance = target - now;
-          if (distance < 0) {
-            document.getElementById("global-countdown-timer").textContent = "RELEASED";
-            return;
-          }
-          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-          document.getElementById("global-countdown-timer").textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-        }, 1000);
-      } else {
-        if(cdBanner) cdBanner.style.display = "none";
+        countdowns.forEach((cd, idx) => {
+          const interval = setInterval(() => {
+            const target = new Date(cd.target_date).getTime();
+            const now = new Date().getTime();
+            const distance = target - now;
+            const timerEl = document.getElementById(`global-countdown-timer-${idx}`);
+            if (!timerEl) return;
+            
+            if (distance < 0) {
+              timerEl.textContent = "RELEASED";
+              return;
+            }
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            timerEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+          }, 1000);
+          window._cdIntervals.push(interval);
+        });
+      } else if (cdBanner) {
+        cdBanner.style.display = "none";
       }
 
       // If owner dashboard is visible, populate inputs with the selected lang config
@@ -595,10 +616,17 @@
           `).join("");
         }
         
-        const cdTitleInput = document.getElementById("dashboard-countdown-title");
-        const cdDateInput = document.getElementById("dashboard-countdown-date");
-        if (cdTitleInput) cdTitleInput.value = (ownerData.countdown && ownerData.countdown.title) || "";
-        if (cdDateInput) cdDateInput.value = (ownerData.countdown && ownerData.countdown.target_date) || "";
+        const ownerCountdowns = Array.isArray(ownerData.countdowns) ? ownerData.countdowns : (ownerData.countdown && ownerData.countdown.title ? [ownerData.countdown] : []);
+        const cdContainer = document.getElementById("dashboard-countdowns-list");
+        if (cdContainer) {
+          cdContainer.innerHTML = ownerCountdowns.map((cd, idx) => `
+            <div class="countdown-item" style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px; padding:12px; background:#2a2a35; border-radius:8px;">
+              <input type="text" class="dashboard-cd-title" value="${escapeHtml(cd.title)}" placeholder="Title..." style="width:100%;" />
+              <input type="datetime-local" class="dashboard-cd-date" value="${escapeHtml(cd.target_date)}" style="width:100%; padding:8px;" />
+              <button class="ghost-btn" type="button" onclick="this.parentElement.remove()" style="align-self:flex-end;">Remove</button>
+            </div>
+          `).join("");
+        }
       }
 
       loadPolls();
@@ -610,12 +638,16 @@
       const lang = window.getDashboardLang();
       const inputs = document.querySelectorAll(".dashboard-announcement-input");
       const notifications = Array.from(inputs).map(inp => inp.value.trim()).filter(v => v !== "");
-      const title = document.getElementById("dashboard-countdown-title").value;
-      const target_date = document.getElementById("dashboard-countdown-date").value;
+      
+      const cdItems = document.querySelectorAll(".countdown-item");
+      const countdowns = Array.from(cdItems).map(item => ({
+        title: item.querySelector(".dashboard-cd-title").value.trim(),
+        target_date: item.querySelector(".dashboard-cd-date").value
+      })).filter(cd => cd.title && cd.target_date);
       
       await apiFetch(`/api/dashboard?action=config&lang=${lang}`, {
         method: "PUT",
-        body: JSON.stringify({ notifications, countdown: { title, target_date } })
+        body: JSON.stringify({ notifications, countdowns })
       });
       alert("Dashboard config saved!");
       loadDashboardConfig();
@@ -639,9 +671,24 @@
     container.appendChild(div);
   };
 
-  window.clearDashboardTimer = function() {
-    document.getElementById("dashboard-countdown-title").value = "";
-    document.getElementById("dashboard-countdown-date").value = "";
+  window.addDashboardTimer = function() {
+    const container = document.getElementById("dashboard-countdowns-list");
+    if (!container) return;
+    const div = document.createElement("div");
+    div.className = "countdown-item";
+    div.style.display = "flex";
+    div.style.flexDirection = "column";
+    div.style.gap = "8px";
+    div.style.marginBottom = "12px";
+    div.style.padding = "12px";
+    div.style.background = "#2a2a35";
+    div.style.borderRadius = "8px";
+    div.innerHTML = `
+      <input type="text" class="dashboard-cd-title" placeholder="Title..." style="width:100%;" />
+      <input type="datetime-local" class="dashboard-cd-date" style="width:100%; padding:8px;" />
+      <button class="ghost-btn" type="button" onclick="this.parentElement.remove()" style="align-self:flex-end;">Remove</button>
+    `;
+    container.appendChild(div);
   };
 
   // Polls Logic

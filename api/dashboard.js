@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
       if (req.method === "GET") {
         const { rows } = await pool.query("select value from dashboard_config where key = $1", [configKey]);
         if (!rows.length) {
-          return success(res, { notification: "", notifications: [], countdown: { title: "", target_date: "" } });
+          return success(res, { notification: "", notifications: [], countdowns: [], countdown: { title: "", target_date: "" } });
         }
         return success(res, rows[0].value);
       }
@@ -39,6 +39,7 @@ module.exports = async (req, res) => {
         const payload = {
           notification: String(body.notification || ""), // legacy fallback
           notifications: Array.isArray(body.notifications) ? body.notifications.map(n => String(n)) : [],
+          countdowns: Array.isArray(body.countdowns) ? body.countdowns : (body.countdown && body.countdown.title ? [body.countdown] : []),
           countdown: {
             title: String(body.countdown?.title || ""),
             target_date: String(body.countdown?.target_date || "")
@@ -227,6 +228,17 @@ module.exports = async (req, res) => {
 
         await pool.query("delete from polls where id = $1", [id]);
         return success(res, { deleted: true });
+      }
+    }
+
+    if (action === "clear_all") {
+      if (req.method === "POST") {
+        const session = await requireSession(req, res, fail);
+        if (!session || session.role !== "owner") {
+          return fail(res, 403, "Only owner can clear data");
+        }
+        await pool.query("truncate dashboard_config; truncate polls cascade;");
+        return success(res, { cleared: true });
       }
     }
 
