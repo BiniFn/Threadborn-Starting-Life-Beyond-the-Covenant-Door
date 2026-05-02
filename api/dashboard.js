@@ -4,6 +4,7 @@ const { allowCors, success, fail } = require("../lib/api/http");
 const { parseJsonBody, getClientIp } = require("../lib/api/request");
 const { takeRateLimitToken } = require("../lib/api/rate-limit");
 const { requireSession, validateCsrf, getSession } = require("../lib/api/auth");
+const { sendPushBroadcast } = require("../lib/api/push");
 
 module.exports = async (req, res) => {
   if (allowCors(req, res)) {
@@ -76,6 +77,19 @@ module.exports = async (req, res) => {
            on conflict (key) do update set value = $2, updated_at = now()`,
           [configKey, payload],
         );
+
+        // Broadcast push notification to all subscribers when an announcement is saved
+        if (
+          Array.isArray(payload.notifications) &&
+          payload.notifications.length > 0
+        ) {
+          sendPushBroadcast(pool, {
+            title: "📢 Threadborn — New Announcement",
+            body: String(payload.notifications[0]).slice(0, 100),
+            tag: "announcement",
+            url: "/?view=community",
+          }).catch(() => {});
+        }
 
         return success(res, payload);
       }

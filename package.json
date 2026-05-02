@@ -8,10 +8,12 @@
   },
   "scripts": {
     "dev": "vercel dev",
-    "db:migrate": "node db/migrate.js"
+    "db:migrate": "node db/migrate.js",
+    "generate-vapid": "npx web-push generate-vapid-keys"
   },
   "dependencies": {
     "@vercel/blob": "^0.27.0",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "web-push": "^3.6.7"
   }
 }

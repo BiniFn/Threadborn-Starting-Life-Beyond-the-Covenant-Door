@@ -4022,3 +4022,30 @@ textarea::placeholder {
 .recap-card strong {
     color: #ff6b6b;
 }
+
+/* ── Push notification button ─────────────────────────────── */
+#push-enable-btn { transition: all 0.2s ease; }
+#push-enable-btn:hover {
+    border-color: rgba(132,208,199,0.5) !important;
+    color: #84d0c7 !important;
+    background: rgba(132,208,199,0.08) !important;
+}
+#push-enable-btn.push-active {
+    border-color: rgba(132,208,199,0.7) !important;
+    color: #84d0c7 !important;
+    background: rgba(132,208,199,0.12) !important;
+}
+
+/* ── In-app notification items ────────────────────────────── */
+.notif-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.notif-item:hover { background: rgba(255,255,255,0.04); }
+.notif-item.unread { border-left: 3px solid rgba(138,43,226,0.7); background: rgba(138,43,226,0.04); }
+.notif-title { font-size: 13px; font-weight: 700; color: var(--bone); margin-bottom: 2px; }
+.notif-body { font-size: 12px; color: var(--mist); line-height: 1.4; }
+.notif-time { font-size: 11px; color: rgba(175,160,149,0.6); margin-top: 4px; font-family: "Space Mono", monospace; }
+.notif-empty { padding: 20px 16px; font-size: 13px; color: var(--mist); text-align: center; }

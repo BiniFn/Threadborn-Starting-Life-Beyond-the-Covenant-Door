@@ -3,6 +3,7 @@ const { allowCors, success, fail } = require("../../lib/api/http");
 const { parseJsonBody, getClientIp } = require("../../lib/api/request");
 const { takeRateLimitToken } = require("../../lib/api/rate-limit");
 const { requireSession, validateCsrf } = require("../../lib/api/auth");
+const { sendPushToUser } = require("../../lib/api/push");
 
 // ── Badge definitions ─────────────────────────────────────────────────────────
 const BADGES = {
@@ -144,11 +145,31 @@ module.exports = async (req, res) => {
         const newBadges = [];
         for (const key of toAward) {
           try {
-            await pool.query(
-              "INSERT INTO reader_badges (user_id,badge_key) VALUES ($1,$2) ON CONFLICT DO NOTHING",
+            const result = await pool.query(
+              "INSERT INTO reader_badges (user_id,badge_key) VALUES ($1,$2) ON CONFLICT DO NOTHING RETURNING badge_key",
               [session.user_id, key],
             );
-            newBadges.push({ key, ...BADGES[key] });
+            if (result.rowCount > 0) {
+              newBadges.push({ key, ...BADGES[key] });
+              // Create in-app notification for the newly earned badge
+              pool
+                .query(
+                  "INSERT INTO notifications (user_id,type,title,body) VALUES ($1,'badge',$2,$3)",
+                  [
+                    session.user_id,
+                    `🏅 Badge Earned: ${BADGES[key].label}`,
+                    BADGES[key].desc,
+                  ],
+                )
+                .catch(() => {});
+              // Send OS-level push notification
+              sendPushToUser(pool, session.user_id, {
+                title: `🏅 ${BADGES[key].label}`,
+                body: BADGES[key].desc,
+                tag: `badge-${key}`,
+                url: "/?view=stats",
+              }).catch(() => {});
+            }
           } catch (_) {}
         }
         return success(res, {

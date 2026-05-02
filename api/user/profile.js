@@ -82,6 +82,101 @@ module.exports = async (req, res) => {
     return;
   }
 
+  // ── Push VAPID public key (action=push-vapid) ───────────────────────────────
+  if (req.query?.action === "push-vapid") {
+    return success(res, { publicKey: process.env.VAPID_PUBLIC_KEY || null });
+  }
+
+  // ── Save push subscription (action=push-subscribe) ─────────────────────────
+  if (req.query?.action === "push-subscribe") {
+    if (req.method !== "POST") return fail(res, 405, "Method not allowed");
+    const session = await requireSession(req, res, fail);
+    if (!session) return;
+    if (!process.env.DATABASE_URL)
+      return fail(res, 503, "Missing DATABASE_URL");
+    try {
+      await pool.ensureMigrations();
+      const body = await parseJsonBody(req);
+      const { endpoint, p256dh, auth } = body;
+      if (!endpoint || !p256dh || !auth)
+        return fail(res, 400, "Missing subscription fields");
+      await pool.query(
+        `INSERT INTO push_subscriptions (user_id, endpoint, p256dh, auth)
+         VALUES ($1,$2,$3,$4)
+         ON CONFLICT (user_id, endpoint) DO UPDATE SET p256dh=$3, auth=$4`,
+        [session.user_id, endpoint, p256dh, auth],
+      );
+      return success(res, { subscribed: true });
+    } catch (e) {
+      return fail(res, 500, "Could not save subscription");
+    }
+  }
+
+  // ── Remove push subscription (action=push-unsubscribe) ─────────────────────
+  if (req.query?.action === "push-unsubscribe") {
+    if (req.method !== "POST") return fail(res, 405, "Method not allowed");
+    const session = await requireSession(req, res, fail);
+    if (!session) return;
+    if (!process.env.DATABASE_URL)
+      return fail(res, 503, "Missing DATABASE_URL");
+    try {
+      await pool.ensureMigrations();
+      const body = await parseJsonBody(req);
+      if (body.endpoint) {
+        await pool.query(
+          "DELETE FROM push_subscriptions WHERE user_id=$1 AND endpoint=$2",
+          [session.user_id, body.endpoint],
+        );
+      } else {
+        await pool.query("DELETE FROM push_subscriptions WHERE user_id=$1", [
+          session.user_id,
+        ]);
+      }
+      return success(res, { unsubscribed: true });
+    } catch (e) {
+      return fail(res, 500, "Could not remove subscription");
+    }
+  }
+
+  // ── Notifications (action=notifications) ────────────────────────────────────
+  if (req.query?.action === "notifications") {
+    if (!takeRateLimitToken(`notif:${getClientIp(req)}`, 30, 60_000))
+      return fail(res, 429, "Too many requests");
+    const session = await requireSession(req, res, fail);
+    if (!session) return;
+    if (!process.env.DATABASE_URL)
+      return fail(res, 503, "Missing DATABASE_URL");
+    try {
+      await pool.ensureMigrations();
+      if (req.method === "GET") {
+        const { rows } = await pool.query(
+          "SELECT id, type, title, body, link, read, created_at FROM notifications WHERE user_id=$1 ORDER BY created_at DESC LIMIT 30",
+          [session.user_id],
+        );
+        const unread = rows.filter((n) => !n.read).length;
+        return success(res, { notifications: rows, unread });
+      }
+      if (req.method === "POST") {
+        const body = await parseJsonBody(req);
+        if (body.markAllRead) {
+          await pool.query(
+            "UPDATE notifications SET read=true WHERE user_id=$1",
+            [session.user_id],
+          );
+        } else if (body.id) {
+          await pool.query(
+            "UPDATE notifications SET read=true WHERE id=$1 AND user_id=$2",
+            [body.id, session.user_id],
+          );
+        }
+        return success(res, { updated: true });
+      }
+      return fail(res, 405, "Method not allowed");
+    } catch (e) {
+      return fail(res, 500, "Notifications unavailable");
+    }
+  }
+
   // ── Feedback (action=feedback) ────────────────────────────────────────────────────
   if (req.query?.action === "feedback") {
     if (req.method !== "POST") return fail(res, 405, "Method not allowed");
@@ -105,6 +200,47 @@ module.exports = async (req, res) => {
         "INSERT INTO reader_feedback (user_id,page_path,feedback_type,message) VALUES ($1,$2,$3,$4)",
         [fbSession?.user_id || null, pagePath, feedbackType, message],
       );
+      // Send to Discord webhook if configured
+      const webhookUrl = process.env.DISCORD_FEEDBACK_WEBHOOK;
+      if (webhookUrl) {
+        try {
+          const colorMap = {
+            bug: 0xff4444,
+            suggestion: 0x44cc88,
+            content: 0x4488ff,
+            other: 0x888888,
+          };
+          await fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              embeds: [
+                {
+                  title: `📣 Threadborn Feedback — ${feedbackType}`,
+                  description: message.slice(0, 4000),
+                  color: colorMap[feedbackType] || 0x888888,
+                  fields: [
+                    { name: "Type", value: feedbackType, inline: true },
+                    { name: "Page", value: pagePath, inline: true },
+                    {
+                      name: "User",
+                      value: fbSession?.username || "Anonymous",
+                      inline: true,
+                    },
+                  ],
+                  timestamp: new Date().toISOString(),
+                  footer: { text: "Threadborn Reader Feedback" },
+                },
+              ],
+            }),
+          });
+        } catch (discordErr) {
+          console.error(
+            "[feedback] Discord webhook failed:",
+            discordErr.message,
+          );
+        }
+      }
       return success(res, { submitted: true });
     } catch (e) {
       return fail(res, 500, "Could not submit feedback");
