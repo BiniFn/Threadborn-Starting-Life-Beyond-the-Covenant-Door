@@ -526,7 +526,10 @@
           <p>メインメニューの上部に表示されるバナーを設定します。複数のアナウンスをスタックできます。</p>
           <div id="dashboard-announcements-list"></div>
           <button class="btn btn-secondary" onclick="addDashboardAnnouncement()" style="margin-bottom:12px; width:100%;">+ アナウンスを追加</button>
-          <button class="nav-btn" onclick="saveDashboardConfig()">設定を保存</button>
+          <div style="display:flex; gap:10px;">
+            <button class="nav-btn" onclick="saveDashboardConfig()" style="flex:1;">設定を保存</button>
+            <button class="ghost-btn" onclick="clearAllDashboardData()" style="color:#ff6b6b; flex:1;">すべてのデータを消去</button>
+          </div>
         </article>
         
         <article class="card">
