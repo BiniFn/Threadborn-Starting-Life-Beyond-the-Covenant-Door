@@ -1,5 +1,19 @@
 # Threadborn: Reborn Where Fate Snaps
 
+> **⚠️ COPYRIGHT NOTICE — ALL RIGHTS RESERVED**
+>
+> Copyright © 2024–2026 **BiniFn**. All Rights Reserved.
+>
+> This repository and all of its contents — including source code, stylesheets, scripts, API routes, and the complete text of the light novel **"Threadborn: Starting Life Beyond the Covenant Door"** (スレッドボーン) — are the exclusive intellectual property of **BiniFn** and are protected under international copyright law.
+>
+> **You may NOT:** copy, reproduce, distribute, modify, plagiarize, use as AI training data, scrape, mirror, or create derivative works from any part of this repository without prior written permission from the author.
+>
+> **You MAY:** read the deployed website at [threadborn.vercel.app](https://threadborn.vercel.app) for personal enjoyment.
+>
+> See [LICENSE](./LICENSE) and [COPYRIGHT](./COPYRIGHT) for full legal terms. Violations may result in DMCA takedowns and legal action.
+
+---
+
 Official reader and chapter export hub for **Threadborn**, an original dark fantasy light novel by **BiniFn**.
 
 This repository contains both the public website and the Android app package for the project: a polished reader with chapter browsing, full cast and lore tabs, project credits, prettier PDF/EPUB exports, installable web-app support, and a fully offline APK build.
@@ -73,112 +87,6 @@ That workflow builds:
 - `Threadborn-macOS.zip`
 
 Each desktop build bundles the same local site files and opens the reader in a dedicated desktop window.
-
-## Local Preview
-
-Because the site is static, you can preview it in a browser by opening `index.html` directly or by serving the folder locally:
-
-```bash
-python3 -m http.server 8080
-```
-
-Then visit `http://localhost:8080`.
-
-## Deploy on GitHub Pages
-
-This repo includes a Pages workflow at [`.github/workflows/pages.yml`](./.github/workflows/pages.yml).
-
-To publish:
-
-1. Push the repository to GitHub.
-2. Open **Settings → Pages**.
-3. Set the source to **GitHub Actions**.
-4. Re-run the workflow if needed.
-
-## Deploy on Vercel
-
-Recommended Vercel setup:
-
-1. Import the GitHub repository.
-2. Set **Framework Preset** to `Other`.
-3. Leave **Build Command** empty.
-4. Leave **Output Directory** as `.`.
-5. Deploy.
-
-This project now includes production-focused Vercel Functions for auth, profile, reader sync, bookmarks, and analytics.
-
-Native wrapper note:
-
-- Android and desktop builds keep the reader bundled offline but use the live auth API for login, signup, and profile sync.
-- If `API_BASE_URL` is not supplied during a native build, the apps fall back to `https://threadborn.vercel.app`.
-
-### Phase 1 backend setup (Neon + Vercel Blob)
-
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Create a local env file:
-   ```bash
-   cp .env.example .env.local
-   ```
-3. Add environment variables in `.env.local`:
-   - `DATABASE_URL`
-   - `SESSION_SECRET`
-   - `BLOB_READ_WRITE_TOKEN`
-   - `OWNER_EMAIL`
-   - `OWNER_PASSWORD`
-   - `API_BASE_URL` (optional for web; recommended for native wrappers if you are not using the default `https://threadborn.vercel.app`)
-4. Run migrations:
-   ```bash
-   npm run db:migrate
-   ```
-5. The first time you attempt to log in using the `OWNER_EMAIL` and `OWNER_PASSWORD`, your owner account will be automatically created. You don't need to manually bootstrap it!
-6. Run local Vercel dev server:
-   ```bash
-   npx vercel dev
-   ```
-7. Open:
-   - `http://localhost:3000/login.html`
-   - `http://localhost:3000/signup.html`
-   - `http://localhost:3000/profile.html`
-
-To add the same secret in Vercel:
-
-```bash
-vercel env add DATABASE_URL production
-vercel env add DATABASE_URL preview
-vercel env add DATABASE_URL development
-vercel env add SESSION_SECRET production
-vercel env add SESSION_SECRET preview
-vercel env add SESSION_SECRET development
-vercel env add BLOB_READ_WRITE_TOKEN production
-vercel env add OWNER_EMAIL production
-vercel env add OWNER_PASSWORD production
-vercel env add API_BASE_URL production
-vercel env add API_BASE_URL preview
-vercel env add API_BASE_URL development
-```
-
-### API routes (Phase 1)
-
-- `POST /api/auth/login`
-- `POST /api/auth/signup`
-- `POST /api/auth/logout`
-- `GET /api/auth/me`
-- `GET|PATCH /api/user/profile`
-- `GET|PUT /api/user/settings`
-- `GET|PUT /api/reader/progress`
-- `GET|POST|DELETE /api/reader/bookmarks`
-- `GET|POST /api/reader/analytics`
-- `POST /api/upload/avatar`
-
-## Offline / PWA
-
-The web version includes:
-
-- [`manifest.json`](./manifest.json) for installability
-- [`service-worker.js`](./service-worker.js) for caching the core reader shell
 
 ## Credits
 
