@@ -1,4 +1,4 @@
-const CACHE_NAME = "threadborn-static-v26";
+const CACHE_NAME = "threadborn-static-v27";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -60,6 +60,21 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") {
+    return;
+  }
+
+  // Never cache API responses — they contain dynamic data that must always be fresh
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.pathname.startsWith("/api/")) {
+    event.respondWith(
+      fetch(event.request).catch(
+        () =>
+          new Response(
+            JSON.stringify({ success: false, error: "You are offline" }),
+            { status: 503, headers: { "Content-Type": "application/json" } },
+          ),
+      ),
+    );
     return;
   }
 

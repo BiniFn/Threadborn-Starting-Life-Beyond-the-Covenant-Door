@@ -1,308 +1,517 @@
 html
 <html lang="ja">
-<head>
-<script>
-    (function() {
-      try {
-        var savedLang = localStorage.getItem('threadborn_lang');
-        if (!savedLang) return;
-        var path = window.location.pathname;
-        var isJp = path.indexOf('-jp') !== -1;
-        
-        if (savedLang === 'ja' && !isJp) {
-          if (path === '/' || path === '/index' || path === '/index.html') {
-            window.location.replace('./index-jp.html');
-          } else if (path.indexOf('.html') !== -1) {
-            window.location.replace(path.replace('.html', '-jp.html'));
-          } else {
-            window.location.replace(path + '-jp');
-          }
-        } else if (savedLang === 'en' && isJp) {
-          if (path.indexOf('-jp.html') !== -1) {
-            window.location.replace(path.replace('-jp.html', '.html'));
-          } else {
-            window.location.replace(path.replace('-jp', ''));
-          }
-        }
-      } catch(e) {}
-    })();
-  </script>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Threadborn Profile</title>
-<link rel="icon" type="image/png" href="./assets/threadborn-favicon-jp.png"/>
-<link rel="apple-touch-icon" href="./assets/threadborn-logo-jp.png"/>
+    <head>
+        <script>
+            (function () {
+                try {
+                    var savedLang = localStorage.getItem("threadborn_lang");
+                    if (!savedLang) return;
+                    var path = window.location.pathname;
+                    var isJp = path.indexOf("-jp") !== -1;
 
-  <link rel="stylesheet" href="./global.css?v=16" />
-</head>
-<body>
-<main class="auth-shell">
-<article class="card" style="margin-bottom: 24px; text-align: left;">
-<div class="row">
-<img alt="Avatar" class="avatar" id="avatar" src="./assets/threadborn-logo-jp.png"/>
-<div>
-<h1 id="name" style="margin:0; font-family: 'Cormorant Garamond', serif; font-size: 28px;">プロフィール</h1>
-<p class="muted" id="meta" style="margin:6px 0 0;">読み込み中...</p>
-<span class="badge" id="verified" style="display:none; margin-top: 8px;">確認済み</span>
-</div>
-</div>
-</article>
-<article class="card" style="text-align: left; margin-bottom: 24px;">
-<h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">プロファイル設定</h2>
-<div class="grid">
-<div>
-<label>ユーザー名</label>
-<input id="username" class="input-field" maxlength="24" pattern="[A-Za-z0-9_]{3,24}"/>
-</div>
-</div>
-<div class="row" style="margin-top:10px;">
-<button id="save-profile" class="btn-form" style="width: auto; padding: 12px 24px;">プロファイルの保存</button>
-</div>
-<p class="muted" id="profile-status"></p>
-</article>
-<article class="card" style="text-align: left; margin-bottom: 24px;">
-<h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">読み取り設定</h2>
-<div class="grid">
-<div>
-<label>テーマ</label>
-<select id="setting-theme" class="input-field">
-<option value="night">夜</option>
-<option value="paper">紙</option>
-<option value="ember">残り火</option>
-</select>
-</div>
-<div>
-<label>文字サイズ</label>
-<input id="setting-size" class="input-field" max="24" min="15" step="1" type="number"/>
-</div>
-</div>
-<button id="save-settings" class="btn-form" style="margin-top:10px; width: auto; padding: 12px 24px;">設定の保存</button>
-<p class="muted" id="settings-status"></p>
-</article>
-<article class="card" style="text-align: left; margin-bottom: 24px;">
-<h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">ブックマーク</h2>
-<div class="muted" id="bookmarks">ブックマークを読み込んでいます...</div>
-</article>
-<article class="card" style="text-align: left; margin-bottom: 24px;">
-<h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">読者評価とコメント</h2>
-<div id="profile-reactions" class="muted">コメントを読み込んでいます...</div>
-</article>
-<article class="card" style="text-align: left;">
-<h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">読書分析</h2>
-<div class="muted" id="analytics">分析を読み込んでいます...</div>
-</article>
-<a href="./index-jp.html" class="back-link">← 読者に戻る</a>
-</main>
-<script src="./runtime-config.js"></script>
-<script>
-    function resolveApiBase() {
-      const configured = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
-      if (configured) {
-        return configured;
-      }
-      const host = window.location.hostname;
-      if (host === "appassets.androidplatform.net" || window.location.protocol === "file:") {
-        return "https://threadborn.vercel.app";
-      }
-      return "";
-    }
+                    if (savedLang === "ja" && !isJp) {
+                        if (
+                            path === "/" ||
+                            path === "/index" ||
+                            path === "/index.html"
+                        ) {
+                            window.location.replace("./index-jp.html");
+                        } else if (path.indexOf(".html") !== -1) {
+                            window.location.replace(
+                                path.replace(".html", "-jp.html"),
+                            );
+                        } else {
+                            window.location.replace(path + "-jp");
+                        }
+                    } else if (savedLang === "en" && isJp) {
+                        if (path.indexOf("-jp.html") !== -1) {
+                            window.location.replace(
+                                path.replace("-jp.html", ".html"),
+                            );
+                        } else {
+                            window.location.replace(path.replace("-jp", ""));
+                        }
+                    }
+                } catch (e) {}
+            })();
+        </script>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>Threadborn Profile</title>
+        <link
+            rel="icon"
+            type="image/png"
+            href="./assets/threadborn-favicon-jp.png"
+        />
+        <link rel="apple-touch-icon" href="./assets/threadborn-logo-jp.png" />
 
-    const API_BASE = resolveApiBase();
-    const APP_SESSION_KEY = "threadborn_app_session";
+        <link rel="stylesheet" href="./global.css?v=16" />
+    </head>
+    <body>
+        <main class="auth-shell">
+            <article class="card" style="margin-bottom: 24px; text-align: left">
+                <div class="row">
+                    <img
+                        alt="Avatar"
+                        class="avatar"
+                        id="avatar"
+                        src="./assets/threadborn-logo-jp.png"
+                    />
+                    <div>
+                        <h1
+                            id="name"
+                            style="
+                                margin: 0;
+                                font-family:
+                                    &quot;Cormorant Garamond&quot;, serif;
+                                font-size: 28px;
+                            "
+                        >
+                            プロフィール
+                        </h1>
+                        <p class="muted" id="meta" style="margin: 6px 0 0">
+                            読み込み中...
+                        </p>
+                        <span
+                            class="badge"
+                            id="verified"
+                            style="display: none; margin-top: 8px"
+                            >確認済み</span
+                        >
+                    </div>
+                </div>
+            </article>
+            <article class="card" style="text-align: left; margin-bottom: 24px">
+                <h2
+                    style="
+                        margin-top: 0;
+                        font-family: &quot;Cormorant Garamond&quot;, serif;
+                    "
+                >
+                    プロファイル設定
+                </h2>
+                <div class="grid">
+                    <div>
+                        <label>ユーザー名</label>
+                        <input
+                            id="username"
+                            class="input-field"
+                            maxlength="24"
+                            pattern="[A-Za-z0-9_]{3,24}"
+                        />
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 10px">
+                    <button
+                        id="save-profile"
+                        class="btn-form"
+                        style="width: auto; padding: 12px 24px"
+                    >
+                        プロファイルの保存
+                    </button>
+                </div>
+                <p class="muted" id="profile-status"></p>
+            </article>
+            <article class="card" style="text-align: left; margin-bottom: 24px">
+                <h2
+                    style="
+                        margin-top: 0;
+                        font-family: &quot;Cormorant Garamond&quot;, serif;
+                    "
+                >
+                    読み取り設定
+                </h2>
+                <div class="grid">
+                    <div>
+                        <label>テーマ</label>
+                        <select id="setting-theme" class="input-field">
+                            <option value="night">夜</option>
+                            <option value="paper">紙</option>
+                            <option value="ember">残り火</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>文字サイズ</label>
+                        <input
+                            id="setting-size"
+                            class="input-field"
+                            max="24"
+                            min="15"
+                            step="1"
+                            type="number"
+                        />
+                    </div>
+                </div>
+                <button
+                    id="save-settings"
+                    class="btn-form"
+                    style="margin-top: 10px; width: auto; padding: 12px 24px"
+                >
+                    設定の保存
+                </button>
+                <p class="muted" id="settings-status"></p>
+            </article>
+            <article class="card" style="text-align: left; margin-bottom: 24px">
+                <h2
+                    style="
+                        margin-top: 0;
+                        font-family: &quot;Cormorant Garamond&quot;, serif;
+                    "
+                >
+                    ブックマーク
+                </h2>
+                <div class="muted" id="bookmarks">
+                    ブックマークを読み込んでいます...
+                </div>
+            </article>
+            <article class="card" style="text-align: left; margin-bottom: 24px">
+                <h2
+                    style="
+                        margin-top: 0;
+                        font-family: &quot;Cormorant Garamond&quot;, serif;
+                    "
+                >
+                    読者評価とコメント
+                </h2>
+                <div id="profile-reactions" class="muted">
+                    コメントを読み込んでいます...
+                </div>
+            </article>
+            <article class="card" style="text-align: left">
+                <h2
+                    style="
+                        margin-top: 0;
+                        font-family: &quot;Cormorant Garamond&quot;, serif;
+                    "
+                >
+                    読書分析
+                </h2>
+                <div class="muted" id="analytics">
+                    分析を読み込んでいます...
+                </div>
+            </article>
+            <a href="./index-jp.html" class="back-link">← 読者に戻る</a>
+        </main>
+        <script src="./runtime-config.js"></script>
+        <script>
+            function resolveApiBase() {
+                const configured = (
+                    window.__THREADBORN_API_BASE ||
+                    localStorage.getItem("threadborn_api_base") ||
+                    ""
+                ).replace(/\/$/, "");
+                if (configured) {
+                    return configured;
+                }
+                const host = window.location.hostname;
+                if (
+                    host === "appassets.androidplatform.net" ||
+                    window.location.protocol === "file:"
+                ) {
+                    return "https://threadborn.vercel.app";
+                }
+                return "";
+            }
 
-    function getAppMode() {
-      return String(window.__THREADBORN_APP_MODE || localStorage.getItem("threadborn_app_mode") || "").trim().toLowerCase();
-    }
+            const API_BASE = resolveApiBase();
+            const APP_SESSION_KEY = "threadborn_app_session";
 
-    function authHeaders() {
-      const headers = { "Content-Type": "application/json" };
-      const appMode = getAppMode();
-      const appSession = localStorage.getItem(APP_SESSION_KEY) || "";
-      if (appMode) {
-        headers["X-Threadborn-App-Mode"] = appMode;
-        localStorage.setItem("threadborn_app_mode", appMode);
-      }
-      if (appSession) {
-        headers.Authorization = `Bearer ${appSession}`;
-      }
-      return headers;
-    }
+            function getAppMode() {
+                return String(
+                    window.__THREADBORN_APP_MODE ||
+                        localStorage.getItem("threadborn_app_mode") ||
+                        "",
+                )
+                    .trim()
+                    .toLowerCase();
+            }
 
-    function saveAuthSession(data) {
-      localStorage.setItem("threadborn_csrf_token", data.csrfToken || "");
-      if (data.sessionToken) {
-        localStorage.setItem(APP_SESSION_KEY, data.sessionToken);
-      }
-    }
+            function authHeaders() {
+                const headers = { "Content-Type": "application/json" };
+                const appMode = getAppMode();
+                const appSession = localStorage.getItem(APP_SESSION_KEY) || "";
+                if (appMode) {
+                    headers["X-Threadborn-App-Mode"] = appMode;
+                    localStorage.setItem("threadborn_app_mode", appMode);
+                }
+                if (appSession) {
+                    headers.Authorization = `Bearer ${appSession}`;
+                }
+                return headers;
+            }
 
-    const avatarEl = document.getElementById("avatar");
-    const nameEl = document.getElementById("name");
-    const metaEl = document.getElementById("meta");
-    const verifiedEl = document.getElementById("verified");
-    const profileStatus = document.getElementById("profile-status");
-    const settingsStatus = document.getElementById("settings-status");
-    let csrfToken = "";
+            function saveAuthSession(data) {
+                localStorage.setItem(
+                    "threadborn_csrf_token",
+                    data.csrfToken || "",
+                );
+                if (data.sessionToken) {
+                    localStorage.setItem(APP_SESSION_KEY, data.sessionToken);
+                }
+            }
 
-    async function apiFetch(path, options = {}) {
-      const headers = Object.assign(authHeaders(), options.headers || {});
-      if (csrfToken) headers["X-CSRF-Token"] = csrfToken;
-      const response = await fetch(`${API_BASE}${path}`, Object.assign({}, options, { credentials: "include", headers }));
-      const json = await response.json();
-      if (!response.ok || !json.success) throw new Error(json.error || "Request failed");
-      return json.data;
-    }
+            const avatarEl = document.getElementById("avatar");
+            const nameEl = document.getElementById("name");
+            const metaEl = document.getElementById("meta");
+            const verifiedEl = document.getElementById("verified");
+            const profileStatus = document.getElementById("profile-status");
+            const settingsStatus = document.getElementById("settings-status");
+            let csrfToken = "";
 
-    function setMessage(target, message, ok) {
-      target.textContent = message;
-      target.className = ok ? "muted ok" : "muted";
-    }
+            async function apiFetch(path, options = {}) {
+                const headers = Object.assign(
+                    authHeaders(),
+                    options.headers || {},
+                );
+                if (csrfToken) headers["X-CSRF-Token"] = csrfToken;
+                const response = await fetch(
+                    `${API_BASE}${path}`,
+                    Object.assign({}, options, {
+                        credentials: "include",
+                        headers,
+                    }),
+                );
+                const json = await response.json();
+                if (!response.ok || !json.success)
+                    throw new Error(json.error || "Request failed");
+                return json.data;
+            }
 
-    document.getElementById("save-profile").addEventListener("click", async () => {
-      try {
-        const username = document.getElementById("username").value.trim();
-        if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) {
-          throw new Error("Username must be 3-24 letters, numbers, or underscores.");
-        }
-        const profile = await apiFetch("/api/user/profile", {
-          method: "PATCH",
-          body: JSON.stringify({ username })
-        });
-        nameEl.textContent = profile.user.username;
-        avatarEl.src = "./assets/threadborn-logo-jp.png";
-        localStorage.setItem("threadborn_user", JSON.stringify({
-          id: profile.user.id,
-          email: profile.user.email,
-          displayName: profile.user.username,
-          avatarUrl: "./assets/threadborn-logo-jp.png",
-          verified: profile.user.verified,
-          role: profile.user.role
-        }));
-        setMessage(profileStatus, "Profile saved.", true);
-      } catch (error) {
-        setMessage(profileStatus, error.message, false);
-      }
-    });
+            function setMessage(target, message, ok) {
+                target.textContent = message;
+                target.className = ok ? "muted ok" : "muted";
+            }
 
-    document.getElementById("save-settings").addEventListener("click", async () => {
-      const settings = {
-        readerTheme: document.getElementById("setting-theme").value,
-        readerSize: Number(document.getElementById("setting-size").value || 18)
-      };
-      try {
-        await apiFetch("/api/user/settings", { method: "PUT", body: JSON.stringify({ settings }) });
-        localStorage.setItem("threadborn_reader_settings_cache", JSON.stringify(settings));
-        setMessage(settingsStatus, "Settings saved.", true);
-      } catch (error) {
-        setMessage(settingsStatus, error.message, false);
-      }
-    });
+            document
+                .getElementById("save-profile")
+                .addEventListener("click", async () => {
+                    try {
+                        const username = document
+                            .getElementById("username")
+                            .value.trim();
+                        if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) {
+                            throw new Error(
+                                "Username must be 3-24 letters, numbers, or underscores.",
+                            );
+                        }
+                        const profile = await apiFetch("/api/user/profile", {
+                            method: "PATCH",
+                            body: JSON.stringify({ username }),
+                        });
+                        nameEl.textContent = profile.user.username;
+                        avatarEl.src =
+                            profile.user.avatarUrl ||
+                            "./assets/threadborn-app-icon.png";
+                        localStorage.setItem(
+                            "threadborn_user",
+                            JSON.stringify({
+                                id: profile.user.id,
+                                email: profile.user.email,
+                                displayName: profile.user.username,
+                                avatarUrl:
+                                    profile.user.avatarUrl ||
+                                    "./assets/threadborn-app-icon.png",
+                                verified: profile.user.verified,
+                                role: profile.user.role,
+                            }),
+                        );
+                        setMessage(profileStatus, "Profile saved.", true);
+                    } catch (error) {
+                        setMessage(profileStatus, error.message, false);
+                    }
+                });
 
-    function renderProfileReactions(reactions) {
-      const box = document.getElementById("profile-reactions");
-      if (!box) return;
-      if (!Array.isArray(reactions) || !reactions.length) {
-        box.textContent = "読者評価やコメントはまだありません。";
-        return;
-      }
-      box.innerHTML = reactions.map(item => {
-        const target = item.targetType === "chapter"
-          ? `${item.volumeId} • ${item.chapterId}`
-          : `${item.volumeId}`;
-        const rating = item.rating ? ` • ${"★".repeat(item.rating)}${"☆".repeat(5 - item.rating)}` : "";
-        const category = item.category ? ` • ${item.category}` : "";
-        const content = String(item.content || "Rating only.").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
-        return `<div class="post-comment"><strong>${target}</strong>${rating}${category}<br>${content}</div>`;
-      }).join("");
-    }
+            document
+                .getElementById("save-settings")
+                .addEventListener("click", async () => {
+                    const settings = {
+                        readerTheme:
+                            document.getElementById("setting-theme").value,
+                        readerSize: Number(
+                            document.getElementById("setting-size").value || 18,
+                        ),
+                    };
+                    try {
+                        await apiFetch("/api/user/settings", {
+                            method: "PUT",
+                            body: JSON.stringify({ settings }),
+                        });
+                        localStorage.setItem(
+                            "threadborn_reader_settings_cache",
+                            JSON.stringify(settings),
+                        );
+                        setMessage(settingsStatus, "Settings saved.", true);
+                    } catch (error) {
+                        setMessage(settingsStatus, error.message, false);
+                    }
+                });
 
-    async function loadProfile() {
-      let user;
-      try {
-        const me = await apiFetch("/api/auth/me");
-        csrfToken = me.csrfToken || "";
-        user = me.user;
-        
-        localStorage.setItem("threadborn_user", JSON.stringify({
-          id: user.id,
-          email: user.email,
-          displayName: user.username,
-          avatarUrl: user.avatarUrl || "./assets/threadborn-logo-jp.png",
-          verified: user.verified,
-          role: user.role
-        }));
-      } catch (error) {
-        // Fallback to offline local storage
-        const localUser = localStorage.getItem("threadborn_user");
-        if (localUser) {
-          user = JSON.parse(localUser);
-          user.username = user.displayName;
-        } else {
-          throw error;
-        }
-      }
+            function renderProfileReactions(reactions) {
+                const box = document.getElementById("profile-reactions");
+                if (!box) return;
+                if (!Array.isArray(reactions) || !reactions.length) {
+                    box.textContent = "読者評価やコメントはまだありません。";
+                    return;
+                }
+                box.innerHTML = reactions
+                    .map((item) => {
+                        const target =
+                            item.targetType === "chapter"
+                                ? `${item.volumeId} • ${item.chapterId}`
+                                : `${item.volumeId}`;
+                        const rating = item.rating
+                            ? ` • ${"★".repeat(item.rating)}${"☆".repeat(5 - item.rating)}`
+                            : "";
+                        const category = item.category
+                            ? ` • ${item.category}`
+                            : "";
+                        const content = String(
+                            item.content || "Rating only.",
+                        ).replace(
+                            /[&<>"]/g,
+                            (c) =>
+                                ({
+                                    "&": "&amp;",
+                                    "<": "&lt;",
+                                    ">": "&gt;",
+                                    '"': "&quot;",
+                                })[c],
+                        );
+                        return `<div class="post-comment"><strong>${target}</strong>${rating}${category}<br>${content}</div>`;
+                    })
+                    .join("");
+            }
 
-      avatarEl.src = user.avatarUrl || "./assets/threadborn-logo-jp.png";
-      nameEl.textContent = user.username || user.displayName;
-      metaEl.textContent = `${user.email} • role: ${user.role || 'user'}`;
-      verifiedEl.style.display = user.verified ? "inline-block" : "none";
-      document.getElementById("username").value = user.username || user.displayName;
+            async function loadProfile() {
+                let user;
+                try {
+                    const me = await apiFetch("/api/auth/me");
+                    csrfToken = me.csrfToken || "";
+                    user = me.user;
 
-      try {
-        const profile = await apiFetch("/api/user/profile");
-        const posts = Array.isArray(profile.posts) ? profile.posts : [];
-          renderProfileReactions(profile.reactions || []);
-        (${post.category || "post"})</div>`).join("");
-          document.getElementById("analytics").insertAdjacentHTML("beforebegin", `<article class="card" style="text-align: left; margin-bottom: 24px;"><h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">User Posts</h2>${lines}</article>`);
-        }
-      } catch (e) {
-        // ignore profile posts if offline
-      }
-    }
+                    localStorage.setItem(
+                        "threadborn_user",
+                        JSON.stringify({
+                            id: user.id,
+                            email: user.email,
+                            displayName: user.username,
+                            avatarUrl:
+                                user.avatarUrl ||
+                                "./assets/threadborn-logo-jp.png",
+                            verified: user.verified,
+                            role: user.role,
+                        }),
+                    );
+                } catch (error) {
+                    // Fallback to offline local storage
+                    const localUser = localStorage.getItem("threadborn_user");
+                    if (localUser) {
+                        user = JSON.parse(localUser);
+                        user.username = user.displayName;
+                    } else {
+                        throw error;
+                    }
+                }
 
-    async function loadBookmarks() {
-      const data = await apiFetch("/api/reader/bookmarks?novelId=threadborn");
-      const bookmarks = data.bookmarks || [];
-      if (!bookmarks.length) {
-        document.getElementById("bookmarks").textContent = "No bookmarks yet.";
-        return;
-      }
-      document.getElementById("bookmarks").innerHTML = bookmarks.map(item =>
-        `<div>• ${item.label || `${item.volume_id} ${item.chapter_id}`} (page ${Math.floor(item.scroll_position) + 1})</div>`
-      ).join("");
-    }
+                avatarEl.src =
+                    user.avatarUrl || "./assets/threadborn-logo-jp.png";
+                nameEl.textContent = user.username || user.displayName;
+                metaEl.textContent = `${user.email} • role: ${user.role || "user"}`;
+                verifiedEl.style.display = user.verified
+                    ? "inline-block"
+                    : "none";
+                document.getElementById("username").value =
+                    user.username || user.displayName;
 
-    async function loadAnalytics() {
-      const data = await apiFetch("/api/reader/analytics");
-      const rows = data.volumes || [];
-      if (!rows.length) {
-        document.getElementById("analytics").textContent = "No reading analytics yet.";
-        return;
-      }
-      document.getElementById("analytics").innerHTML = rows.map(row =>
-        `<div>• ${row.volume_id}: ${row.total_time}s (last read ${new Date(row.last_read_at).toLocaleString()})</div>`
-      ).join("");
-    }
+                try {
+                    const profile = await apiFetch("/api/user/profile");
+                    const posts = Array.isArray(profile.posts)
+                        ? profile.posts
+                        : [];
+                    renderProfileReactions(profile.reactions || []);
+                    if (posts.length > 0) {
+                        const lines = posts
+                            .map(
+                                (post) =>
+                                    `<div style="margin-bottom:8px;"><strong>${post.title || "(untitled)"}</strong> <span style="opacity:0.6;font-size:0.85em;">${post.category || "post"}</span></div>`,
+                            )
+                            .join("");
+                        document
+                            .getElementById("analytics")
+                            .insertAdjacentHTML(
+                                "beforebegin",
+                                `<article class="card" style="text-align: left; margin-bottom: 24px;"><h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">User Posts</h2>${lines}</article>`,
+                            );
+                    }
+                } catch (e) {
+                    // ignore profile posts if offline
+                }
+            }
 
-    (async () => {
-      try {
-        await loadProfile();
-        try {
-          const settings = await apiFetch("/api/user/settings");
-          const reader = settings.settings || {};
-          document.getElementById("setting-theme").value = reader.readerTheme || "night";
-          document.getElementById("setting-size").value = String(reader.readerSize || 18);
-        } catch (error) {
-          const local = JSON.parse(localStorage.getItem("threadborn_reader_settings_cache") || "{}");
-          document.getElementById("setting-theme").value = local.readerTheme || "night";
-          document.getElementById("setting-size").value = String(local.readerSize || 18);
-        }
-        await loadBookmarks();
-        await loadAnalytics();
-      } catch (error) {
-        metaEl.textContent = "Login required.";
-        setMessage(profileStatus, "Please login first.", false);
-      }
-    })();
-  </script>
-</body>
+            async function loadBookmarks() {
+                const data = await apiFetch(
+                    "/api/reader/bookmarks?novelId=threadborn",
+                );
+                const bookmarks = data.bookmarks || [];
+                if (!bookmarks.length) {
+                    document.getElementById("bookmarks").textContent =
+                        "No bookmarks yet.";
+                    return;
+                }
+                document.getElementById("bookmarks").innerHTML = bookmarks
+                    .map(
+                        (item) =>
+                            `<div>• ${item.label || `${item.volume_id} ${item.chapter_id}`} (page ${Math.floor(item.scroll_position) + 1})</div>`,
+                    )
+                    .join("");
+            }
+
+            async function loadAnalytics() {
+                const data = await apiFetch("/api/reader/analytics");
+                const rows = data.volumes || [];
+                if (!rows.length) {
+                    document.getElementById("analytics").textContent =
+                        "No reading analytics yet.";
+                    return;
+                }
+                document.getElementById("analytics").innerHTML = rows
+                    .map(
+                        (row) =>
+                            `<div>• ${row.volume_id}: ${row.total_time}s (last read ${new Date(row.last_read_at).toLocaleString()})</div>`,
+                    )
+                    .join("");
+            }
+
+            (async () => {
+                try {
+                    await loadProfile();
+                    try {
+                        const settings = await apiFetch("/api/user/settings");
+                        const reader = settings.settings || {};
+                        document.getElementById("setting-theme").value =
+                            reader.readerTheme || "night";
+                        document.getElementById("setting-size").value = String(
+                            reader.readerSize || 18,
+                        );
+                    } catch (error) {
+                        const local = JSON.parse(
+                            localStorage.getItem(
+                                "threadborn_reader_settings_cache",
+                            ) || "{}",
+                        );
+                        document.getElementById("setting-theme").value =
+                            local.readerTheme || "night";
+                        document.getElementById("setting-size").value = String(
+                            local.readerSize || 18,
+                        );
+                    }
+                    await loadBookmarks();
+                    await loadAnalytics();
+                } catch (error) {
+                    metaEl.textContent = "Login required.";
+                    setMessage(profileStatus, "Please login first.", false);
+                }
+            })();
+        </script>
+    </body>
 </html>

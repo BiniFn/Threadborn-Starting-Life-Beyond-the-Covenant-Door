@@ -1,11 +1,18 @@
 (function () {
   function resolveApiBase() {
-    const configured = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
+    const configured = (
+      window.__THREADBORN_API_BASE ||
+      localStorage.getItem("threadborn_api_base") ||
+      ""
+    ).replace(/\/$/, "");
     if (configured) {
       return configured;
     }
     const host = window.location.hostname;
-    if (host === "appassets.androidplatform.net" || window.location.protocol === "file:") {
+    if (
+      host === "appassets.androidplatform.net" ||
+      window.location.protocol === "file:"
+    ) {
       return "https://threadborn.vercel.app";
     }
     return "";
@@ -29,7 +36,13 @@
   }
 
   function getAppMode() {
-    return String(window.__THREADBORN_APP_MODE || localStorage.getItem("threadborn_app_mode") || "").trim().toLowerCase();
+    return String(
+      window.__THREADBORN_APP_MODE ||
+        localStorage.getItem("threadborn_app_mode") ||
+        "",
+    )
+      .trim()
+      .toLowerCase();
   }
 
   function buildAuthHeaders(headers = {}) {
@@ -51,11 +64,14 @@
     if (csrfToken) {
       headers["X-CSRF-Token"] = csrfToken;
     }
-    const response = await fetch(apiPath(path), Object.assign({}, options, {
-      credentials: "include",
-      cache: "no-store",
-      headers
-    }));
+    const response = await fetch(
+      apiPath(path),
+      Object.assign({}, options, {
+        credentials: "include",
+        cache: "no-store",
+        headers,
+      }),
+    );
     let payload = {};
     try {
       payload = await response.json();
@@ -99,22 +115,22 @@
         if (item.type === "progress") {
           await apiFetch("/api/reader/progress", {
             method: "PUT",
-            body: JSON.stringify(item.payload)
+            body: JSON.stringify(item.payload),
           });
         } else if (item.type === "bookmark") {
           await apiFetch("/api/reader/bookmarks", {
             method: "POST",
-            body: JSON.stringify(item.payload)
+            body: JSON.stringify(item.payload),
           });
         } else if (item.type === "bookmark_delete") {
           await apiFetch("/api/reader/bookmarks", {
             method: "DELETE",
-            body: JSON.stringify(item.payload)
+            body: JSON.stringify(item.payload),
           });
         } else if (item.type === "analytics") {
           await apiFetch("/api/reader/analytics", {
             method: "POST",
-            body: JSON.stringify({ events: item.payload.events })
+            body: JSON.stringify({ events: item.payload.events }),
           });
         }
       } catch (error) {
@@ -142,12 +158,12 @@
     const mSignupEl = document.getElementById("mobile-nav-signup");
     const mProfileEl = document.getElementById("mobile-nav-profile");
     const mLogoutEl = document.getElementById("mobile-nav-logout");
-    [loginEl, signupEl, mLoginEl, mSignupEl].forEach(el => {
+    [loginEl, signupEl, mLoginEl, mSignupEl].forEach((el) => {
       if (el) {
         el.style.display = loggedIn ? "none" : "";
       }
     });
-    [profileEl, logoutEl, mProfileEl, mLogoutEl].forEach(el => {
+    [profileEl, logoutEl, mProfileEl, mLogoutEl].forEach((el) => {
       if (el) {
         el.style.display = loggedIn ? "" : "none";
       }
@@ -170,7 +186,7 @@
       novelId: "threadborn",
       volumeId: chapter.volume,
       chapterId: chapter.chapter,
-      scrollPosition: Number(window.activePage || 0)
+      scrollPosition: Number(window.activePage || 0),
     };
   }
 
@@ -185,7 +201,7 @@
     try {
       await apiFetch("/api/reader/progress", {
         method: "PUT",
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
       const saveSummary = document.getElementById("reader-save-summary");
       if (saveSummary) {
@@ -211,7 +227,7 @@
       novelId: payload.novelId,
       volumeId: payload.volumeId,
       chapterId: payload.chapterId,
-      timeSpent: seconds
+      timeSpent: seconds,
     });
   }
 
@@ -223,7 +239,7 @@
     try {
       await apiFetch("/api/reader/analytics", {
         method: "POST",
-        body: JSON.stringify({ events })
+        body: JSON.stringify({ events }),
       });
     } catch (error) {
       enqueue({ type: "analytics", payload: { events } });
@@ -240,8 +256,10 @@
       return;
     }
     const options = [`<option value="">Select a bookmark</option>`];
-    bookmarkCache.forEach(bookmark => {
-      const label = bookmark.label || `${bookmark.volume_id} • ${bookmark.chapter_id} • p${Math.floor(bookmark.scroll_position) + 1}`;
+    bookmarkCache.forEach((bookmark) => {
+      const label =
+        bookmark.label ||
+        `${bookmark.volume_id} • ${bookmark.chapter_id} • p${Math.floor(bookmark.scroll_position) + 1}`;
       options.push(`<option value="${bookmark.id}">${label}</option>`);
     });
     select.innerHTML = options.join("");
@@ -282,7 +300,9 @@
     try {
       await apiFetch("/api/reader/bookmarks", {
         method: "POST",
-        body: JSON.stringify(Object.assign({}, payload, { label: label || "" }))
+        body: JSON.stringify(
+          Object.assign({}, payload, { label: label || "" }),
+        ),
       });
       loadBookmarks();
     } catch (error) {
@@ -290,28 +310,30 @@
     }
   };
 
-  window.checkUpdates = function() {
+  window.checkUpdates = function () {
     const btn = document.getElementById("check-updates-btn");
     if (btn) btn.textContent = "Checking...";
-    
+
     // Remember community tab
     sessionStorage.setItem("threadborn_active_view", "community");
-    
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        for(let registration of registrations) {
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (registrations) {
+        for (let registration of registrations) {
           registration.update();
         }
       });
     }
-    
+
     // Force a hard reload bypassing cache
     setTimeout(() => {
       window.location.reload(true);
     }, 500);
   };
 
-  window.syncBookmarkToAccount = async function syncBookmarkToAccount(bookmark) {
+  window.syncBookmarkToAccount = async function syncBookmarkToAccount(
+    bookmark,
+  ) {
     if (!authUser || !bookmark) {
       return;
     }
@@ -320,12 +342,12 @@
       volumeId: bookmark.volumeId,
       chapterId: bookmark.chapterId,
       scrollPosition: Number(bookmark.pageIndex || 0),
-      label: bookmark.label || ""
+      label: bookmark.label || "",
     };
     try {
       const data = await apiFetch("/api/reader/bookmarks", {
         method: "POST",
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
       if (data.bookmark && typeof window.mergeServerBookmarks === "function") {
         window.mergeServerBookmarks([data.bookmark]);
@@ -343,7 +365,9 @@
     }
   };
 
-  window.deleteBookmarkFromAccount = async function deleteBookmarkFromAccount(bookmark) {
+  window.deleteBookmarkFromAccount = async function deleteBookmarkFromAccount(
+    bookmark,
+  ) {
     if (!authUser || !bookmark || !bookmark.serverId) {
       return;
     }
@@ -351,7 +375,7 @@
     try {
       await apiFetch("/api/reader/bookmarks", {
         method: "DELETE",
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
     } catch (error) {
       enqueue({ type: "bookmark_delete", payload });
@@ -359,7 +383,11 @@
   };
 
   async function syncLocalBookmarks() {
-    if (!authUser || typeof window.readLocalBookmarks !== "function" || typeof window.mergeServerBookmarks !== "function") {
+    if (
+      !authUser ||
+      typeof window.readLocalBookmarks !== "function" ||
+      typeof window.mergeServerBookmarks !== "function"
+    ) {
       return;
     }
     const localBookmarks = window.readLocalBookmarks();
@@ -372,12 +400,12 @@
         volumeId: bookmark.volumeId,
         chapterId: bookmark.chapterId,
         scrollPosition: Number(bookmark.pageIndex || 0),
-        label: bookmark.label || ""
+        label: bookmark.label || "",
       };
       try {
         const data = await apiFetch("/api/reader/bookmarks", {
           method: "POST",
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
         });
         if (data.bookmark) {
           window.mergeServerBookmarks([data.bookmark]);
@@ -392,11 +420,14 @@
     if (!id) {
       return;
     }
-    const bookmark = bookmarkCache.find(item => item.id === id);
+    const bookmark = bookmarkCache.find((item) => item.id === id);
     if (!bookmark || !window.chapters) {
       return;
     }
-    const idx = window.chapters.findIndex(ch => ch.volume === bookmark.volume_id && ch.chapter === bookmark.chapter_id);
+    const idx = window.chapters.findIndex(
+      (ch) =>
+        ch.volume === bookmark.volume_id && ch.chapter === bookmark.chapter_id,
+    );
     if (idx >= 0 && typeof window.openChapter === "function") {
       window.openChapter(idx, Number(bookmark.scroll_position || 0));
     }
@@ -422,14 +453,17 @@
       authUser = data.user;
       csrfToken = data.csrfToken || "";
       authConfigMissing = false;
-      localStorage.setItem("threadborn_user", JSON.stringify({
-        id: authUser.id,
-        email: authUser.email,
-        displayName: authUser.username,
-        avatarUrl: authUser.avatarUrl,
-        verified: authUser.verified,
-        role: authUser.role
-      }));
+      localStorage.setItem(
+        "threadborn_user",
+        JSON.stringify({
+          id: authUser.id,
+          email: authUser.email,
+          displayName: authUser.username,
+          avatarUrl: authUser.avatarUrl,
+          verified: authUser.verified,
+          role: authUser.role,
+        }),
+      );
     } catch (error) {
       const isAuthError = error.status === 401 || error.status === 403;
       if (isAuthError) {
@@ -446,7 +480,9 @@
           }
         } catch (e) {}
       }
-      authConfigMissing = String(error.message || "").includes("Missing DATABASE_URL");
+      authConfigMissing = String(error.message || "").includes(
+        "Missing DATABASE_URL",
+      );
     }
     toggleAuthNav();
     await syncLocalBookmarks();
@@ -458,16 +494,23 @@
       return;
     }
     try {
-      const data = await apiFetch("/api/reader/progress?novelId=threadborn", { method: "GET" });
+      const data = await apiFetch("/api/reader/progress?novelId=threadborn", {
+        method: "GET",
+      });
       if (!data.progress) {
         return;
       }
-      const chapterIndex = window.chapters.findIndex(ch =>
-        ch.volume === data.progress.volume_id && ch.chapter === data.progress.chapter_id
+      const chapterIndex = window.chapters.findIndex(
+        (ch) =>
+          ch.volume === data.progress.volume_id &&
+          ch.chapter === data.progress.chapter_id,
       );
       if (chapterIndex >= 0) {
         window.activeChapter = chapterIndex;
-        window.activePage = Math.max(0, Number(data.progress.scroll_position || 0));
+        window.activePage = Math.max(
+          0,
+          Number(data.progress.scroll_position || 0),
+        );
         if (typeof window.updateResumeButton === "function") {
           window.updateResumeButton();
         }
@@ -475,7 +518,7 @@
           chapter: chapterIndex,
           page: window.activePage,
           size: window.readerSize || 18,
-          theme: window.readerTheme || "night"
+          theme: window.readerTheme || "night",
         };
         localStorage.setItem(FALLBACK_PROGRESS_KEY, JSON.stringify(saved));
       }
@@ -528,10 +571,9 @@
     window.addEventListener("online", drainQueue);
   }
 
-  
   // Dashboard Logic
-  window.getDashboardLang = function() {
-    const isJp = window.location.pathname.indexOf('-jp') !== -1;
+  window.getDashboardLang = function () {
+    const isJp = window.location.pathname.indexOf("-jp") !== -1;
     let baseLang = isJp ? "ja" : "en";
     const select = document.getElementById("dashboard-target-lang");
     if (select) {
@@ -543,25 +585,36 @@
   window.loadDashboardConfig = async function loadDashboardConfig() {
     try {
       const lang = window.getDashboardLang();
-      const isJp = window.location.pathname.indexOf('-jp') !== -1;
+      const isJp = window.location.pathname.indexOf("-jp") !== -1;
       const displayLang = isJp ? "ja" : "en";
-      
-      const data = await apiFetch(`/api/dashboard?action=config&lang=${displayLang}`);
-      
+
+      const data = await apiFetch(
+        `/api/dashboard?action=config&lang=${displayLang}`,
+      );
+
       const notifBanner = document.getElementById("global-announcement-banner");
       let notifs = Array.isArray(data.notifications) ? data.notifications : [];
-      if (data.notification && notifs.length === 0) notifs = [data.notification]; // fallback
-      
-      if (notifs.length > 0) {
-        notifBanner.innerHTML = notifs.map(n => `<div style="margin-bottom:8px;"><strong>BiniFn:</strong> ${n}</div>`).join("");
-        notifBanner.style.display = "";
-      } else {
-        if(notifBanner) notifBanner.style.display = "none";
+      if (data.notification && notifs.length === 0)
+        notifs = [data.notification]; // fallback
+
+      if (notifBanner) {
+        if (notifs.length > 0) {
+          notifBanner.innerHTML = notifs
+            .map(
+              (n) =>
+                `<div style="margin-bottom:8px;"><strong>BiniFn:</strong> ${n}</div>`,
+            )
+            .join("");
+          notifBanner.style.display = "";
+        } else {
+          notifBanner.style.display = "none";
+        }
       }
 
       const cdBanner = document.getElementById("global-countdown-banner");
       let countdowns = Array.isArray(data.countdowns) ? data.countdowns : [];
-      if (data.countdown && data.countdown.title && countdowns.length === 0) countdowns = [data.countdown]; // fallback
+      if (data.countdown && data.countdown.title && countdowns.length === 0)
+        countdowns = [data.countdown]; // fallback
 
       if (window._cdIntervals) {
         window._cdIntervals.forEach(clearInterval);
@@ -569,12 +622,16 @@
       window._cdIntervals = [];
 
       if (countdowns.length > 0 && cdBanner) {
-        cdBanner.innerHTML = countdowns.map((cd, idx) => `
+        cdBanner.innerHTML = countdowns
+          .map(
+            (cd, idx) => `
           <div style="background:#222; color:#fff; padding:10px; text-align:center; margin-bottom:8px; border-radius:8px; border:1px solid rgba(255, 107, 107, 0.4);">
             <strong id="global-countdown-title-${idx}">${escapeHtml(cd.title)}</strong>
             <div id="global-countdown-timer-${idx}" style="font-size:1.2rem; font-weight:bold; margin-top:5px; color:#ff6b6b;">Loading timer...</div>
           </div>
-        `).join("");
+        `,
+          )
+          .join("");
         cdBanner.style.display = "";
 
         countdowns.forEach((cd, idx) => {
@@ -583,21 +640,27 @@
             const target = new Date(dateStr).getTime();
             const now = new Date().getTime();
             const distance = target - now;
-            const timerEl = document.getElementById(`global-countdown-timer-${idx}`);
+            const timerEl = document.getElementById(
+              `global-countdown-timer-${idx}`,
+            );
             if (!timerEl) return;
-            
+
             if (isNaN(target)) {
               timerEl.textContent = "Timer Not Set";
               return;
             }
-            
+
             if (distance < 0) {
               timerEl.textContent = "RELEASED";
               return;
             }
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const hours = Math.floor(
+              (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+            );
+            const minutes = Math.floor(
+              (distance % (1000 * 60 * 60)) / (1000 * 60),
+            );
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
             timerEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
           }, 1000);
@@ -609,77 +672,108 @@
 
       // Populate owner dashboard inputs if dashboard elements exist
       if (document.getElementById("dashboard-announcements-list")) {
-        const ownerData = await apiFetch(`/api/dashboard?action=config&lang=${lang}`);
-        const ownerNotifs = Array.isArray(ownerData.notifications) ? ownerData.notifications : (ownerData.notification ? [ownerData.notification] : []);
-        const notifContainer = document.getElementById("dashboard-announcements-list");
+        const ownerData = await apiFetch(
+          `/api/dashboard?action=config&lang=${lang}`,
+        );
+        const ownerNotifs = Array.isArray(ownerData.notifications)
+          ? ownerData.notifications
+          : ownerData.notification
+            ? [ownerData.notification]
+            : [];
+        const notifContainer = document.getElementById(
+          "dashboard-announcements-list",
+        );
         if (notifContainer) {
-          notifContainer.innerHTML = ownerNotifs.map((n, idx) => `
+          notifContainer.innerHTML = ownerNotifs
+            .map(
+              (n, idx) => `
             <div class="announcement-item" style="display:flex; gap:8px; margin-bottom:8px;">
               <input type="text" class="dashboard-announcement-input" value="${escapeHtml(n)}" style="flex:1;" />
               <button class="ghost-btn" type="button" onclick="this.parentElement.remove(); saveDashboardConfig();">Remove</button>
             </div>
-          `).join("");
+          `,
+            )
+            .join("");
         }
-        
-        const ownerCountdowns = Array.isArray(ownerData.countdowns) ? ownerData.countdowns : (ownerData.countdown && ownerData.countdown.title ? [ownerData.countdown] : []);
-        const cdContainer = document.getElementById("dashboard-countdowns-list");
+
+        const ownerCountdowns = Array.isArray(ownerData.countdowns)
+          ? ownerData.countdowns
+          : ownerData.countdown && ownerData.countdown.title
+            ? [ownerData.countdown]
+            : [];
+        const cdContainer = document.getElementById(
+          "dashboard-countdowns-list",
+        );
         if (cdContainer) {
-          cdContainer.innerHTML = ownerCountdowns.map((cd, idx) => `
+          cdContainer.innerHTML = ownerCountdowns
+            .map(
+              (cd, idx) => `
             <div class="countdown-item" style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px; padding:12px; background:#2a2a35; border-radius:8px;">
               <input type="text" class="dashboard-cd-title" value="${escapeHtml(cd.title)}" placeholder="Title..." style="width:100%;" />
               <input type="text" class="dashboard-cd-date" value="${escapeHtml(cd.target_date)}" placeholder="Select Date & Time..." style="width:100%; padding:8px;" />
               <button class="ghost-btn" type="button" onclick="this.parentElement.remove(); saveDashboardConfig();" style="align-self:flex-end;">Remove</button>
             </div>
-          `).join("");
+          `,
+            )
+            .join("");
           if (typeof flatpickr !== "undefined") {
             flatpickr(".dashboard-cd-date", {
               enableTime: true,
               dateFormat: "Y-m-d\\TH:i",
-              time_24hr: false
+              time_24hr: false,
             });
           }
         }
       }
 
       loadPolls();
-    } catch (e) { }
+    } catch (e) {
+      console.error("[Dashboard] loadDashboardConfig failed:", e);
+    }
   };
 
   window.saveDashboardConfig = async function saveDashboardConfig() {
     try {
       const lang = window.getDashboardLang();
       const inputs = document.querySelectorAll(".dashboard-announcement-input");
-      const notifications = Array.from(inputs).map(inp => inp.value.trim()).filter(v => v !== "");
-      
+      const notifications = Array.from(inputs)
+        .map((inp) => inp.value.trim())
+        .filter((v) => v !== "");
+
       const cdItems = document.querySelectorAll(".countdown-item");
-      const countdowns = Array.from(cdItems).map(item => ({
+      const countdowns = Array.from(cdItems).map((item) => ({
         title: item.querySelector(".dashboard-cd-title").value.trim(),
-        target_date: item.querySelector(".dashboard-cd-date").value
+        target_date: item.querySelector(".dashboard-cd-date").value,
       }));
-      
+
       await apiFetch(`/api/dashboard?action=config&lang=${lang}`, {
         method: "PUT",
-        body: JSON.stringify({ notifications, countdowns })
+        body: JSON.stringify({ notifications, countdowns }),
       });
+      await loadDashboardConfig();
       alert("Dashboard config saved!");
-      loadDashboardConfig();
     } catch (e) {
       alert("Failed to save config: " + e.message);
     }
   };
 
-  window.clearAllDashboardData = async function() {
-    if (!confirm("Are you sure you want to completely WIPE ALL announcements, timers, and polls? This cannot be undone.")) return;
+  window.clearAllDashboardData = async function () {
+    if (
+      !confirm(
+        "Are you sure you want to completely WIPE ALL announcements, timers, and polls? This cannot be undone.",
+      )
+    )
+      return;
     try {
       await apiFetch(`/api/dashboard?action=clear_all`, { method: "POST" });
       alert("All data wiped successfully.");
       window.location.reload(true);
-    } catch(e) {
+    } catch (e) {
       alert("Failed to wipe data: " + e.message);
     }
   };
 
-  window.addDashboardAnnouncement = function() {
+  window.addDashboardAnnouncement = function () {
     const container = document.getElementById("dashboard-announcements-list");
     if (!container) return;
     const div = document.createElement("div");
@@ -694,7 +788,7 @@
     container.appendChild(div);
   };
 
-  window.addDashboardTimer = function() {
+  window.addDashboardTimer = function () {
     const container = document.getElementById("dashboard-countdowns-list");
     if (!container) return;
     const div = document.createElement("div");
@@ -716,7 +810,7 @@
       flatpickr(div.querySelector(".dashboard-cd-date"), {
         enableTime: true,
         dateFormat: "Y-m-d\\TH:i",
-        time_24hr: false
+        time_24hr: false,
       });
     }
   };
@@ -724,29 +818,35 @@
   // Polls Logic
   window.loadPolls = async function loadPolls() {
     try {
-      const isJp = window.location.pathname.indexOf('-jp') !== -1;
+      const isJp = window.location.pathname.indexOf("-jp") !== -1;
       const displayLang = isJp ? "ja" : "en";
-      const data = await apiFetch(`/api/dashboard?action=polls&lang=${displayLang}`);
-      
+      const data = await apiFetch(
+        `/api/dashboard?action=polls&lang=${displayLang}`,
+      );
+
       const container = document.getElementById("global-polls-container");
       if (!container) return;
 
       let html = "";
-      (data.polls || []).forEach(poll => {
+      (data.polls || []).forEach((poll) => {
         let optsHtml = "";
-        const totalVotes = poll.options.reduce((sum, o) => sum + parseInt(o.votes || 0), 0);
-        poll.options.forEach(opt => {
+        const totalVotes = poll.options.reduce(
+          (sum, o) => sum + parseInt(o.votes || 0),
+          0,
+        );
+        poll.options.forEach((opt) => {
           const votedKey = `voted_poll_${poll.id}`;
           const isVoted = localStorage.getItem(votedKey) === String(opt.id);
           const hasVotedAny = !!localStorage.getItem(votedKey);
           const votesCount = parseInt(opt.votes || 0);
-          const percent = totalVotes > 0 ? Math.round((votesCount / totalVotes) * 100) : 0;
-          
+          const percent =
+            totalVotes > 0 ? Math.round((votesCount / totalVotes) * 100) : 0;
+
           optsHtml += `
-            <div class="poll-option ${isVoted ? 'voted' : ''}" onclick="votePoll('${poll.id}', '${opt.id}')" style="${hasVotedAny ? 'cursor:default;' : ''}">
+            <div class="poll-option ${isVoted ? "voted" : ""}" onclick="votePoll('${poll.id}', '${opt.id}')" style="${hasVotedAny ? "cursor:default;" : ""}">
               <div class="poll-bg" style="width: ${hasVotedAny ? percent : 0}%;"></div>
               <span style="position:relative; z-index:1;">${opt.option_text}</span>
-              <span class="votes" style="position:relative; z-index:1;">${votesCount} votes ${hasVotedAny ? `(${percent}%)` : ''}</span>
+              <span class="votes" style="position:relative; z-index:1;">${votesCount} votes ${hasVotedAny ? `(${percent}%)` : ""}</span>
             </div>
           `;
         });
@@ -765,9 +865,11 @@
       const dashList = document.getElementById("dashboard-active-polls-list");
       if (dashList) {
         const lang = window.getDashboardLang();
-        const ownerData = await apiFetch(`/api/dashboard?action=polls&lang=${lang}`);
+        const ownerData = await apiFetch(
+          `/api/dashboard?action=polls&lang=${lang}`,
+        );
         let dashHtml = "";
-        (ownerData.polls || []).forEach(poll => {
+        (ownerData.polls || []).forEach((poll) => {
           dashHtml += `
             <div style="background:#222; padding:10px; margin-bottom:10px; border-radius:4px; border:1px solid #444;">
               <strong>${poll.question}</strong>
@@ -779,7 +881,9 @@
         });
         dashList.innerHTML = dashHtml;
       }
-    } catch (e) { }
+    } catch (e) {
+      console.error("[Dashboard] loadPolls failed:", e);
+    }
   };
 
   window.votePoll = async function votePoll(pollId, optionId) {
@@ -789,7 +893,7 @@
     try {
       await apiFetch("/api/dashboard?action=polls", {
         method: "POST",
-        body: JSON.stringify({ optionId })
+        body: JSON.stringify({ optionId }),
       });
       localStorage.setItem(votedKey, optionId);
       loadPolls();
@@ -803,7 +907,9 @@
       const lang = window.getDashboardLang();
       const question = document.getElementById("dashboard-poll-question").value;
       const optsNodes = document.querySelectorAll(".dashboard-poll-opt");
-      const options = Array.from(optsNodes).map(n => n.value).filter(v => v.trim() !== "");
+      const options = Array.from(optsNodes)
+        .map((n) => n.value)
+        .filter((v) => v.trim() !== "");
 
       if (!question || options.length < 2) {
         alert("Please enter a question and at least 2 options.");
@@ -812,13 +918,13 @@
 
       await apiFetch("/api/dashboard?action=polls", {
         method: "PUT",
-        body: JSON.stringify({ question, lang, options })
+        body: JSON.stringify({ question, lang, options }),
       });
-      
+
       document.getElementById("dashboard-poll-question").value = "";
-      optsNodes.forEach(n => n.value = "");
+      optsNodes.forEach((n) => (n.value = ""));
+      await loadPolls();
       alert("Poll created!");
-      loadPolls();
     } catch (e) {
       alert("Failed to create poll: " + e.message);
     }
@@ -829,10 +935,10 @@
     try {
       await apiFetch("/api/dashboard?action=polls", {
         method: "DELETE",
-        body: JSON.stringify({ id: pollId })
+        body: JSON.stringify({ id: pollId }),
       });
+      await loadPolls();
       alert("Poll deleted.");
-      loadPolls();
     } catch (e) {
       alert("Failed to delete poll: " + e.message);
     }
@@ -842,10 +948,10 @@
       const data = await apiFetch("/api/dashboard?action=art");
       const gallery = document.getElementById("dynamic-art-gallery");
       if (!gallery || !data.art) return;
-      
+
       // Group by character
       const grouped = {};
-      data.art.forEach(item => {
+      data.art.forEach((item) => {
         const char = item.character_name || "Unknown";
         if (!grouped[char]) grouped[char] = [];
         grouped[char].push(item);
@@ -871,8 +977,10 @@
             <div class="character-gallery" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px;">
         `;
         for (const item of items) {
-          const deleteBtn = (authUser && authUser.role === 'owner') ? 
-            `<button onclick="deleteDashboardArt('${item.id}')" style="background:red;color:white;border:none;padding:2px 6px;margin-top:4px;cursor:pointer;">Delete</button>` : '';
+          const deleteBtn =
+            authUser && authUser.role === "owner"
+              ? `<button onclick="deleteDashboardArt('${item.id}')" style="background:red;color:white;border:none;padding:2px 6px;margin-top:4px;cursor:pointer;">Delete</button>`
+              : "";
           html += `
             <div>
               <img src="${item.url}" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('${item.url}', '_blank')" />
@@ -883,7 +991,9 @@
         html += `</div></article>`;
       }
       gallery.innerHTML = html;
-    } catch (e) { }
+    } catch (e) {
+      console.error("[Dashboard] loadDashboardArt failed:", e);
+    }
   };
 
   window.uploadDashboardArt = async function uploadDashboardArt() {
@@ -891,7 +1001,7 @@
     const label = document.getElementById("dashboard-art-label").value;
     const fileInput = document.getElementById("dashboard-art-file");
     const status = document.getElementById("dashboard-art-status");
-    
+
     if (!char || !fileInput.files.length) {
       alert("Character name and file are required.");
       return;
@@ -903,10 +1013,14 @@
         status.textContent = "Uploading...";
         await apiFetch("/api/dashboard?action=art", {
           method: "POST",
-          body: JSON.stringify({ characterName: char, label: label, dataUrl: e.target.result })
+          body: JSON.stringify({
+            characterName: char,
+            label: label,
+            dataUrl: e.target.result,
+          }),
         });
+        await loadDashboardArt();
         status.textContent = "Upload complete!";
-        loadDashboardArt();
       } catch (error) {
         status.textContent = "Upload failed: " + error.message;
       }
@@ -919,9 +1033,9 @@
     try {
       await apiFetch("/api/dashboard?action=art", {
         method: "DELETE",
-        body: JSON.stringify({ id })
+        body: JSON.stringify({ id }),
       });
-      loadDashboardArt();
+      await loadDashboardArt();
     } catch (e) {
       alert("Failed to delete art.");
     }
@@ -932,7 +1046,7 @@
     try {
       await apiFetch("/api/reader/reactions", {
         method: "DELETE",
-        body: JSON.stringify({ reactionId })
+        body: JSON.stringify({ reactionId }),
       });
       // Try to remove element from DOM
       const el = document.getElementById(`reaction-${reactionId}`);
@@ -947,7 +1061,7 @@
     try {
       await apiFetch("/api/reader/community", {
         method: "POST",
-        body: JSON.stringify({ action: "delete_post", postId })
+        body: JSON.stringify({ action: "delete_post", postId }),
       });
       alert("Post deleted.");
       location.reload();
@@ -956,12 +1070,14 @@
     }
   };
 
-  window.deleteCommunityComment = async function deleteCommunityComment(commentId) {
+  window.deleteCommunityComment = async function deleteCommunityComment(
+    commentId,
+  ) {
     if (!confirm("Delete this comment?")) return;
     try {
       await apiFetch("/api/reader/community", {
         method: "POST",
-        body: JSON.stringify({ action: "delete_comment", commentId })
+        body: JSON.stringify({ action: "delete_comment", commentId }),
       });
       alert("Comment deleted.");
       location.reload();

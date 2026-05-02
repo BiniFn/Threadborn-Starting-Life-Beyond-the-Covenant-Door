@@ -8432,6 +8432,21 @@
                     renderAppDashboard();
                 }
 
+                if (
+                    view === "dashboard" &&
+                    typeof window.loadDashboardConfig === "function"
+                ) {
+                    window.loadDashboardConfig();
+                    window.loadDashboardArt();
+                }
+
+                if (
+                    view === "drawings" &&
+                    typeof window.loadDashboardArt === "function"
+                ) {
+                    window.loadDashboardArt();
+                }
+
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }
 
@@ -8948,30 +8963,33 @@
                     return;
                 }
 
-                // Filter voices to only show Google Japanese and Google English voices
-                const filteredVoices = ttsVoices.filter((voice) => {
-                    const voiceName = voice.name.toLowerCase();
-                    const voiceLang = voice.lang.toLowerCase();
-                    return (
-                        (voiceName.includes("google") &&
-                            voiceLang.includes("ja")) ||
-                        (voiceName.includes("google") &&
-                            voiceLang.includes("en"))
-                    );
+                // Show all English and Japanese voices from any provider (not Google-only)
+                let filteredVoices = ttsVoices.filter((voice) => {
+                    const lang = voice.lang.toLowerCase();
+                    return lang.startsWith("en") || lang.startsWith("ja");
                 });
 
-                const current = select.value;
-                select.innerHTML = filteredVoices
-                    .map(
-                        (voice) =>
-                            `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`,
-                    )
-                    .join("");
+                // If no EN/JA voices found, fall back to showing all available voices
+                if (!filteredVoices.length) {
+                    filteredVoices = ttsVoices.slice();
+                }
 
-                if (filteredVoices.some((voice) => voice.name === current)) {
+                const current = select.value;
+                select.innerHTML =
+                    `<option value="">Default</option>` +
+                    filteredVoices
+                        .map(
+                            (voice) =>
+                                `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`,
+                        )
+                        .join("");
+
+                if (
+                    current &&
+                    filteredVoices.some((voice) => voice.name === current)
+                ) {
                     select.value = current;
                 } else if (filteredVoices.length > 0) {
-                    // Auto-select the first available voice
                     select.value = filteredVoices[0].name;
                 }
             }

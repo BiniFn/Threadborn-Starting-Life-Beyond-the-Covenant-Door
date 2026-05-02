@@ -1,156 +1,235 @@
 html
 <html lang="ja">
-<head>
-<script>
-    (function() {
-      try {
-        var savedLang = localStorage.getItem('threadborn_lang');
-        if (!savedLang) return;
-        var path = window.location.pathname;
-        var isJp = path.indexOf('-jp') !== -1;
-        
-        if (savedLang === 'ja' && !isJp) {
-          if (path === '/' || path === '/index' || path === '/index.html') {
-            window.location.replace('./index-jp.html');
-          } else if (path.indexOf('.html') !== -1) {
-            window.location.replace(path.replace('.html', '-jp.html'));
-          } else {
-            window.location.replace(path + '-jp');
-          }
-        } else if (savedLang === 'en' && isJp) {
-          if (path.indexOf('-jp.html') !== -1) {
-            window.location.replace(path.replace('-jp.html', '.html'));
-          } else {
-            window.location.replace(path.replace('-jp', ''));
-          }
-        }
-      } catch(e) {}
-    })();
-  </script>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Threadborn Login</title>
-<link rel="icon" type="image/png" href="./assets/threadborn-favicon-jp.png"/>
-<link rel="apple-touch-icon" href="./assets/threadborn-logo-jp.png"/>
+    <head>
+        <script>
+            (function () {
+                try {
+                    var savedLang = localStorage.getItem("threadborn_lang");
+                    if (!savedLang) return;
+                    var path = window.location.pathname;
+                    var isJp = path.indexOf("-jp") !== -1;
 
-  <link rel="stylesheet" href="./global.css?v=16" />
-</head>
-<body>
-<main class="auth-shell">
-<h1 style="font-family: 'Cormorant Garamond', serif; font-size: 32px; margin-top: 0;">ログイン</h1>
-<p style="color: var(--mist); margin-bottom: 24px;">Threadborn アカウントでサインインします。</p>
-<form id="login-form">
-<label for="email">電子メール</label>
-<input class="input-field" autocomplete="email" id="email" name="email" required="" type="email"/>
-<label for="password">パスワード</label>
-<input class="input-field" autocomplete="current-password" id="password" name="password" required="" type="password"/>
-<button id="submit-btn" class="btn-form" type="submit" style="margin-top: 10px;">サインイン</button>
-</form>
-<div aria-live="polite" class="status" id="status"></div>
-<div class="back" style="margin-top: 24px;"><a href="./signup-jp.html" class="back-link" style="margin-top: 0;">アカウントを作成する</a> · <a href="./index-jp.html" class="back-link" style="margin-top: 0;">リーダーに戻る</a></div>
-</main>
-<script src="./runtime-config.js"></script>
-<script>
-    function resolveApiBase() {
-      const configured = (window.__THREADBORN_API_BASE || localStorage.getItem("threadborn_api_base") || "").replace(/\/$/, "");
-      if (configured) {
-        return configured;
-      }
-      const host = window.location.hostname;
-      if (host === "appassets.androidplatform.net" || window.location.protocol === "file:") {
-        return "https://threadborn.vercel.app";
-      }
-      return "";
-    }
+                    if (savedLang === "ja" && !isJp) {
+                        if (
+                            path === "/" ||
+                            path === "/index" ||
+                            path === "/index.html"
+                        ) {
+                            window.location.replace("./index-jp.html");
+                        } else if (path.indexOf(".html") !== -1) {
+                            window.location.replace(
+                                path.replace(".html", "-jp.html"),
+                            );
+                        } else {
+                            window.location.replace(path + "-jp");
+                        }
+                    } else if (savedLang === "en" && isJp) {
+                        if (path.indexOf("-jp.html") !== -1) {
+                            window.location.replace(
+                                path.replace("-jp.html", ".html"),
+                            );
+                        } else {
+                            window.location.replace(path.replace("-jp", ""));
+                        }
+                    }
+                } catch (e) {}
+            })();
+        </script>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>Threadborn Login</title>
+        <link
+            rel="icon"
+            type="image/png"
+            href="./assets/threadborn-favicon-jp.png"
+        />
+        <link rel="apple-touch-icon" href="./assets/threadborn-logo-jp.png" />
 
-    const API_BASE = resolveApiBase();
-    const APP_SESSION_KEY = "threadborn_app_session";
+        <link rel="stylesheet" href="./global.css?v=16" />
+    </head>
+    <body>
+        <main class="auth-shell">
+            <h1
+                style="
+                    font-family: &quot;Cormorant Garamond&quot;, serif;
+                    font-size: 32px;
+                    margin-top: 0;
+                "
+            >
+                ログイン
+            </h1>
+            <p style="color: var(--mist); margin-bottom: 24px">
+                Threadborn アカウントでサインインします。
+            </p>
+            <form id="login-form">
+                <label for="email">電子メール</label>
+                <input
+                    class="input-field"
+                    autocomplete="email"
+                    id="email"
+                    name="email"
+                    required=""
+                    type="email"
+                />
+                <label for="password">パスワード</label>
+                <input
+                    class="input-field"
+                    autocomplete="current-password"
+                    id="password"
+                    name="password"
+                    required=""
+                    type="password"
+                />
+                <button
+                    id="submit-btn"
+                    class="btn-form"
+                    type="submit"
+                    style="margin-top: 10px"
+                >
+                    サインイン
+                </button>
+            </form>
+            <div aria-live="polite" class="status" id="status"></div>
+            <div class="back" style="margin-top: 24px">
+                <a
+                    href="./signup-jp.html"
+                    class="back-link"
+                    style="margin-top: 0"
+                    >アカウントを作成する</a
+                >
+                ·
+                <a
+                    href="./index-jp.html"
+                    class="back-link"
+                    style="margin-top: 0"
+                    >リーダーに戻る</a
+                >
+            </div>
+        </main>
+        <script src="./runtime-config.js"></script>
+        <script>
+            function resolveApiBase() {
+                const configured = (
+                    window.__THREADBORN_API_BASE ||
+                    localStorage.getItem("threadborn_api_base") ||
+                    ""
+                ).replace(/\/$/, "");
+                if (configured) {
+                    return configured;
+                }
+                const host = window.location.hostname;
+                if (
+                    host === "appassets.androidplatform.net" ||
+                    window.location.protocol === "file:"
+                ) {
+                    return "https://threadborn.vercel.app";
+                }
+                return "";
+            }
 
-    function getAppMode() {
-      return String(window.__THREADBORN_APP_MODE || localStorage.getItem("threadborn_app_mode") || "").trim().toLowerCase();
-    }
+            const API_BASE = resolveApiBase();
+            const APP_SESSION_KEY = "threadborn_app_session";
 
-    function authHeaders() {
-      const headers = { "Content-Type": "application/json" };
-      const appMode = getAppMode();
-      const appSession = localStorage.getItem(APP_SESSION_KEY) || "";
-      if (appMode) {
-        headers["X-Threadborn-App-Mode"] = appMode;
-        localStorage.setItem("threadborn_app_mode", appMode);
-      }
-      if (appSession) {
-        headers.Authorization = `Bearer ${appSession}`;
-      }
-      return headers;
-    }
+            function getAppMode() {
+                return String(
+                    window.__THREADBORN_APP_MODE ||
+                        localStorage.getItem("threadborn_app_mode") ||
+                        "",
+                )
+                    .trim()
+                    .toLowerCase();
+            }
 
-    function saveAuthSession(data) {
-      localStorage.setItem("threadborn_csrf_token", data.csrfToken || "");
-      if (data.sessionToken) {
-        localStorage.setItem(APP_SESSION_KEY, data.sessionToken);
-      }
-    }
+            function authHeaders() {
+                const headers = { "Content-Type": "application/json" };
+                const appMode = getAppMode();
+                const appSession = localStorage.getItem(APP_SESSION_KEY) || "";
+                if (appMode) {
+                    headers["X-Threadborn-App-Mode"] = appMode;
+                    localStorage.setItem("threadborn_app_mode", appMode);
+                }
+                if (appSession) {
+                    headers.Authorization = `Bearer ${appSession}`;
+                }
+                return headers;
+            }
 
-    const form = document.getElementById("login-form");
-    const submitBtn = document.getElementById("submit-btn");
-    const statusEl = document.getElementById("status");
+            function saveAuthSession(data) {
+                localStorage.setItem(
+                    "threadborn_csrf_token",
+                    data.csrfToken || "",
+                );
+                if (data.sessionToken) {
+                    localStorage.setItem(APP_SESSION_KEY, data.sessionToken);
+                }
+            }
 
-    function setStatus(message, type) {
-      statusEl.textContent = message || "";
-      statusEl.className = "status" + (type ? " " + type : "");
-    }
+            const form = document.getElementById("login-form");
+            const submitBtn = document.getElementById("submit-btn");
+            const statusEl = document.getElementById("status");
 
-    function normalizeAuthError(message) {
-      const text = String(message || "");
-      if (text.includes("Missing DATABASE_URL")) {
-        return "Server is not configured yet. Please set DATABASE_URL in Vercel Production env vars.";
-      }
-      return text || "Login failed.";
-    }
+            function setStatus(message, type) {
+                statusEl.textContent = message || "";
+                statusEl.className = "status" + (type ? " " + type : "");
+            }
 
-    form.addEventListener("submit", async event => {
-      event.preventDefault();
-      setStatus("");
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Signing in...";
+            function normalizeAuthError(message) {
+                const text = String(message || "");
+                if (text.includes("Missing DATABASE_URL")) {
+                    return "Server is not configured yet. Please set DATABASE_URL in Vercel Production env vars.";
+                }
+                return text || "Login failed.";
+            }
 
-      const payload = {
-        email: form.email.value.trim(),
-        password: form.password.value
-      };
+            form.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                setStatus("");
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Signing in...";
 
-      try {
-        const response = await fetch(`${API_BASE}/api/auth/login`, {
-          method: "POST",
-          credentials: "include",
-          headers: authHeaders(),
-          body: JSON.stringify(payload)
-        });
-        const result = await response.json();
-        if (!response.ok || !result.success) {
-          setStatus(normalizeAuthError(result.error), "error");
-          return;
-        }
-        saveAuthSession(result.data);
-        localStorage.setItem("threadborn_user", JSON.stringify({
-          id: result.data.user.id,
-          email: result.data.user.email,
-          displayName: result.data.user.username,
-          avatarUrl: result.data.user.avatarUrl,
-          verified: result.data.user.verified,
-          role: result.data.user.role
-        }));
-        setStatus("Login successful. Redirecting...", "ok");
-        window.setTimeout(() => {
-          window.location.href = "./index-jp.html";
-        }, 700);
-      } catch (error) {
-        setStatus("Could not reach server. Please try again.", "error");
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Sign In";
-      }
-    });
-  </script>
-</body>
+                const payload = {
+                    email: form.email.value.trim(),
+                    password: form.password.value,
+                };
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/auth/login`, {
+                        method: "POST",
+                        credentials: "include",
+                        headers: authHeaders(),
+                        body: JSON.stringify(payload),
+                    });
+                    const result = await response.json();
+                    if (!response.ok || !result.success) {
+                        setStatus(normalizeAuthError(result.error), "error");
+                        return;
+                    }
+                    saveAuthSession(result.data);
+                    localStorage.setItem(
+                        "threadborn_user",
+                        JSON.stringify({
+                            id: result.data.user.id,
+                            email: result.data.user.email,
+                            displayName: result.data.user.username,
+                            avatarUrl: result.data.user.avatarUrl,
+                            verified: result.data.user.verified,
+                            role: result.data.user.role,
+                        }),
+                    );
+                    setStatus("Login successful. Redirecting...", "ok");
+                    window.setTimeout(() => {
+                        window.location.href = "./index-jp.html";
+                    }, 700);
+                } catch (error) {
+                    setStatus(
+                        "Could not reach server. Please try again.",
+                        "error",
+                    );
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "サインイン";
+                }
+            });
+        </script>
+    </body>
 </html>
