@@ -92,7 +92,7 @@
                 <a class="brand" onclick="switchView('home')">
                     <div class="brand-mark" aria-hidden="true">
                         <img
-                            src="assets/threadborn-logo-jp-header.png"
+                            src="assets/threadborn-logo-jp-new.png"
                             alt="Threadborn"
                         />
                     </div>
@@ -231,7 +231,7 @@
                     <img
                         id="user-avatar"
                         alt="Profile picture"
-                        src="assets/threadborn-logo-jp.png"
+                        src="assets/threadborn-app-icon.png"
                     />
                     <span class="user-name" id="user-name">Guest reader</span>
                 </div>
@@ -289,7 +289,7 @@
                             <div class="hero-logo-wrap">
                                 <img
                                     class="hero-logo"
-                                    src="assets/threadborn-logo-jp-wide.png"
+                                    src="assets/threadborn-logo-jp-new.png"
                                     alt="Threadborn logo"
                                 />
                             </div>
@@ -1677,7 +1677,7 @@
                     status: "公開中",
                     summary:
                         "世界設定、目的、キャラクターの真実、力の体系、そしてThreadborn世界を広げる独自IFルートを説明する公式追加小説。",
-                    coverArt: "./assets/threadborn-logo-jp-wide.png",
+                    coverArt: "./assets/threadborn-logo-jp-new.png",
                     chips: [
                         "設定資料",
                         "キャラクターの真実",
@@ -6971,7 +6971,7 @@
                     user && (user.displayName || user.email)
                         ? user.displayName || user.email
                         : "Guest reader";
-                const avatar = "assets/threadborn-logo-jp.png";
+                const avatar = "assets/threadborn-app-icon.png";
                 nameEl.textContent = displayName;
                 avatarEl.src = avatar;
             }
@@ -7442,7 +7442,7 @@
                         (post) => `
         <article class="community-post">
           <div class="community-head">
-            <img src="${post.avatar_url || "assets/threadborn-logo-jp.png"}" alt="${post.username || "User"} avatar" />
+            <img src="${post.avatar_url || "assets/threadborn-app-icon.png"}" alt="${post.username || "User"} avatar" />
             <div>
               <strong>${post.username || "Reader"}${renderNameBadges(post)}</strong>
               <div class="community-meta">${post.category.replace("_", " ")} • ${formatCommunityTime(post.created_at)}</div>
