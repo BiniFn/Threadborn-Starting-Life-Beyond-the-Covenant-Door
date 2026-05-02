@@ -4,7 +4,7 @@
   "private": true,
   "description": "Threadborn static site with Vercel login API",
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "vercel dev",
