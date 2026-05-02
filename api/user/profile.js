@@ -7,7 +7,6 @@ const { requireSession, validateCsrf } = require("../../lib/api/auth");
 function publicUser(row) {
   return {
     id: row.id,
-    email: row.email || "",
     username: row.username,
     avatarUrl: row.avatar_url || "",
     verified: row.verified,
@@ -101,6 +100,9 @@ module.exports = async (req, res) => {
       const body = await parseJsonBody(req);
       const settings =
         typeof body.settings === "object" && body.settings ? body.settings : {};
+      if (JSON.stringify(settings).length > 65536) {
+        return fail(res, 400, "Settings payload too large");
+      }
       const { rows } = await pool.query(
         `insert into user_settings (user_id, settings_json, updated_at)
          values ($1, $2::jsonb, now())
@@ -159,7 +161,21 @@ module.exports = async (req, res) => {
 
     let rows;
     if (body.avatarUrl !== undefined) {
-      const avatarUrl = String(body.avatarUrl).trim() || null;
+      let avatarUrl = null;
+      if (body.avatarUrl !== undefined && String(body.avatarUrl).trim()) {
+        const rawUrl = String(body.avatarUrl).trim();
+        try {
+          const parsed = new URL(rawUrl);
+          if (parsed.protocol === "https:") avatarUrl = parsed.href;
+          else {
+            fail(res, 400, "Avatar URL must use HTTPS");
+            return;
+          }
+        } catch {
+          fail(res, 400, "Invalid avatar URL");
+          return;
+        }
+      }
       ({ rows } = await pool.query(
         `update users
          set username = $1, avatar_url = $2, updated_at = now()

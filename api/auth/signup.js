@@ -76,6 +76,10 @@ module.exports = async (req, res) => {
       fail(res, 400, "Email, username and password are required");
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      fail(res, 400, "Invalid email address");
+      return;
+    }
     if (!validUsername(username)) {
       fail(
         res,
@@ -86,6 +90,10 @@ module.exports = async (req, res) => {
     }
     if (password.length < 8) {
       fail(res, 400, "Password must be at least 8 characters");
+      return;
+    }
+    if (password.length > 1024) {
+      fail(res, 400, "Password too long (max 1024 characters)");
       return;
     }
 
@@ -117,6 +125,13 @@ module.exports = async (req, res) => {
     );
     success(res, authPayload(user, session, req), 201);
   } catch (error) {
+    if (
+      String(error.code) === "23505" ||
+      String(error.message || "").includes("duplicate")
+    ) {
+      fail(res, 409, "Email or username is already in use");
+      return;
+    }
     fail(res, 500, "Signup failed");
   }
 };

@@ -277,7 +277,12 @@
                         headers,
                     }),
                 );
-                const json = await response.json();
+                let json = {};
+                try {
+                    json = await response.json();
+                } catch (_) {
+                    json = { success: false, error: "Invalid server response" };
+                }
                 if (!response.ok || !json.success)
                     throw new Error(json.error || "Request failed");
                 return json.data;
@@ -338,7 +343,7 @@
                         ),
                     };
                     try {
-                        await apiFetch("/api/user/settings", {
+                        await apiFetch("/api/user/profile?action=settings", {
                             method: "PUT",
                             body: JSON.stringify({ settings }),
                         });
@@ -427,7 +432,7 @@
                         const lines = posts
                             .map(
                                 (post) =>
-                                    `<div style="margin-bottom:8px;"><strong>${post.title || "(untitled)"}</strong> <span style="opacity:0.6;font-size:0.85em;">${post.category || "post"}</span></div>`,
+                                    `<div style="margin-bottom:8px;"><strong>${String(post.title || "(untitled)").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c])}</strong> <span style="opacity:0.6;font-size:0.85em;">${String(post.category || "post").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c])}</span></div>`,
                             )
                             .join("");
                         document
@@ -480,7 +485,9 @@
                 try {
                     await loadProfile();
                     try {
-                        const settings = await apiFetch("/api/user/settings");
+                        const settings = await apiFetch(
+                            "/api/user/profile?action=settings",
+                        );
                         const reader = settings.settings || {};
                         document.getElementById("setting-theme").value =
                             reader.readerTheme || "night";
@@ -499,8 +506,18 @@
                             local.readerSize || 18,
                         );
                     }
-                    await loadBookmarks();
-                    await loadAnalytics();
+                    try {
+                        await loadBookmarks();
+                    } catch (e) {
+                        const el = document.getElementById("bookmarks");
+                        if (el) el.textContent = "Could not load bookmarks.";
+                    }
+                    try {
+                        await loadAnalytics();
+                    } catch (e) {
+                        const el = document.getElementById("analytics");
+                        if (el) el.textContent = "Could not load analytics.";
+                    }
                 } catch (error) {
                     metaEl.textContent = "Login required.";
                     setMessage(profileStatus, "Please login first.", false);

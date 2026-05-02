@@ -38,16 +38,41 @@ module.exports = async (req, res) => {
       return;
     }
     const [meta, base64] = dataUrl.split(",");
+    const ALLOWED_IMAGE_TYPES = new Set([
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+    ]);
     const typeMatch = /^data:(image\/[a-zA-Z0-9.+-]+);base64$/.exec(meta);
     if (!typeMatch || !base64) {
       fail(res, 400, "Invalid image format");
       return;
     }
     const contentType = typeMatch[1];
+    if (!ALLOWED_IMAGE_TYPES.has(contentType)) {
+      fail(res, 400, "Only JPEG, PNG, GIF, and WebP images are allowed");
+      return;
+    }
     const bytes = Buffer.from(base64, "base64");
     if (bytes.length > 3 * 1024 * 1024) {
       fail(res, 400, "Image too large (max 3MB)");
       return;
+    }
+
+    // Delete the old avatar blob if it exists to prevent storage leaks
+    try {
+      const existing = await pool.query(
+        "select avatar_url from users where id = $1",
+        [session.user_id],
+      );
+      const oldUrl = existing.rows[0]?.avatar_url || "";
+      if (oldUrl && oldUrl.includes("blob.vercel-storage.com")) {
+        const { del } = require("@vercel/blob");
+        await del(oldUrl, { token: process.env.BLOB_READ_WRITE_TOKEN });
+      }
+    } catch (e) {
+      console.error("[avatar] Failed to delete old blob:", e);
     }
 
     const ext = contentType.includes("png") ? "png" : "jpg";

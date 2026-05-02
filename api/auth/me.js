@@ -15,20 +15,24 @@ module.exports = async (req, res) => {
     fail(res, 429, "Too many requests");
     return;
   }
-  const session = await getSession(req);
-  if (!session) {
-    fail(res, 401, "Unauthorized");
-    return;
+  try {
+    const session = await getSession(req);
+    if (!session) {
+      fail(res, 401, "Unauthorized");
+      return;
+    }
+    success(res, {
+      user: {
+        id: session.user_id,
+        email: session.email,
+        username: session.username,
+        avatarUrl: session.avatar_url || "",
+        verified: session.verified,
+        role: session.role,
+      },
+      csrfToken: session.csrf_token,
+    });
+  } catch (error) {
+    fail(res, 500, "Service unavailable");
   }
-  success(res, {
-    user: {
-      id: session.user_id,
-      email: session.email,
-      username: session.username,
-      avatarUrl: session.avatar_url || "",
-      verified: session.verified,
-      role: session.role,
-    },
-    csrfToken: session.csrf_token,
-  });
 };

@@ -71,6 +71,7 @@ module.exports = async (req, res) => {
         join users u on u.id = c.user_id
         where c.post_id = any($1::uuid[])
         order by c.created_at asc
+        limit 200
         `,
         [ids],
       );
@@ -113,7 +114,7 @@ module.exports = async (req, res) => {
     }
     const username = cleanText(body.username, 64).toLowerCase();
     const reason = cleanText(body.reason, 220) || "Community rules violation";
-    const hours = Math.max(1, Math.min(24 * 365, Number(body.hours || 24)));
+    const hours = Math.max(1, Math.min(24 * 365, Number(body.hours) || 24));
     if (!username) {
       fail(res, 400, "username is required");
       return;

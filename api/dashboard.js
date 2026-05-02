@@ -10,6 +10,10 @@ module.exports = async (req, res) => {
     return;
   }
 
+  if (!process.env.DATABASE_URL) {
+    return fail(res, 503, "Missing DATABASE_URL environment variable");
+  }
+
   try {
     await pool.ensureMigrations();
 
@@ -166,7 +170,9 @@ module.exports = async (req, res) => {
                 token: process.env.BLOB_READ_WRITE_TOKEN,
               });
             }
-          } catch (e) {}
+          } catch (e) {
+            console.error("[dashboard] blob delete failed:", e);
+          }
           await pool.query("delete from dashboard_art where id = $1", [id]);
         }
         return success(res, { deleted: true });
@@ -216,7 +222,7 @@ module.exports = async (req, res) => {
         if (!optionId) return fail(res, 400, "Missing option ID");
 
         const result = await pool.query(
-          "update poll_options set votes = votes + 1 where id = $1",
+          "update poll_options set votes = votes + 1 where id = $1 and poll_id in (select id from polls where is_active = true)",
           [optionId],
         );
         if (result.rowCount === 0) {
@@ -252,19 +258,28 @@ module.exports = async (req, res) => {
           );
         }
 
-        const { rows } = await pool.query(
-          "insert into polls (question, lang, is_active) values ($1, $2, true) returning id",
-          [question, lang],
-        );
-        const pollId = rows[0].id;
-
-        for (const opt of options) {
-          await pool.query(
-            "insert into poll_options (poll_id, option_text, votes) values ($1, $2, 0)",
-            [pollId, String(opt).trim()],
+        const client = await pool.connect();
+        let pollId;
+        try {
+          await client.query("begin");
+          const { rows } = await client.query(
+            "insert into polls (question, lang, is_active) values ($1, $2, true) returning id",
+            [question, lang],
           );
+          pollId = rows[0].id;
+          for (const opt of options) {
+            await client.query(
+              "insert into poll_options (poll_id, option_text, votes) values ($1, $2, 0)",
+              [pollId, String(opt).trim()],
+            );
+          }
+          await client.query("commit");
+        } catch (txErr) {
+          await client.query("rollback");
+          throw txErr;
+        } finally {
+          client.release();
         }
-
         return success(res, { created: true, pollId });
       }
 
@@ -287,6 +302,14 @@ module.exports = async (req, res) => {
         }
         if (!validateCsrf(req, session)) {
           return fail(res, 403, "Invalid CSRF token");
+        }
+        const body2 = await parseJsonBody(req);
+        if (body2.confirm !== "DELETE_ALL_DATA") {
+          return fail(
+            res,
+            400,
+            "Missing confirmation — send { confirm: 'DELETE_ALL_DATA' }",
+          );
         }
         await pool.query("truncate dashboard_config");
         await pool.query("truncate dashboard_art");

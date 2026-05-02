@@ -1,4 +1,18 @@
 (function () {
+  function escapeHtml(str) {
+    return String(str || "").replace(
+      /[&<>"']/g,
+      (c) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[c],
+    );
+  }
+
   function resolveApiBase() {
     const configured = (
       window.__THREADBORN_API_BASE ||
@@ -477,6 +491,9 @@
           const cachedUser = localStorage.getItem("threadborn_user");
           if (cachedUser) {
             authUser = JSON.parse(cachedUser);
+            if (!authUser.username && authUser.displayName) {
+              authUser.username = authUser.displayName;
+            }
           }
         } catch (e) {}
       }
@@ -602,7 +619,7 @@
           notifBanner.innerHTML = notifs
             .map(
               (n) =>
-                `<div style="margin-bottom:8px;"><strong>BiniFn:</strong> ${escapeHtml(n).replace(/\n/g, "<br>")}`,
+                `<div style="margin-bottom:8px;"><strong>BiniFn:</strong> ${escapeHtml(n).replace(/\n/g, "<br>")}</div>`,
             )
             .join("");
           notifBanner.style.display = "";
@@ -852,7 +869,7 @@
         });
         html += `
           <div class="poll-card" id="poll-${poll.id}">
-            <h3><strong>BiniFn:</strong> ${poll.question}</h3>
+            <h3><strong>BiniFn:</strong> ${escapeHtml(poll.question)}</h3>
             <div class="poll-options">
               ${optsHtml}
             </div>
@@ -872,7 +889,7 @@
         (ownerData.polls || []).forEach((poll) => {
           dashHtml += `
             <div style="background:#222; padding:10px; margin-bottom:10px; border-radius:4px; border:1px solid #444;">
-              <strong>${poll.question}</strong>
+              <strong>${escapeHtml(poll.question)}</strong>
               <div class="poll-admin-controls">
                 <button class="btn-clear" onclick="deletePoll('${poll.id}')">Delete Poll</button>
               </div>
