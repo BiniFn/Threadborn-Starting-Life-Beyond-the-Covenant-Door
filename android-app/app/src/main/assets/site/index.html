@@ -182,6 +182,34 @@
                     </button>
                     <button
                         class="nav-btn"
+                        data-view="search"
+                        onclick="switchView('search')"
+                    >
+                        🔍 Search
+                    </button>
+                    <button
+                        class="nav-btn"
+                        data-view="timeline"
+                        onclick="switchView('timeline')"
+                    >
+                        Timeline
+                    </button>
+                    <button
+                        class="nav-btn"
+                        data-view="codex"
+                        onclick="switchView('codex')"
+                    >
+                        Codex
+                    </button>
+                    <button
+                        class="nav-btn"
+                        data-view="stats"
+                        onclick="switchView('stats')"
+                    >
+                        My Stats
+                    </button>
+                    <button
+                        class="nav-btn"
                         data-view="credits"
                         onclick="switchView('credits')"
                     >
@@ -617,6 +645,56 @@
                         </p>
                     </div>
                 </div>
+                <div class="tag-filter-bar" id="chapter-tag-filters">
+                    <button
+                        class="filter-chip active"
+                        onclick="filterChaptersByTag('all')"
+                    >
+                        All
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('story')"
+                    >
+                        Story
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('fight')"
+                    >
+                        Fight
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('romance')"
+                    >
+                        Romance
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('lore')"
+                    >
+                        Lore
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('EX')"
+                    >
+                        EX Novel
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('Volume 1')"
+                    >
+                        Volume 1
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('Volume 2')"
+                    >
+                        Volume 2
+                    </button>
+                </div>
                 <div id="chapters-grid" class="grid chapter-grid"></div>
             </section>
 
@@ -665,6 +743,18 @@
                             keeps climbing higher.
                         </p>
                     </div>
+                </div>
+                <div class="spoiler-toggle-bar">
+                    <span
+                        >⚠️ Spoiler content — reveal only if you're caught
+                        up</span
+                    >
+                    <button
+                        class="spoiler-toggle"
+                        id="spoiler-toggle-btn"
+                        onclick="toggleSpoilerReveal()"
+                        title="Toggle spoilers"
+                    ></button>
                 </div>
                 <div class="subtabs" id="leaks-tabs">
                     <button
@@ -1284,6 +1374,190 @@
                     </article>
                 </div>
             </section>
+
+            <!-- ── Search View ─────────────────────────────── -->
+            <section id="view-search" class="view">
+                <div class="section-head">
+                    <div>
+                        <h2>Search</h2>
+                        <p class="section-copy">
+                            Search chapters, characters, powers, lore terms, and
+                            leaks.
+                        </p>
+                    </div>
+                </div>
+                <div class="search-bar-wrap">
+                    <input
+                        type="search"
+                        id="global-search-input"
+                        placeholder="Search anything…"
+                        oninput="handleSearch(this.value)"
+                        autocomplete="off"
+                    />
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="search-filters">
+                    <button
+                        class="filter-chip active"
+                        onclick="setSearchScope('all', this)"
+                    >
+                        All
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setSearchScope('chapters', this)"
+                    >
+                        Chapters
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setSearchScope('characters', this)"
+                    >
+                        Characters
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setSearchScope('powers', this)"
+                    >
+                        Powers
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setSearchScope('lore', this)"
+                    >
+                        Lore
+                    </button>
+                </div>
+                <div id="search-results"></div>
+            </section>
+
+            <!-- ── Timeline View ──────────────────────────── -->
+            <section id="view-timeline" class="view">
+                <div class="section-head">
+                    <div>
+                        <h2>Series Timeline</h2>
+                        <p class="section-copy">
+                            Events in order across volumes and extras.
+                        </p>
+                    </div>
+                </div>
+                <div id="timeline-content"></div>
+            </section>
+
+            <!-- ── Codex View ─────────────────────────────── -->
+            <section id="view-codex" class="view">
+                <div class="section-head">
+                    <div>
+                        <h2>Lore Codex</h2>
+                        <p class="section-copy">
+                            A glossary of terms, factions, seals, places, and
+                            abilities.
+                        </p>
+                    </div>
+                </div>
+                <div class="search-bar-wrap" style="margin-bottom: 20px">
+                    <input
+                        type="search"
+                        id="codex-search-input"
+                        placeholder="Search codex…"
+                        oninput="filterCodex(this.value)"
+                        autocomplete="off"
+                    />
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="search-filters" id="codex-category-filters">
+                    <button
+                        class="filter-chip active"
+                        onclick="setCodexCategory('all', this)"
+                    >
+                        All
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setCodexCategory('world', this)"
+                    >
+                        World
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setCodexCategory('power', this)"
+                    >
+                        Powers
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setCodexCategory('faction', this)"
+                    >
+                        Factions
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setCodexCategory('character', this)"
+                    >
+                        Characters
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setCodexCategory('seal', this)"
+                    >
+                        Seals
+                    </button>
+                </div>
+                <div class="codex-grid" id="codex-grid"></div>
+                <div
+                    id="codex-detail-overlay"
+                    style="display: none"
+                    class="codex-detail-overlay"
+                    onclick="closeCodexDetail(event)"
+                >
+                    <div class="codex-detail-panel" id="codex-detail-panel">
+                        <button
+                            class="codex-detail-close"
+                            onclick="closeCodexDetail()"
+                        >
+                            ✕
+                        </button>
+                        <div id="codex-detail-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── Stats View ──────────────────────────────── -->
+            <section id="view-stats" class="view">
+                <div class="section-head">
+                    <div>
+                        <h2>My Reading Stats</h2>
+                        <p class="section-copy">
+                            Your streaks, badges, and reading history.
+                        </p>
+                    </div>
+                </div>
+                <div class="streak-bar" id="streak-bar">
+                    <div>
+                        <div class="streak-num" id="streak-num">—</div>
+                        <div class="streak-label">
+                            <strong id="streak-label-main">Day Streak</strong
+                            ><span id="streak-label-sub">Loading…</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats-grid" id="stats-grid"></div>
+                <h3
+                    style="
+                        font-family: &quot;Cormorant Garamond&quot;, serif;
+                        font-size: 22px;
+                        margin: 28px 0 16px;
+                    "
+                >
+                    Badges
+                </h3>
+                <div class="badges-grid" id="badges-grid">
+                    <div style="color: var(--mist); font-size: 14px">
+                        Loading badges…
+                    </div>
+                </div>
+                <div id="stats-recommendations" style="margin-top: 32px"></div>
+            </section>
         </main>
 
         <footer>
@@ -1372,6 +1646,34 @@
                 onclick="switchView('drawings')"
             >
                 Art
+            </button>
+            <button
+                class="nav-btn"
+                data-view="search"
+                onclick="switchView('search')"
+            >
+                🔍 Search
+            </button>
+            <button
+                class="nav-btn"
+                data-view="timeline"
+                onclick="switchView('timeline')"
+            >
+                Timeline
+            </button>
+            <button
+                class="nav-btn"
+                data-view="codex"
+                onclick="switchView('codex')"
+            >
+                Codex
+            </button>
+            <button
+                class="nav-btn"
+                data-view="stats"
+                onclick="switchView('stats')"
+            >
+                Stats
             </button>
             <button
                 class="nav-btn"
@@ -7905,6 +8207,15 @@
                     initializeReaderReactions();
                 }
 
+                if (view === "timeline") renderTimeline();
+                if (view === "codex") renderCodex();
+                if (view === "stats" && typeof loadReadingStats === "function")
+                    loadReadingStats();
+                if (view === "search") {
+                    const inp = document.getElementById("global-search-input");
+                    if (inp) setTimeout(() => inp.focus(), 100);
+                }
+
                 if (
                     view === "dashboard" &&
                     typeof window.loadDashboardConfig === "function"
@@ -10664,5 +10975,79 @@
                 }
             });
         </script>
+        <!-- ── Feedback Button ──────────────────────────── -->
+        <button
+            class="feedback-fab"
+            id="feedback-fab"
+            onclick="openFeedbackModal()"
+            title="Send feedback"
+        >
+            💬
+        </button>
+        <div
+            id="feedback-modal-overlay"
+            style="display: none"
+            class="feedback-modal-overlay"
+            onclick="closeFeedbackModal(event)"
+        >
+            <div class="feedback-modal" onclick="event.stopPropagation()">
+                <h3>Send Feedback</h3>
+                <div class="feedback-type-row">
+                    <button
+                        class="feedback-type-btn active"
+                        data-type="suggestion"
+                        onclick="setFeedbackType(this)"
+                    >
+                        💡 Suggestion
+                    </button>
+                    <button
+                        class="feedback-type-btn"
+                        data-type="bug"
+                        onclick="setFeedbackType(this)"
+                    >
+                        🐛 Bug
+                    </button>
+                    <button
+                        class="feedback-type-btn"
+                        data-type="content"
+                        onclick="setFeedbackType(this)"
+                    >
+                        📖 Content
+                    </button>
+                    <button
+                        class="feedback-type-btn"
+                        data-type="other"
+                        onclick="setFeedbackType(this)"
+                    >
+                        💬 Other
+                    </button>
+                </div>
+                <textarea
+                    id="feedback-text"
+                    placeholder="Tell us what you think…"
+                    rows="4"
+                ></textarea>
+                <div style="display: flex; gap: 10px">
+                    <button
+                        class="btn btn-primary"
+                        onclick="submitFeedback()"
+                        style="flex: 1"
+                    >
+                        Send
+                    </button>
+                    <button class="ghost-btn" onclick="closeFeedbackModal()">
+                        Cancel
+                    </button>
+                </div>
+                <p
+                    id="feedback-status"
+                    style="
+                        margin-top: 10px;
+                        font-size: 13px;
+                        color: var(--mist);
+                    "
+                ></p>
+            </div>
+        </div>
     </body>
 </html>

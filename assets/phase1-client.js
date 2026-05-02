@@ -1120,4 +1120,620 @@
       loadDashboardConfig();
     }
   });
+
+  // ═══════════════════════════════════════════════════════
+  //  SEARCH
+  // ═══════════════════════════════════════════════════════
+  let searchScope = "all";
+
+  window.setSearchScope = function (scope, btn) {
+    searchScope = scope;
+    document
+      .querySelectorAll(".search-filters .filter-chip")
+      .forEach((b) => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    const q = document.getElementById("global-search-input")?.value || "";
+    if (q.trim().length >= 2) window.handleSearch(q);
+  };
+
+  window.handleSearch = function (query) {
+    const el = document.getElementById("search-results");
+    if (!el) return;
+    const q = query.trim().toLowerCase();
+    if (q.length < 2) {
+      el.innerHTML = "";
+      return;
+    }
+
+    const results = { chapters: [], characters: [], powers: [], lore: [] };
+
+    if (
+      window.chapters &&
+      (searchScope === "all" || searchScope === "chapters")
+    ) {
+      window.chapters.forEach((ch, i) => {
+        if (
+          (ch.title + ch.summary + ch.volume + ch.chapter)
+            .toLowerCase()
+            .includes(q)
+        ) {
+          results.chapters.push({
+            icon: "📖",
+            title: `${ch.volume} · ${ch.chapter}`,
+            subtitle: ch.title,
+            meta: ch.summary,
+            action: () => openChapter(i),
+          });
+        }
+      });
+    }
+    if (
+      window.characters &&
+      (searchScope === "all" || searchScope === "characters")
+    ) {
+      window.characters.forEach((c) => {
+        if (
+          (c.name + c.bio + c.role + (c.chips || []).join(" "))
+            .toLowerCase()
+            .includes(q)
+        ) {
+          results.characters.push({
+            icon: "👤",
+            title: c.name,
+            subtitle: c.role,
+            meta: c.bio,
+            action: () => {
+              switchView("characters");
+            },
+          });
+        }
+      });
+    }
+    if (window.powers && (searchScope === "all" || searchScope === "powers")) {
+      window.powers.forEach((p) => {
+        if ((p.name + p.text).toLowerCase().includes(q)) {
+          results.powers.push({
+            icon: "⚡",
+            title: p.name,
+            subtitle: "Power",
+            meta: p.text,
+            action: () => switchView("powers"),
+          });
+        }
+      });
+    }
+    if (
+      window.loreEntries &&
+      (searchScope === "all" || searchScope === "lore")
+    ) {
+      window.loreEntries.forEach((l) => {
+        if ((l.title + l.text).toLowerCase().includes(q)) {
+          results.lore.push({
+            icon: "📜",
+            title: l.title,
+            subtitle: "Lore Entry",
+            meta: l.text,
+            action: () => switchView("lore"),
+          });
+        }
+      });
+    }
+
+    const total = Object.values(results).flat().length;
+    if (!total) {
+      el.innerHTML = `<div class="search-empty">No results for "${escapeHtml(query)}"</div>`;
+      return;
+    }
+
+    const renderGroup = (label, items) =>
+      items.length
+        ? `
+      <div class="search-result-group">
+        <h3>${label} (${items.length})</h3>
+        ${items
+          .map(
+            (item) => `
+          <div class="search-result-item" onclick="(${item.action.toString()})()">
+            <div class="search-result-icon">${item.icon}</div>
+            <div>
+              <div class="search-result-title">${escapeHtml(item.title)}</div>
+              <div class="search-result-meta">${escapeHtml(item.subtitle)} · ${escapeHtml((item.meta || "").slice(0, 120))}…</div>
+            </div>
+          </div>`,
+          )
+          .join("")}
+      </div>`
+        : "";
+
+    el.innerHTML =
+      renderGroup("Chapters", results.chapters) +
+      renderGroup("Characters", results.characters) +
+      renderGroup("Powers", results.powers) +
+      renderGroup("Lore", results.lore);
+  };
+
+  // ═══════════════════════════════════════════════════════
+  //  CHAPTER TAG FILTER
+  // ═══════════════════════════════════════════════════════
+  window.filterChaptersByTag = function (tag) {
+    document
+      .querySelectorAll("#chapter-tag-filters .filter-chip")
+      .forEach((b) => {
+        b.classList.toggle(
+          "active",
+          b.textContent.trim().toLowerCase() === tag.toLowerCase() ||
+            (tag === "all" && b.textContent.trim() === "All"),
+        );
+      });
+    if (typeof window.renderChapters === "function") {
+      if (tag === "all") {
+        window.renderChapters();
+        return;
+      }
+      const filtered = (window.chapters || []).filter(
+        (ch) =>
+          (ch.tags || []).some((t) =>
+            t.toLowerCase().includes(tag.toLowerCase()),
+          ) || ch.volume.toLowerCase().includes(tag.toLowerCase()),
+      );
+      const grid = document.getElementById("chapters-grid");
+      if (!grid) return;
+      if (!filtered.length) {
+        grid.innerHTML = `<p style="color:var(--mist)">No chapters match this filter.</p>`;
+        return;
+      }
+      grid.innerHTML = filtered
+        .map((ch, i) => {
+          const idx = (window.chapters || []).indexOf(ch);
+          return `<article class="card chapter-card" onclick="openChapter(${idx})">
+          <div class="chapter-label"><span>${ch.volume}</span><span>${ch.chapter}</span></div>
+          <strong>${escapeHtml(ch.title)}</strong>
+          <p style="color:var(--mist);font-size:13px;margin:8px 0 0;">${escapeHtml(ch.summary || "")}</p>
+          <div class="meta"><span>${(ch.tags || []).join(", ")}</span><span>Read →</span></div>
+        </article>`;
+        })
+        .join("");
+    }
+  };
+
+  // ═══════════════════════════════════════════════════════
+  //  TIMELINE
+  // ═══════════════════════════════════════════════════════
+  window.renderTimeline = function () {
+    const el = document.getElementById("timeline-content");
+    if (!el || el.dataset.rendered === "1") return;
+    el.dataset.rendered = "1";
+    const chs = window.chapters || [];
+    const volumes = [...new Set(chs.map((c) => c.volume))];
+    let html = "";
+    volumes.forEach((vol) => {
+      html += `<h3 class="timeline-vol-header">📚 ${escapeHtml(vol)}</h3><div class="timeline">`;
+      chs
+        .filter((c) => c.volume === vol)
+        .forEach((ch, i) => {
+          html += `<div class="timeline-item">
+          <div class="timeline-vol-label">${escapeHtml(ch.chapter)}</div>
+          <h4>${escapeHtml(ch.title)}</h4>
+          <p>${escapeHtml(ch.summary || "")}</p>
+        </div>`;
+        });
+      html += "</div>";
+    });
+    el.innerHTML = html;
+  };
+
+  // ═══════════════════════════════════════════════════════
+  //  LORE CODEX
+  // ═══════════════════════════════════════════════════════
+  const CODEX_ENTRIES = [
+    {
+      title: "The Tokyo Bridge",
+      category: "world",
+      text: "Yono dies in modern Japan after Violet accidentally kills him saving a cat, then gets reincarnated into Lumera with absurd starter powers.",
+      icon: "🌉",
+    },
+    {
+      title: "Lumera",
+      category: "world",
+      text: "The world Yono awakens in. Ancient, oath-bound, and full of sealed things that should have stayed sealed. Governed by Threads — invisible bonds between promises, people, and places.",
+      icon: "🌍",
+    },
+    {
+      title: "The Shade Debt",
+      category: "faction",
+      text: "Debt-collection monsters made of shadow and law. They enforce unpaid oaths and compound interest on broken promises. Volume 1's primary antagonist force.",
+      icon: "👤",
+    },
+    {
+      title: "The Warden",
+      category: "seal",
+      text: "A sealed entity bound by the Old Covenant. Feeds on promises that were never kept. It does not kill — it collects.",
+      icon: "🔒",
+    },
+    {
+      title: "The Covenant Door",
+      category: "seal",
+      text: "A boundary between the world and what existed before the world had rules. Currently straining under Velkor's weight from the other side.",
+      icon: "🚪",
+    },
+    {
+      title: "Velkor",
+      category: "character",
+      text: "Former Covenant Elder. Learned to eat life-threads and grow from what he stole. Sealed in the forest prison. Still patient. Still growing.",
+      icon: "💀",
+    },
+    {
+      title: "The Black Hall",
+      category: "power",
+      text: "Yono's sealed inner realm. Not a power — a location. Every version of Yono he has been and locked away lives here as a hanging cord.",
+      icon: "⬛",
+    },
+    {
+      title: "Thread Sight",
+      category: "power",
+      text: "Violet's ability to see the invisible bonds that connect people, places, and promises. Allows her to read alliance, betrayal, and intent before they become words.",
+      icon: "🧵",
+    },
+    {
+      title: "Pre-Definition Authority",
+      category: "power",
+      text: "Before a concept fully becomes real, Yono can reject it, blank it, or allow it. This is why limitations placed on him do not last.",
+      icon: "⚡",
+    },
+    {
+      title: "Oath Law",
+      category: "world",
+      text: "The legal framework underlying all social contracts in Lumera. Broken oaths become physical debt. Honoured oaths can be wielded as tools.",
+      icon: "⚖️",
+    },
+    {
+      title: "The Veil Quarter",
+      category: "world",
+      text: "The part of Lumera where oath-law practitioners, information brokers, and legal entities operate. Lyra's home territory.",
+      icon: "🏙️",
+    },
+    {
+      title: "Amber Aura (Mirika)",
+      category: "power",
+      text: "Mirika's seal-reading ability. Can trace the architecture of ancient oaths and determine what can be legally undone versus what must be brute-forced.",
+      icon: "🔮",
+    },
+    {
+      title: "Warmth Field (Meryn)",
+      category: "power",
+      text: "Meryn's healing presence creates a field of physical and emotional warmth. Can buy the party precious seconds against powers that ignore conventional defense.",
+      icon: "🌡️",
+    },
+    {
+      title: "The Forest Confession",
+      category: "world",
+      text: "The emotional turning point of Volume 1. Yono and Violet become real as a couple in the forest shelter before finding Velkor's door the next morning.",
+      icon: "🌲",
+    },
+    {
+      title: "The Old Covenant",
+      category: "faction",
+      text: "The ancient legal body that sealed Velkor and established the rules Lumera runs on. Long dissolved, but its seals still hold — for now.",
+      icon: "📜",
+    },
+    {
+      title: "Seal Harvest",
+      category: "power",
+      text: "Every seal Yono breaks on himself generates a permanent gain. The ceiling of who he was becomes the floor of who he becomes.",
+      icon: "🔓",
+    },
+    {
+      title: "Narrative Overwrite",
+      category: "power",
+      text: "If a scene traps Yono in a fixed outcome, he can rewrite the terms the scene is operating on. Not just survival — authorship.",
+      icon: "✏️",
+    },
+    {
+      title: "Observer Anchor",
+      category: "power",
+      text: "The single limit that keeps Yono's scale from becoming untethered. If no one is watching, thinking about him, or anchoring him, he goes quiet.",
+      icon: "👁️",
+    },
+  ];
+
+  let codexCategory = "all";
+
+  window.renderCodex = function () {
+    window.filterCodex("");
+  };
+
+  window.setCodexCategory = function (cat, btn) {
+    codexCategory = cat;
+    document
+      .querySelectorAll("#codex-category-filters .filter-chip")
+      .forEach((b) => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    window.filterCodex(
+      document.getElementById("codex-search-input")?.value || "",
+    );
+  };
+
+  window.filterCodex = function (query) {
+    const grid = document.getElementById("codex-grid");
+    if (!grid) return;
+    const q = query.trim().toLowerCase();
+    const filtered = CODEX_ENTRIES.filter(
+      (e) =>
+        (codexCategory === "all" || e.category === codexCategory) &&
+        (!q || (e.title + e.text).toLowerCase().includes(q)),
+    );
+    grid.innerHTML =
+      filtered
+        .map(
+          (entry) => `
+      <div class="codex-card" onclick="openCodexDetail(${JSON.stringify(entry).replace(/"/g, "&quot;")})">
+        <div class="codex-card-tag">${entry.category}</div>
+        <h4>${entry.icon} ${escapeHtml(entry.title)}</h4>
+        <p>${escapeHtml(entry.text.slice(0, 120))}…</p>
+      </div>`,
+        )
+        .join("") || `<p style="color:var(--mist)">No entries found.</p>`;
+  };
+
+  window.openCodexDetail = function (entry) {
+    const overlay = document.getElementById("codex-detail-overlay");
+    const content = document.getElementById("codex-detail-content");
+    if (!overlay || !content) return;
+    content.innerHTML = `
+      <div class="codex-card-tag" style="margin-bottom:8px;">${entry.category}</div>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:28px;margin:0 0 16px;">${entry.icon} ${escapeHtml(entry.title)}</h2>
+      <p style="color:var(--mist);line-height:1.8;">${escapeHtml(entry.text)}</p>`;
+    overlay.style.display = "flex";
+  };
+
+  window.closeCodexDetail = function (event) {
+    const overlay = document.getElementById("codex-detail-overlay");
+    const panel = document.getElementById("codex-detail-panel");
+    if (!overlay) return;
+    if (!event || !panel.contains(event.target) || event.target === overlay) {
+      overlay.style.display = "none";
+    }
+  };
+
+  // ═══════════════════════════════════════════════════════
+  //  READING STATS + BADGES
+  // ═══════════════════════════════════════════════════════
+  window.loadReadingStats = async function () {
+    const statsGrid = document.getElementById("stats-grid");
+    const badgesGrid = document.getElementById("badges-grid");
+    const streakNum = document.getElementById("streak-num");
+    const streakSub = document.getElementById("streak-label-sub");
+
+    try {
+      const [analyticsData, bookmarksData, badgesData] =
+        await Promise.allSettled([
+          apiFetch("/api/reader/analytics"),
+          apiFetch("/api/reader/bookmarks?novelId=threadborn"),
+          apiFetch("/api/reader/badges"),
+        ]);
+
+      const volumes =
+        analyticsData.status === "fulfilled"
+          ? analyticsData.value.volumes || []
+          : [];
+      const bookmarks =
+        bookmarksData.status === "fulfilled"
+          ? bookmarksData.value.bookmarks || []
+          : [];
+      const badgeData =
+        badgesData.status === "fulfilled" ? badgesData.value : null;
+
+      const totalTime = volumes.reduce((s, v) => s + (v.total_time || 0), 0);
+      const mins = Math.floor(totalTime / 60);
+      const chaptersRead = volumes.length;
+
+      if (statsGrid) {
+        statsGrid.innerHTML = `
+          <div class="stat-card"><div class="stat-value">${mins}</div><div class="stat-label">Minutes Read</div></div>
+          <div class="stat-card"><div class="stat-value">${volumes.length}</div><div class="stat-label">Volumes Touched</div></div>
+          <div class="stat-card"><div class="stat-value">${bookmarks.length}</div><div class="stat-label">Bookmarks</div></div>
+          <div class="stat-card"><div class="stat-value">${badgeData ? badgeData.badges.filter((b) => b.earned).length : "—"}</div><div class="stat-label">Badges Earned</div></div>`;
+      }
+
+      if (badgeData) {
+        if (streakNum)
+          streakNum.textContent = badgeData.streak.current_streak || 0;
+        if (streakSub)
+          streakSub.textContent = `Longest: ${badgeData.streak.longest_streak || 0} days · ${badgeData.streak.total_days_read || 0} total`;
+
+        if (badgesGrid) {
+          badgesGrid.innerHTML = badgeData.badges
+            .map(
+              (b) => `
+            <div class="badge-card ${b.earned ? "earned" : "locked"}">
+              <div class="badge-icon">${b.icon}</div>
+              <div class="badge-label">${escapeHtml(b.label)}</div>
+              <div class="badge-desc">${escapeHtml(b.desc)}</div>
+            </div>`,
+            )
+            .join("");
+        }
+      }
+
+      // Recommendations
+      const recEl = document.getElementById("stats-recommendations");
+      if (recEl && volumes.length) {
+        const chs = window.chapters || [];
+        const nextVol = volumes.find((v) => v.volume_id === "Volume 2")
+          ? "EX Novel Vol 1"
+          : "Volume 2";
+        const rec = chs.filter((c) => c.volume === nextVol)[0];
+        if (rec) {
+          const idx = chs.indexOf(rec);
+          recEl.innerHTML = `
+            <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;margin:0 0 16px;">Next Up For You</h3>
+            <div class="rec-card" onclick="openChapter(${idx})">
+              <span style="font-size:28px;">📖</span>
+              <div>
+                <div class="rec-reason">RECOMMENDED NEXT</div>
+                <strong>${escapeHtml(rec.title)}</strong>
+                <p style="margin:4px 0 0;font-size:13px;color:var(--mist);">${escapeHtml(rec.summary || "")}</p>
+              </div>
+            </div>`;
+        }
+      }
+    } catch (e) {
+      if (statsGrid)
+        statsGrid.innerHTML = `<p style="color:var(--mist)">Log in to see your reading stats.</p>`;
+    }
+  };
+
+  // ═══════════════════════════════════════════════════════
+  //  SPOILER TOGGLE
+  // ═══════════════════════════════════════════════════════
+  const SPOILER_KEY = "threadborn_spoilers_revealed";
+
+  function applySpoilerState() {
+    const revealed = localStorage.getItem(SPOILER_KEY) === "1";
+    const btn = document.getElementById("spoiler-toggle-btn");
+    if (btn) btn.classList.toggle("on", revealed);
+    document
+      .querySelectorAll(".leaks-panel .spoiler-body, #view-leaks .spoiler-body")
+      .forEach((el) => {
+        el.classList.toggle("revealed", revealed);
+      });
+  }
+
+  window.toggleSpoilerReveal = function () {
+    const current = localStorage.getItem(SPOILER_KEY) === "1";
+    localStorage.setItem(SPOILER_KEY, current ? "0" : "1");
+    applySpoilerState();
+  };
+
+  // ═══════════════════════════════════════════════════════
+  //  FEEDBACK
+  // ═══════════════════════════════════════════════════════
+  let feedbackType = "suggestion";
+
+  window.openFeedbackModal = function () {
+    const overlay = document.getElementById("feedback-modal-overlay");
+    if (overlay) overlay.style.display = "flex";
+  };
+
+  window.closeFeedbackModal = function (event) {
+    const overlay = document.getElementById("feedback-modal-overlay");
+    const modal = overlay?.querySelector(".feedback-modal");
+    if (!overlay) return;
+    if (!event || !modal?.contains(event.target) || event.target === overlay) {
+      overlay.style.display = "none";
+    }
+  };
+
+  window.setFeedbackType = function (btn) {
+    feedbackType = btn.dataset.type || "other";
+    document
+      .querySelectorAll(".feedback-type-btn")
+      .forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+  };
+
+  window.submitFeedback = async function () {
+    const statusEl = document.getElementById("feedback-status");
+    const textEl = document.getElementById("feedback-text");
+    const message = (textEl?.value || "").trim();
+    if (!message || message.length < 5) {
+      if (statusEl)
+        statusEl.textContent = "Please write at least 5 characters.";
+      return;
+    }
+    try {
+      if (statusEl) statusEl.textContent = "Sending…";
+      await apiFetch("/api/feedback", {
+        method: "POST",
+        body: JSON.stringify({
+          type: feedbackType,
+          message,
+          page: window.location.pathname,
+        }),
+      });
+      if (statusEl) statusEl.textContent = "✓ Thank you for your feedback!";
+      if (textEl) textEl.value = "";
+      setTimeout(() => window.closeFeedbackModal(), 1800);
+    } catch (e) {
+      if (statusEl) statusEl.textContent = "Could not send — please try again.";
+    }
+  };
+
+  // ═══════════════════════════════════════════════════════
+  //  FOLLOW SYSTEM
+  // ═══════════════════════════════════════════════════════
+  let followsCache = new Set();
+
+  window.loadFollows = async function () {
+    try {
+      const data = await apiFetch("/api/reader/follows");
+      followsCache = new Set(
+        (data.follows || []).map((f) => `${f.follow_type}:${f.follow_key}`),
+      );
+      document
+        .querySelectorAll(".follow-btn[data-follow-type]")
+        .forEach((btn) => {
+          const key = `${btn.dataset.followType}:${btn.dataset.followKey}`;
+          btn.classList.toggle("following", followsCache.has(key));
+          btn.textContent = followsCache.has(key) ? "✓ Following" : "+ Follow";
+        });
+    } catch (e) {
+      /* not logged in */
+    }
+  };
+
+  window.toggleFollow = async function (type, key, btn) {
+    const cacheKey = `${type}:${key}`;
+    const isFollowing = followsCache.has(cacheKey);
+    try {
+      if (isFollowing) {
+        await apiFetch("/api/reader/follows", {
+          method: "DELETE",
+          body: JSON.stringify({ follow_type: type, follow_key: key }),
+        });
+        followsCache.delete(cacheKey);
+      } else {
+        await apiFetch("/api/reader/follows", {
+          method: "POST",
+          body: JSON.stringify({ follow_type: type, follow_key: key }),
+        });
+        followsCache.add(cacheKey);
+      }
+      if (btn) {
+        btn.classList.toggle("following", !isFollowing);
+        btn.textContent = !isFollowing ? "✓ Following" : "+ Follow";
+      }
+    } catch (e) {
+      console.error("Follow failed:", e);
+    }
+  };
+
+  // Record chapter read activity for badge + streak updates
+  const originalOpenChapter = window.openChapter;
+  if (typeof originalOpenChapter === "function") {
+    window.openChapter = function (index, page) {
+      originalOpenChapter.call(this, index, page);
+      if (authUser) {
+        apiFetch("/api/reader/badges", {
+          method: "POST",
+          body: JSON.stringify({ activity: "chapter_read" }),
+        }).catch(() => {});
+      }
+    };
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  INIT
+  // ═══════════════════════════════════════════════════════
+  const _originalLoad = window.addEventListener;
+  document.addEventListener("visibilitychange", () => {
+    applySpoilerState();
+  });
+
+  window.addEventListener("load", () => {
+    applySpoilerState();
+    if (authUser) {
+      loadFollows();
+    }
+  });
 })();
