@@ -78,8 +78,7 @@ header {
     max-width: var(--content);
     margin: 0 auto;
     padding: 12px 20px;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    display: flex;
     align-items: center;
     gap: 14px;
 }
@@ -133,6 +132,7 @@ header {
     white-space: nowrap;
     padding: 2px;
     scrollbar-width: none;
+    flex: 1 1 auto;
 }
 
 .nav-row::-webkit-scrollbar {
@@ -372,7 +372,6 @@ main {
     }
 
     .header-shell {
-        grid-template-columns: auto minmax(0, 1fr);
     }
 }
 
