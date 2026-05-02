@@ -2,7 +2,11 @@ const pool = require("../../lib/api/db");
 const { allowCors, success, fail } = require("../../lib/api/http");
 const { parseJsonBody, getClientIp } = require("../../lib/api/request");
 const { takeRateLimitToken } = require("../../lib/api/rate-limit");
-const { requireSession, validateCsrf } = require("../../lib/api/auth");
+const {
+  requireSession,
+  validateCsrf,
+  getSession,
+} = require("../../lib/api/auth");
 
 function publicUser(row) {
   return {
@@ -76,6 +80,35 @@ module.exports = async (req, res) => {
       posts: [],
     });
     return;
+  }
+
+  // ── Feedback (action=feedback) ────────────────────────────────────────────────────
+  if (req.query?.action === "feedback") {
+    if (req.method !== "POST") return fail(res, 405, "Method not allowed");
+    if (!takeRateLimitToken(`feedback:${getClientIp(req)}`, 5, 60_000))
+      return fail(res, 429, "Too many feedback submissions");
+    try {
+      await pool.ensureMigrations();
+      const fbSession = await getSession(req).catch(() => null);
+      const feedbackBody = await parseJsonBody(req);
+      const feedbackType = ["bug", "suggestion", "content", "other"].includes(
+        feedbackBody.type,
+      )
+        ? feedbackBody.type
+        : "other";
+      const message = String(feedbackBody.message || "").trim();
+      const pagePath = String(feedbackBody.page || "/").slice(0, 200);
+      if (!message || message.length < 5)
+        return fail(res, 400, "Message too short");
+      if (message.length > 2000) return fail(res, 400, "Message too long");
+      await pool.query(
+        "INSERT INTO reader_feedback (user_id,page_path,feedback_type,message) VALUES ($1,$2,$3,$4)",
+        [fbSession?.user_id || null, pagePath, feedbackType, message],
+      );
+      return success(res, { submitted: true });
+    } catch (e) {
+      return fail(res, 500, "Could not submit feedback");
+    }
   }
 
   const session = await requireSession(req, res, fail);

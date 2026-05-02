@@ -1509,7 +1509,7 @@
         await Promise.allSettled([
           apiFetch("/api/reader/analytics"),
           apiFetch("/api/reader/bookmarks?novelId=threadborn"),
-          apiFetch("/api/reader/badges"),
+          apiFetch("/api/reader/analytics?action=badges"),
         ]);
 
       const volumes =
@@ -1643,7 +1643,7 @@
     }
     try {
       if (statusEl) statusEl.textContent = "Sending…";
-      await apiFetch("/api/feedback", {
+      await apiFetch("/api/user/profile?action=feedback", {
         method: "POST",
         body: JSON.stringify({
           type: feedbackType,
@@ -1666,7 +1666,7 @@
 
   window.loadFollows = async function () {
     try {
-      const data = await apiFetch("/api/reader/follows");
+      const data = await apiFetch("/api/reader/bookmarks?action=follows");
       followsCache = new Set(
         (data.follows || []).map((f) => `${f.follow_type}:${f.follow_key}`),
       );
@@ -1687,13 +1687,13 @@
     const isFollowing = followsCache.has(cacheKey);
     try {
       if (isFollowing) {
-        await apiFetch("/api/reader/follows", {
+        await apiFetch("/api/reader/bookmarks?action=follows", {
           method: "DELETE",
           body: JSON.stringify({ follow_type: type, follow_key: key }),
         });
         followsCache.delete(cacheKey);
       } else {
-        await apiFetch("/api/reader/follows", {
+        await apiFetch("/api/reader/bookmarks?action=follows", {
           method: "POST",
           body: JSON.stringify({ follow_type: type, follow_key: key }),
         });
@@ -1714,7 +1714,7 @@
     window.openChapter = function (index, page) {
       originalOpenChapter.call(this, index, page);
       if (authUser) {
-        apiFetch("/api/reader/badges", {
+        apiFetch("/api/reader/analytics?action=badges", {
           method: "POST",
           body: JSON.stringify({ activity: "chapter_read" }),
         }).catch(() => {});

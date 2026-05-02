@@ -4,10 +4,169 @@ const { parseJsonBody, getClientIp } = require("../../lib/api/request");
 const { takeRateLimitToken } = require("../../lib/api/rate-limit");
 const { requireSession, validateCsrf } = require("../../lib/api/auth");
 
+// ── Badge definitions ─────────────────────────────────────────────────────────
+const BADGES = {
+  first_chapter: {
+    label: "First Steps",
+    icon: "📖",
+    desc: "Read your first chapter",
+  },
+  volume1_complete: {
+    label: "Volume I Complete",
+    icon: "⚔️",
+    desc: "Finished Volume 1",
+  },
+  volume2_started: {
+    label: "Into the Door",
+    icon: "🚪",
+    desc: "Started Volume 2",
+  },
+  ex_reader: { label: "Lore Seeker", icon: "📜", desc: "Read the EX Novel" },
+  streak_3: { label: "3-Day Streak", icon: "🔥", desc: "Read 3 days in a row" },
+  streak_7: { label: "Week Warrior", icon: "🗡️", desc: "Read 7 days in a row" },
+  streak_30: {
+    label: "Devoted Reader",
+    icon: "👑",
+    desc: "Read 30 days in a row",
+  },
+  bookmarker: {
+    label: "Bookmarker",
+    icon: "🔖",
+    desc: "Created your first bookmark",
+  },
+  reactor: {
+    label: "First Reaction",
+    icon: "❤️",
+    desc: "Left your first reaction",
+  },
+  commenter: {
+    label: "Community Voice",
+    icon: "💬",
+    desc: "Posted in the community",
+  },
+  all_volumes: {
+    label: "Chronicle Complete",
+    icon: "🌟",
+    desc: "Read all available volumes",
+  },
+};
+
 module.exports = async (req, res) => {
-  if (allowCors(req, res)) {
-    return;
+  if (allowCors(req, res)) return;
+
+  const action = req.query?.action || "";
+
+  // ── Badges + Streaks ────────────────────────────────────────────────────────
+  if (action === "badges") {
+    if (!takeRateLimitToken(`badges:${getClientIp(req)}`, 30, 60_000))
+      return fail(res, 429, "Too many requests");
+    const session = await requireSession(req, res, fail);
+    if (!session) return;
+    if (!process.env.DATABASE_URL)
+      return fail(res, 503, "Missing DATABASE_URL");
+    try {
+      await pool.ensureMigrations();
+      if (req.method === "GET") {
+        const [br, sr] = await Promise.all([
+          pool.query(
+            "SELECT badge_key, earned_at FROM reader_badges WHERE user_id=$1 ORDER BY earned_at DESC",
+            [session.user_id],
+          ),
+          pool.query(
+            "SELECT current_streak, longest_streak, last_read_date, total_days_read FROM reader_streaks WHERE user_id=$1",
+            [session.user_id],
+          ),
+        ]);
+        const earned = new Set(br.rows.map((r) => r.badge_key));
+        const badges = Object.entries(BADGES).map(([key, meta]) => ({
+          key,
+          ...meta,
+          earned: earned.has(key),
+          earned_at:
+            br.rows.find((r) => r.badge_key === key)?.earned_at || null,
+        }));
+        const streak = sr.rows[0] || {
+          current_streak: 0,
+          longest_streak: 0,
+          last_read_date: null,
+          total_days_read: 0,
+        };
+        return success(res, { badges, streak });
+      }
+      if (req.method === "POST") {
+        const body = await parseJsonBody(req);
+        const { activity } = body;
+        if (!activity) return fail(res, 400, "Missing activity");
+        const today = new Date().toISOString().slice(0, 10);
+        const sr = await pool.query(
+          "SELECT * FROM reader_streaks WHERE user_id=$1",
+          [session.user_id],
+        );
+        let cs = 1,
+          ls = 1,
+          td = 1;
+        if (sr.rows.length) {
+          const s = sr.rows[0];
+          const last = s.last_read_date
+            ? new Date(s.last_read_date).toISOString().slice(0, 10)
+            : null;
+          if (last === today) {
+            cs = s.current_streak;
+            ls = s.longest_streak;
+            td = s.total_days_read;
+          } else {
+            const yest = new Date(Date.now() - 86400000)
+              .toISOString()
+              .slice(0, 10);
+            cs = last === yest ? s.current_streak + 1 : 1;
+            ls = Math.max(s.longest_streak, cs);
+            td = s.total_days_read + 1;
+          }
+        }
+        await pool.query(
+          `INSERT INTO reader_streaks (user_id,current_streak,longest_streak,last_read_date,total_days_read,updated_at)
+           VALUES ($1,$2,$3,$4,$5,now())
+           ON CONFLICT (user_id) DO UPDATE SET
+             current_streak=$2, longest_streak=$3, last_read_date=$4, total_days_read=$5, updated_at=now()`,
+          [session.user_id, cs, ls, today, td],
+        );
+        const toAward = [];
+        if (activity === "chapter_read") toAward.push("first_chapter");
+        if (activity === "volume1_complete") toAward.push("volume1_complete");
+        if (activity === "volume2_started") toAward.push("volume2_started");
+        if (activity === "ex_read") toAward.push("ex_reader");
+        if (activity === "bookmark_created") toAward.push("bookmarker");
+        if (activity === "reaction_posted") toAward.push("reactor");
+        if (activity === "community_post") toAward.push("commenter");
+        if (cs >= 3) toAward.push("streak_3");
+        if (cs >= 7) toAward.push("streak_7");
+        if (cs >= 30) toAward.push("streak_30");
+        const newBadges = [];
+        for (const key of toAward) {
+          try {
+            await pool.query(
+              "INSERT INTO reader_badges (user_id,badge_key) VALUES ($1,$2) ON CONFLICT DO NOTHING",
+              [session.user_id, key],
+            );
+            newBadges.push({ key, ...BADGES[key] });
+          } catch (_) {}
+        }
+        return success(res, {
+          newBadges,
+          streak: {
+            current_streak: cs,
+            longest_streak: ls,
+            total_days_read: td,
+          },
+        });
+      }
+      return fail(res, 405, "Method not allowed");
+    } catch (error) {
+      return fail(res, 500, "Badges unavailable");
+    }
   }
+
+  // ── Reading Analytics (original handler) ────────────────────────────────────
   if (!takeRateLimitToken(`analytics:${getClientIp(req)}`, 30, 60_000)) {
     fail(res, 429, "Too many requests");
     return;
