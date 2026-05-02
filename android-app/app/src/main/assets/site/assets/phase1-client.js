@@ -1735,5 +1735,27 @@
     if (authUser) {
       loadFollows();
     }
+
+    // Background service worker update check — runs every 10 minutes
+    // so users always get fresh content without needing to hard-refresh
+    if ("serviceWorker" in navigator) {
+      setInterval(
+        () => {
+          navigator.serviceWorker.getRegistration().then((reg) => {
+            if (reg) reg.update();
+          });
+        },
+        10 * 60 * 1000,
+      );
+
+      // Register periodic background sync if supported
+      navigator.serviceWorker.ready.then((reg) => {
+        if ("periodicSync" in reg) {
+          reg.periodicSync
+            .register("sw-update-check", { minInterval: 10 * 60 * 1000 })
+            .catch(() => {});
+        }
+      });
+    }
   });
 })();

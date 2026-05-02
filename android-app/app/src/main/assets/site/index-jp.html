@@ -74,7 +74,7 @@
             href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"
             rel="stylesheet"
         />
-        <link rel="stylesheet" href="./global.css?v=28" />
+        <link rel="stylesheet" href="./global.css?v=32" />
         <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css"
@@ -179,6 +179,34 @@
                         onclick="switchView('drawings')"
                     >
                         アート
+                    </button>
+                    <button
+                        class="nav-btn"
+                        data-view="search"
+                        onclick="switchView('search')"
+                    >
+                        🔍 検索
+                    </button>
+                    <button
+                        class="nav-btn"
+                        data-view="timeline"
+                        onclick="switchView('timeline')"
+                    >
+                        タイムライン
+                    </button>
+                    <button
+                        class="nav-btn"
+                        data-view="codex"
+                        onclick="switchView('codex')"
+                    >
+                        用語集
+                    </button>
+                    <button
+                        class="nav-btn"
+                        data-view="stats"
+                        onclick="switchView('stats')"
+                    >
+                        統計
                     </button>
                     <button
                         class="nav-btn"
@@ -588,6 +616,56 @@
                         </p>
                     </div>
                 </div>
+                <div class="tag-filter-bar" id="chapter-tag-filters">
+                    <button
+                        class="filter-chip active"
+                        onclick="filterChaptersByTag('all')"
+                    >
+                        すべて
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('story')"
+                    >
+                        ストーリー
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('fight')"
+                    >
+                        バトル
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('romance')"
+                    >
+                        ロマンス
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('lore')"
+                    >
+                        設定
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('EX')"
+                    >
+                        EXノベル
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('Volume 1')"
+                    >
+                        第1巻
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="filterChaptersByTag('Volume 2')"
+                    >
+                        第2巻
+                    </button>
+                </div>
                 <div id="chapters-grid" class="grid chapter-grid"></div>
             </section>
 
@@ -627,6 +705,15 @@
                             重大なネタバレと圧倒的なヨノの能力。これらの力は、ヨノがより高みへと登るにつれて、各章で一つずつ獲得されます。
                         </p>
                     </div>
+                </div>
+                <div class="spoiler-toggle-bar">
+                    <span>⚠️ ネタバレコンテンツ—— 当該章を読了後のみ解禁</span>
+                    <button
+                        class="spoiler-toggle"
+                        id="spoiler-toggle-btn"
+                        onclick="toggleSpoilerReveal()"
+                        title="ネタバレ切替"
+                    ></button>
                 </div>
                 <div class="subtabs" id="leaks-tabs">
                     <button
@@ -1172,6 +1259,180 @@
                     </article>
                 </div>
             </section>
+
+            <section id="view-search" class="view">
+                <div class="section-head">
+                    <div>
+                        <h2>検索</h2>
+                        <p class="section-copy">
+                            章・キャラクター・能力・設定を横断検索
+                        </p>
+                    </div>
+                </div>
+                <div class="search-bar-wrap">
+                    <input
+                        type="search"
+                        id="global-search-input"
+                        placeholder="何でも検索…"
+                        oninput="handleSearch(this.value)"
+                        autocomplete="off"
+                    />
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="search-filters">
+                    <button
+                        class="filter-chip active"
+                        onclick="setSearchScope('all', this)"
+                    >
+                        すべて
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setSearchScope('chapters', this)"
+                    >
+                        章
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setSearchScope('characters', this)"
+                    >
+                        キャラクター
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setSearchScope('powers', this)"
+                    >
+                        能力
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setSearchScope('lore', this)"
+                    >
+                        設定
+                    </button>
+                </div>
+                <div id="search-results"></div>
+            </section>
+
+            <section id="view-timeline" class="view">
+                <div class="section-head">
+                    <div>
+                        <h2>タイムライン</h2>
+                        <p class="section-copy">全巻の出来事を時系列で確認</p>
+                    </div>
+                </div>
+                <div id="timeline-content"></div>
+            </section>
+
+            <section id="view-codex" class="view">
+                <div class="section-head">
+                    <div>
+                        <h2>設定用語集</h2>
+                        <p class="section-copy">
+                            用語・勢力・封印・場所・能力の事典
+                        </p>
+                    </div>
+                </div>
+                <div class="search-bar-wrap" style="margin-bottom: 20px">
+                    <input
+                        type="search"
+                        id="codex-search-input"
+                        placeholder="用語を検索…"
+                        oninput="filterCodex(this.value)"
+                        autocomplete="off"
+                    />
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="search-filters" id="codex-category-filters">
+                    <button
+                        class="filter-chip active"
+                        onclick="setCodexCategory('all', this)"
+                    >
+                        すべて
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setCodexCategory('world', this)"
+                    >
+                        世界
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setCodexCategory('power', this)"
+                    >
+                        能力
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setCodexCategory('faction', this)"
+                    >
+                        勢力
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setCodexCategory('character', this)"
+                    >
+                        キャラクター
+                    </button>
+                    <button
+                        class="filter-chip"
+                        onclick="setCodexCategory('seal', this)"
+                    >
+                        封印
+                    </button>
+                </div>
+                <div class="codex-grid" id="codex-grid"></div>
+                <div
+                    id="codex-detail-overlay"
+                    style="display: none"
+                    class="codex-detail-overlay"
+                    onclick="closeCodexDetail(event)"
+                >
+                    <div class="codex-detail-panel" id="codex-detail-panel">
+                        <button
+                            class="codex-detail-close"
+                            onclick="closeCodexDetail()"
+                        >
+                            &#x2715;
+                        </button>
+                        <div id="codex-detail-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-stats" class="view">
+                <div class="section-head">
+                    <div>
+                        <h2>読書統計</h2>
+                        <p class="section-copy">連続読書・バッジ・読書履歴</p>
+                    </div>
+                </div>
+                <div class="streak-bar" id="streak-bar">
+                    <div>
+                        <div class="streak-num" id="streak-num">—</div>
+                        <div class="streak-label">
+                            <strong id="streak-label-main">日連続</strong
+                            ><span id="streak-label-sub">読み込み中…</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats-grid" id="stats-grid"></div>
+                <h3
+                    style="
+                        font-family: &quot;Cormorant Garamond&quot;, serif;
+                        font-size: 22px;
+                        margin: 28px 0 16px;
+                    "
+                >
+                    バッジ
+                </h3>
+                <div class="badges-grid" id="badges-grid">
+                    <div style="color: var(--mist); font-size: 14px">
+                        読み込み中…
+                    </div>
+                </div>
+                <div id="stats-recommendations" style="margin-top: 32px"></div>
+            </section>
         </main>
 
         <footer>
@@ -1224,6 +1485,41 @@
             </button>
             <button class="nav-btn" data-view="app" onclick="switchView('app')">
                 アプリ
+            </button>
+            <button
+                class="nav-btn"
+                data-view="community"
+                onclick="switchView('community')"
+            >
+                コミュニティ
+            </button>
+            <button
+                class="nav-btn"
+                data-view="search"
+                onclick="switchView('search')"
+            >
+                🔍
+            </button>
+            <button
+                class="nav-btn"
+                data-view="timeline"
+                onclick="switchView('timeline')"
+            >
+                タイムライン
+            </button>
+            <button
+                class="nav-btn"
+                data-view="codex"
+                onclick="switchView('codex')"
+            >
+                用語集
+            </button>
+            <button
+                class="nav-btn"
+                data-view="stats"
+                onclick="switchView('stats')"
+            >
+                統計
             </button>
             <button
                 class="nav-btn"
@@ -8459,6 +8755,21 @@
                 }
 
                 if (
+                    view === "community" &&
+                    typeof loadCommunityFeed === "function"
+                ) {
+                    loadCommunityFeed();
+                }
+                if (view === "timeline") renderTimeline();
+                if (view === "codex") renderCodex();
+                if (view === "stats" && typeof loadReadingStats === "function")
+                    loadReadingStats();
+                if (view === "search") {
+                    const inp = document.getElementById("global-search-input");
+                    if (inp) setTimeout(() => inp.focus(), 100);
+                }
+
+                if (
                     view === "reactions" &&
                     typeof initializeReaderReactions === "function"
                 ) {
@@ -8989,51 +9300,75 @@
 
                 ttsVoices = window.speechSynthesis.getVoices();
                 const select = document.getElementById("voice-select");
-                if (!select) {
-                    return;
-                }
+                if (!select) return;
 
                 if (!ttsVoices.length) {
-                    select.innerHTML = `<option value="">Default</option>`;
+                    select.innerHTML = `<option value="">Default voice</option>`;
                     return;
                 }
 
-                // Google English and Google Japanese voices only
-                const filteredVoices = ttsVoices.filter((voice) => {
-                    const name = voice.name.toLowerCase();
-                    const lang = voice.lang.toLowerCase();
-                    return (
-                        name.includes("google") &&
-                        (lang.startsWith("en") || lang.startsWith("ja"))
-                    );
-                });
-
-                if (!filteredVoices.length) {
-                    select.innerHTML = `<option value="">Googleボイスなし — Chromeで開いてください</option>`;
-                    return;
-                }
-
-                const current = select.value;
+                // Detect app mode — Android WebView and desktop pywebview
+                // do not have Google TTS, so we use all available system voices
+                const appMode =
+                    typeof getAppMode === "function"
+                        ? getAppMode()
+                        : window.__THREADBORN_APP_MODE || "";
+                const isApp = appMode === "android" || appMode === "desktop";
                 const isJpPage =
                     document.documentElement.lang === "ja" ||
                     window.location.pathname.includes("index-jp");
 
+                let filteredVoices;
+
+                if (isApp) {
+                    // App mode: use ALL available English + Japanese voices from any provider
+                    filteredVoices = ttsVoices.filter((v) => {
+                        const lang = v.lang.toLowerCase();
+                        return lang.startsWith("en") || lang.startsWith("ja");
+                    });
+                    // If still nothing, show all voices
+                    if (!filteredVoices.length)
+                        filteredVoices = ttsVoices.slice();
+                } else {
+                    // Web browser: prefer Google TTS (Chrome), fall back to any EN/JA
+                    filteredVoices = ttsVoices.filter((v) => {
+                        const name = v.name.toLowerCase();
+                        const lang = v.lang.toLowerCase();
+                        return (
+                            name.includes("google") &&
+                            (lang.startsWith("en") || lang.startsWith("ja"))
+                        );
+                    });
+                    if (!filteredVoices.length) {
+                        filteredVoices = ttsVoices.filter((v) => {
+                            const lang = v.lang.toLowerCase();
+                            return (
+                                lang.startsWith("en") || lang.startsWith("ja")
+                            );
+                        });
+                    }
+                    if (!filteredVoices.length)
+                        filteredVoices = ttsVoices.slice();
+                }
+
+                if (!filteredVoices.length) {
+                    select.innerHTML = `<option value="">No voices available</option>`;
+                    return;
+                }
+
+                const current = select.value;
                 select.innerHTML =
-                    `<option value="">Default</option>` +
+                    `<option value="">Default voice</option>` +
                     filteredVoices
                         .map(
-                            (voice) =>
-                                `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`,
+                            (v) =>
+                                `<option value="${v.name}">${v.name} (${v.lang})</option>`,
                         )
                         .join("");
 
-                if (
-                    current &&
-                    filteredVoices.some((voice) => voice.name === current)
-                ) {
+                if (current && filteredVoices.some((v) => v.name === current)) {
                     select.value = current;
                 } else {
-                    // Auto-select Google Japanese for JP page, English for EN page
                     const preferred = filteredVoices.find((v) =>
                         isJpPage
                             ? v.lang.toLowerCase().startsWith("ja")
@@ -11155,7 +11490,7 @@
             }
         </style>
 
-        <script src="./assets/phase1-client.js?v=28"></script>
+        <script src="./assets/phase1-client.js?v=32"></script>
         <script>
             if ("serviceWorker" in navigator) {
                 let newWorker;
@@ -11215,5 +11550,79 @@
                 }
             });
         </script>
+
+        <button
+            class="feedback-fab"
+            id="feedback-fab"
+            onclick="openFeedbackModal()"
+            title="フィードバックを送る"
+        >
+            💬
+        </button>
+        <div
+            id="feedback-modal-overlay"
+            style="display: none"
+            class="feedback-modal-overlay"
+            onclick="closeFeedbackModal(event)"
+        >
+            <div class="feedback-modal" onclick="event.stopPropagation()">
+                <h3>フィードバック</h3>
+                <div class="feedback-type-row">
+                    <button
+                        class="feedback-type-btn active"
+                        data-type="suggestion"
+                        onclick="setFeedbackType(this)"
+                    >
+                        💡 提案
+                    </button>
+                    <button
+                        class="feedback-type-btn"
+                        data-type="bug"
+                        onclick="setFeedbackType(this)"
+                    >
+                        🐛 バグ
+                    </button>
+                    <button
+                        class="feedback-type-btn"
+                        data-type="content"
+                        onclick="setFeedbackType(this)"
+                    >
+                        📖 内容
+                    </button>
+                    <button
+                        class="feedback-type-btn"
+                        data-type="other"
+                        onclick="setFeedbackType(this)"
+                    >
+                        💬 その他
+                    </button>
+                </div>
+                <textarea
+                    id="feedback-text"
+                    placeholder="ご意見・ご要望をお聴かせください…"
+                    rows="4"
+                ></textarea>
+                <div style="display: flex; gap: 10px">
+                    <button
+                        class="btn btn-primary"
+                        onclick="submitFeedback()"
+                        style="flex: 1"
+                    >
+                        送信
+                    </button>
+                    <button class="ghost-btn" onclick="closeFeedbackModal()">
+                        キャンセル
+                    </button>
+                </div>
+                <p
+                    id="feedback-status"
+                    style="
+                        margin-top: 10px;
+                        font-size: 13px;
+                        color: var(--mist);
+                    "
+                ></p>
+            </div>
+        </div>
     </body>
 </html>

@@ -74,7 +74,7 @@
             href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"
             rel="stylesheet"
         />
-        <link rel="stylesheet" href="./global.css?v=28" />
+        <link rel="stylesheet" href="./global.css?v=32" />
         <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css"
@@ -1611,6 +1611,13 @@
             </button>
             <button class="nav-btn" data-view="app" onclick="switchView('app')">
                 App
+            </button>
+            <button
+                class="nav-btn"
+                data-view="community"
+                onclick="switchView('community')"
+            >
+                Community
             </button>
             <button
                 class="nav-btn"
@@ -8231,6 +8238,13 @@
                     window.loadDashboardArt();
                 }
 
+                if (
+                    view === "community" &&
+                    typeof loadCommunityFeed === "function"
+                ) {
+                    loadCommunityFeed();
+                }
+
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }
 
@@ -8742,51 +8756,75 @@
 
                 ttsVoices = window.speechSynthesis.getVoices();
                 const select = document.getElementById("voice-select");
-                if (!select) {
-                    return;
-                }
+                if (!select) return;
 
                 if (!ttsVoices.length) {
-                    select.innerHTML = `<option value="">Default</option>`;
+                    select.innerHTML = `<option value="">Default voice</option>`;
                     return;
                 }
 
-                // Google English and Google Japanese voices only
-                const filteredVoices = ttsVoices.filter((voice) => {
-                    const name = voice.name.toLowerCase();
-                    const lang = voice.lang.toLowerCase();
-                    return (
-                        name.includes("google") &&
-                        (lang.startsWith("en") || lang.startsWith("ja"))
-                    );
-                });
-
-                if (!filteredVoices.length) {
-                    select.innerHTML = `<option value="">No Google voices — use Chrome</option>`;
-                    return;
-                }
-
-                const current = select.value;
+                // Detect app mode — Android WebView and desktop pywebview
+                // do not have Google TTS, so we use all available system voices
+                const appMode =
+                    typeof getAppMode === "function"
+                        ? getAppMode()
+                        : window.__THREADBORN_APP_MODE || "";
+                const isApp = appMode === "android" || appMode === "desktop";
                 const isJpPage =
                     document.documentElement.lang === "ja" ||
                     window.location.pathname.includes("index-jp");
 
+                let filteredVoices;
+
+                if (isApp) {
+                    // App mode: use ALL available English + Japanese voices from any provider
+                    filteredVoices = ttsVoices.filter((v) => {
+                        const lang = v.lang.toLowerCase();
+                        return lang.startsWith("en") || lang.startsWith("ja");
+                    });
+                    // If still nothing, show all voices
+                    if (!filteredVoices.length)
+                        filteredVoices = ttsVoices.slice();
+                } else {
+                    // Web browser: prefer Google TTS (Chrome), fall back to any EN/JA
+                    filteredVoices = ttsVoices.filter((v) => {
+                        const name = v.name.toLowerCase();
+                        const lang = v.lang.toLowerCase();
+                        return (
+                            name.includes("google") &&
+                            (lang.startsWith("en") || lang.startsWith("ja"))
+                        );
+                    });
+                    if (!filteredVoices.length) {
+                        filteredVoices = ttsVoices.filter((v) => {
+                            const lang = v.lang.toLowerCase();
+                            return (
+                                lang.startsWith("en") || lang.startsWith("ja")
+                            );
+                        });
+                    }
+                    if (!filteredVoices.length)
+                        filteredVoices = ttsVoices.slice();
+                }
+
+                if (!filteredVoices.length) {
+                    select.innerHTML = `<option value="">No voices available</option>`;
+                    return;
+                }
+
+                const current = select.value;
                 select.innerHTML =
-                    `<option value="">Default</option>` +
+                    `<option value="">Default voice</option>` +
                     filteredVoices
                         .map(
-                            (voice) =>
-                                `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`,
+                            (v) =>
+                                `<option value="${v.name}">${v.name} (${v.lang})</option>`,
                         )
                         .join("");
 
-                if (
-                    current &&
-                    filteredVoices.some((voice) => voice.name === current)
-                ) {
+                if (current && filteredVoices.some((v) => v.name === current)) {
                     select.value = current;
                 } else {
-                    // Auto-select the right language Google voice for this page
                     const preferred = filteredVoices.find((v) =>
                         isJpPage
                             ? v.lang.toLowerCase().startsWith("ja")
@@ -10915,7 +10953,7 @@
             }
         </style>
 
-        <script src="./assets/phase1-client.js?v=28"></script>
+        <script src="./assets/phase1-client.js?v=32"></script>
         <script>
             if ("serviceWorker" in navigator) {
                 let newWorker;
