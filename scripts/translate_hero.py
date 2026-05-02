@@ -7,8 +7,8 @@ def fix_hero(filepath):
 
     # Replacements
     content = content.replace(
-        'Threadborn: Reborn Where Fate Snaps • dark fantasy • romance • gore • cosmic horror',
-        'スレッドボーン：運命が断ち切れる場所での再生 • ダークファンタジー • ロマンス • ゴア • コズミックホラー'
+        'Threadborn: Reborn With Zero Dignity • dark fantasy • romance • gore • cosmic horror',
+        'スレッドボーン：Reborn With Zero Dignity • ダークファンタジー • ロマンス • ゴア • コズミックホラー'
     )
     content = content.replace(
         'A boy dies, wakes in Lumera, and steps into a world that was never meant to survive him.',

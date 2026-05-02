@@ -1,5 +1,5 @@
 # Threadborn: Volume 1: Reborn With Zero Dignity
-*Threadborn: Reborn Where Fate Snaps*
+*Threadborn: Reborn With Zero Dignity*
 
 > Expanded Markdown Edition
 > This edition was lengthened using the light novel balance system: clear prose, fast dialogue, dark fantasy danger, warmth after horror, teasing romance tension, and stronger character reasons.

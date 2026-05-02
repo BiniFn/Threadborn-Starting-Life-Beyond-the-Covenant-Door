@@ -12,8 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = Path("/Users/amela/Documents/New project/Threadborn Expanded.md")
 CACHE = Path("/tmp/threadborn_ja_translation_cache.json")
 
-NEW_SLOGAN_EN = "Threadborn: Reborn Where Fate Snaps"
-NEW_SLOGAN_JA = "スレッドボーン：運命が断ち切れる場所での再生"
+NEW_SLOGAN_EN = "Threadborn: Reborn With Zero Dignity"
+NEW_SLOGAN_JA = "スレッドボーン：Reborn With Zero Dignity"
 REPO_SLUG = "Threadborn-Starting-Life-Beyond-the-Covenant-Door"
 
 TITLE_MAP_JA = {
@@ -391,7 +391,7 @@ def update_html_file(path: Path, md: str, jp=False):
         html_text = html_text.replace("Threadborn — Starting Life Beyond the Covenant Door", NEW_SLOGAN_JA)
         html_text = html_text.replace("Threadborn – Starting Life Beyond the Covenant Door", NEW_SLOGAN_JA)
         html_text = html_text.replace("Threadborn: Starting Life Beyond the Covenant Door", NEW_SLOGAN_JA)
-        html_text = html_text.replace("Threadborn: Reborn Where Fate Snaps", NEW_SLOGAN_JA)
+        html_text = html_text.replace("Threadborn: Reborn With Zero Dignity", NEW_SLOGAN_JA)
         html_text = restore_repo_urls(html_text)
         html_text = html_text.replace("threadborn-logo-en-header.png", "threadborn-logo-jp-header.png")
         html_text = html_text.replace("threadborn-logo-en-wide.png", "threadborn-logo-jp-wide.png")
@@ -402,8 +402,8 @@ def update_html_file(path: Path, md: str, jp=False):
         html_text = html_text.replace("Anime / Light Novel • dark fantasy • romance • gore • cosmic horror", "アニメ / ライトノベル • ダークファンタジー • ロマンス • ゴア • コズミックホラー")
         html_text = html_text.replace('<h1 class="series-title">Threadborn</h1>', '<h1 class="series-title">スレッドボーン</h1>')
         html_text = html_text.replace("Fate isn't given. It's severed.", "運命は与えられない。断ち切るもの。")
-        html_text = html_text.replace("<span>Reborn Where Fate Snaps</span>", "<span>運命が断ち切れる場所での再生</span>")
-        html_text = html_text.replace("Threadborn: Reborn Where Fate Snaps • dark fantasy • romance • gore • cosmic horror", "スレッドボーン：運命が断ち切れる場所での再生 • ダークファンタジー • ロマンス • ゴア • コズミックホラー")
+        html_text = html_text.replace("<span>Reborn With Zero Dignity</span>", "<span>Reborn With Zero Dignity</span>")
+        html_text = html_text.replace("Threadborn: Reborn With Zero Dignity • dark fantasy • romance • gore • cosmic horror", "スレッドボーン：Reborn With Zero Dignity • ダークファンタジー • ロマンス • ゴア • コズミックホラー")
         html_text = html_text.replace("A boy dies, wakes in Lumera, and steps into a world that was never meant to survive him.", "少年は死に、ルメラで目覚め、生き残るはずのない世界へ足を踏み入れる。")
         html_text = html_text.replace("<strong>Threadborn</strong> follows <strong>Yono Kazeshima</strong> after a sudden death throws him into Lumera beside Violet. Survival turns into dark fantasy, romance, and sealed monsters that get worse each chapter.", "<strong>Threadborn</strong> は、突然の死によってバイオレットと共にルメラへ放り込まれた<strong>風嶋ヨノ</strong>の物語。生き残るための戦いは、ダークファンタジー、ロマンス、そして章を追うごとに凶悪になる封印された怪物たちとの遭遇へ変わっていく。")
         html_text = html_text.replace("<strong>Volume 1:</strong> Yono learns Lumera’s rules, survives the Shade debt arc, and reaches the forest door hiding Velkor’s prison.", "<strong>第1巻:</strong> ヨノはルメラの法則を学び、シェードの借金編を生き延び、ヴェルコールの牢獄を隠す森の扉へたどり着く。")
@@ -418,7 +418,7 @@ def update_html_file(path: Path, md: str, jp=False):
         html_text = html_text.replace("Threadborn — Starting Life Beyond the Covenant Door", NEW_SLOGAN_EN)
         html_text = html_text.replace("Threadborn – Starting Life Beyond the Covenant Door", NEW_SLOGAN_EN)
         html_text = html_text.replace("Threadborn: Starting Life Beyond the Covenant Door", NEW_SLOGAN_EN)
-        html_text = html_text.replace("Threadborn: Reborn Where Fate Snaps", NEW_SLOGAN_EN)
+        html_text = html_text.replace("Threadborn: Reborn With Zero Dignity", NEW_SLOGAN_EN)
     path.write_text(html_text, encoding="utf-8")
 
 

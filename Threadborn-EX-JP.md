@@ -1,4 +1,4 @@
-# THREADBORN: 運命が断ち切れる場所での再生
+# THREADBORN: Reborn With Zero Dignity
 ## EX小説 第1巻 — 章を超えたクロニクル
 ### *世界の伝承、キャラクターの真実、パワーアーカイブ、およびIFルート*
 
