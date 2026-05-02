@@ -1,4 +1,4 @@
-const CACHE_NAME = "threadborn-static-v32";
+const CACHE_NAME = "threadborn-static-v33";
 const CORE_ASSETS = [
   "./",
   "./runtime-config.js",
@@ -77,50 +77,31 @@ self.addEventListener("fetch", (event) => {
   }
 
   const isNavigation = event.request.mode === "navigate";
-  const isHtmlRequest = event.request.headers
-    .get("accept")
-    ?.includes("text/html");
+  const isHtmlRequest = event.request.headers.get("accept")?.includes("text/html");
 
-  // HTML is ALWAYS fetched from the network — never serve stale HTML from cache.
-  // This ensures normal refreshes always get the latest deployed version.
-  // Falls back to a cached copy only when completely offline.
-  if (isNavigation || isHtmlRequest) {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => response)
-        .catch(() =>
-          caches
-            .match(event.request)
-            .then((cached) => cached || caches.match("./index.html")),
-        ),
-    );
-    return;
-  }
-
+  // Always try the network first for everything to prevent stale cache issues
+  // Falls back to cache only when offline
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) {
-        return cached;
-      }
-
-      return fetch(event.request)
-        .then((response) => {
-          if (
-            !response ||
-            response.status !== 200 ||
-            response.type !== "basic"
-          ) {
-            return response;
-          }
-
+    fetch(event.request)
+      .then((response) => {
+        if (response && response.status === 200 && response.type === "basic") {
           const clone = response.clone();
-          caches
-            .open(CACHE_NAME)
-            .then((cache) => cache.put(event.request, clone));
-          return response;
-        })
-        .catch(() => caches.match(event.request));
-    }),
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return response;
+      })
+      .catch(() => {
+        return caches.match(event.request).then((cached) => {
+          if (cached) {
+            return cached;
+          }
+          // If offline and the request is for HTML, return the cached index.html
+          if (isNavigation || isHtmlRequest) {
+            return caches.match("./index.html");
+          }
+          return undefined;
+        });
+      }),
   );
 });
 
