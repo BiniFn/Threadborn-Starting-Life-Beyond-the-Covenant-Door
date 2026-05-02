@@ -119,6 +119,13 @@
                     </button>
                     <button
                         class="nav-btn"
+                        data-view="reactions"
+                        onclick="switchView('reactions')"
+                    >
+                        評価・コメント
+                    </button>
+                    <button
+                        class="nav-btn"
                         data-view="chapters"
                         onclick="switchView('chapters')"
                     >
@@ -513,6 +520,17 @@
                     </div>
                 </div>
                 <div id="volumes-grid" class="grid volumes-grid"></div>
+            </section>
+
+            <section id="view-reactions" class="view">
+                <div class="section-head">
+                    <div>
+                        <h2>評価・コメント</h2>
+                        <p class="section-copy">
+                            巻または章を評価できます。コメントは誰でも読めます。投稿にはログインが必要です。
+                        </p>
+                    </div>
+                </div>
                 <article class="card comments-shell reader-reactions-shell">
                     <strong>読者評価とコメント</strong>
                     <p>
@@ -565,8 +583,7 @@
                     <div>
                         <h2>チャプター</h2>
                         <p class="section-copy">
-                            Read every main chapter and the published EX Novel
-                            Vol 1 extras.
+                            メインチャプターとEXノベル第1巻の追加コンテンツをすべて読めます。
                         </p>
                     </div>
                 </div>
@@ -1189,6 +1206,13 @@
                 onclick="switchView('volumes')"
             >
                 巻
+            </button>
+            <button
+                class="nav-btn"
+                data-view="reactions"
+                onclick="switchView('reactions')"
+            >
+                評価・コメント
             </button>
             <button
                 class="nav-btn"
@@ -8430,6 +8454,13 @@
 
                 if (view === "app") {
                     renderAppDashboard();
+                }
+
+                if (
+                    view === "reactions" &&
+                    typeof initializeReaderReactions === "function"
+                ) {
+                    initializeReaderReactions();
                 }
 
                 if (

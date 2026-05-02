@@ -119,6 +119,13 @@
                     </button>
                     <button
                         class="nav-btn"
+                        data-view="reactions"
+                        onclick="switchView('reactions')"
+                    >
+                        Ratings
+                    </button>
+                    <button
+                        class="nav-btn"
                         data-view="chapters"
                         onclick="switchView('chapters')"
                     >
@@ -539,8 +546,20 @@
                     </div>
                 </div>
                 <div id="volumes-grid" class="grid volumes-grid"></div>
+            </section>
+
+            <section id="view-reactions" class="view">
+                <div class="section-head">
+                    <div>
+                        <h2>Ratings &amp; Comments</h2>
+                        <p class="section-copy">
+                            Rate any volume or chapter. Everyone can read
+                            comments; login is required to post.
+                        </p>
+                    </div>
+                </div>
                 <article class="card comments-shell reader-reactions-shell">
-                    <strong>Reader Ratings & Comments</strong>
+                    <strong>Reader Ratings &amp; Comments</strong>
                     <p>
                         Rate any volume or chapter. Everyone can read comments;
                         login is required to post.
@@ -1300,6 +1319,13 @@
                 onclick="switchView('volumes')"
             >
                 Vols
+            </button>
+            <button
+                class="nav-btn"
+                data-view="reactions"
+                onclick="switchView('reactions')"
+            >
+                Ratings
             </button>
             <button
                 class="nav-btn"
@@ -7868,6 +7894,13 @@
 
                 if (view === "app") {
                     renderAppDashboard();
+                }
+
+                if (
+                    view === "reactions" &&
+                    typeof initializeReaderReactions === "function"
+                ) {
+                    initializeReaderReactions();
                 }
 
                 if (
