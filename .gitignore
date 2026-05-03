@@ -18,3 +18,7 @@ __pycache__/
 .env
 .env.local
 .env.*.local
+
+# VAPID keys — keep off GitHub
+VAPID_KEYS.md
+*.vapid.md

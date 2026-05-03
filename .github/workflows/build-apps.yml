@@ -26,10 +26,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Sync website into Android assets
+      - name: Sync website into assets
         run: |
-          chmod +x scripts/sync_android_site.sh
-          bash scripts/sync_android_site.sh
+          chmod +x scripts/sync-all.sh
+          bash scripts/sync-all.sh
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -68,7 +68,7 @@ jobs:
       - name: Sync site
         shell: bash
         run: |
-          bash scripts/sync_desktop_site.sh
+          bash scripts/sync-all.sh
 
       - name: Install dependencies
         run: |
@@ -104,8 +104,8 @@ jobs:
 
       - name: Sync site
         run: |
-          chmod +x scripts/sync_desktop_site.sh
-          ./scripts/sync_desktop_site.sh
+          chmod +x scripts/sync-all.sh
+          ./scripts/sync-all.sh
 
       - name: Install dependencies
         run: |
