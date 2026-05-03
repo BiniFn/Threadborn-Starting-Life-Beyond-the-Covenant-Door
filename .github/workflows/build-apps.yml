@@ -34,17 +34,23 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Build Debug APK
+      - name: Build English & Japanese APKs
         working-directory: ./android-app
         run: |
           chmod +x ./gradlew
-          ./gradlew assembleDebug --stacktrace -PAPI_BASE_URL="${{ secrets.API_BASE_URL }}"
-          apk_path=$(ls app/build/outputs/apk/debug/*.apk 2>/dev/null | sed -n '1p')
-          if [ -n "${apk_path}" ] && [ -f "${apk_path}" ]; then
-            cp "${apk_path}" ../threadborn.apk
+          ./gradlew assembleEnDebug assembleJpDebug --stacktrace -PAPI_BASE_URL="${{ secrets.API_BASE_URL }}"
+          
+          en_apk=$(ls app/build/outputs/apk/en/debug/*.apk 2>/dev/null | sed -n '1p')
+          jp_apk=$(ls app/build/outputs/apk/jp/debug/*.apk 2>/dev/null | sed -n '1p')
+          
+          if [ -n "${en_apk}" ] && [ -f "${en_apk}" ]; then
+            cp "${en_apk}" ../threadborn.apk
           else
-            echo "Build reported success but APK file was not found."
             exit 1
+          fi
+          
+          if [ -n "${jp_apk}" ] && [ -f "${jp_apk}" ]; then
+            cp "${jp_apk}" ../threadborn-jp.apk
           fi
 
       - name: Upload APK artifact
@@ -143,5 +149,6 @@ jobs:
           make_latest: true
           files: |
             release-artifacts/threadborn-apk/threadborn.apk
+            release-artifacts/threadborn-apk/threadborn-jp.apk
             release-artifacts/windows-zip/windows.zip
             release-artifacts/macos-zip/mac-os.zip

@@ -10,14 +10,28 @@ android {
     applicationId "com.binifn.threadborn"
     minSdk 24
     targetSdk 34
-    versionCode 18
-    versionName "1.0.18"
+    versionCode 100
+    versionName "2.0.0"
     def apiBase = project.findProperty("API_BASE_URL") ?: ""
     buildConfigField "String", "API_BASE_URL", "\"${apiBase}\""
   }
 
   buildFeatures {
     buildConfig true
+  }
+
+  
+  flavorDimensions "language"
+  productFlavors {
+    en {
+      dimension "language"
+      applicationId "com.binifn.threadborn.v2"
+    }
+    jp {
+      dimension "language"
+      applicationId "com.binifn.threadborn.jp"
+      versionNameSuffix "-jp"
+    }
   }
 
   buildTypes {

@@ -5,6 +5,12 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.http.SslError;
 import android.net.Uri;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
 import android.os.Bundle;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
@@ -22,7 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.webkit.WebViewAssetLoader;
 
 public class MainActivity extends AppCompatActivity {
-  private static final String START_URL = "https://appassets.androidplatform.net/assets/site/index.html?app=android";
+  private static final String START_URL = BuildConfig.FLAVOR.equals("jp") ? "https://appassets.androidplatform.net/assets/site/index-jp.html?app=android" : "https://appassets.androidplatform.net/assets/site/index.html?app=android";
   private static final String APP_HOST = "https://appassets.androidplatform.net/";
   private static final String LEGACY_WEB_HOST = "https://threadborn.vercel.app";
   private static final String APP_SITE_PREFIX = "https://appassets.androidplatform.net/assets/site";
@@ -33,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+        }
+    }
+
 
     webView = findViewById(R.id.web_view);
     WebViewAssetLoader assetLoader = new WebViewAssetLoader.Builder()

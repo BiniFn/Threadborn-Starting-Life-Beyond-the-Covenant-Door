@@ -10,7 +10,7 @@ from pathlib import Path
 
 import webview  # type: ignore
 
-APP_TITLE = "Threadborn: Starting Life Beyond the Covenant Door"
+APP_TITLE = "Threadborn: Starting Life Beyond the Covenant Door (v2.0)"
 DEFAULT_API_BASE = "https://threadborn.vercel.app"
 
 logging.basicConfig(level=logging.WARNING)

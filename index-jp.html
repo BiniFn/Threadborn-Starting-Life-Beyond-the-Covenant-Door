@@ -11094,17 +11094,65 @@
                 }
 
                 const coverPage = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>
-  \n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="cover">\n    <div class="cover-card">\n      <p class="eyebrow">Threadborn Collector EPUB</p>\n      <h1 class="cover-title">${bookTitle}</h1>\n      ${volumeCover ? `<img class="cover-art" src="images/volume-cover.jpg" alt="${chapter.volume} cover art" />` : ""}\n      <p class="cover-summary">${escapeXml(chapter.summary)}</p>\n      <div class="tag-row">${chapter.tags.map((tag) => `<span class="tag">${escapeXml(tag)}</span>`).join("")}</div>\n      <p class="credit-line">作成：BiniFn</p>\n      <p class="note">Official offline chapter export from the Threadborn web reader.</p>\n    </div>\n  </section>\n</body>\n</html>`;
+  \n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="cover">\n    <div class="cover-card">\n      <p class="eyebrow">Threadborn Collector EPUB</p>\n      <h1 class="cover-title">${bookTitle}</h1>\n      ${volumeCover ? `<img class="cover-art" src="images/volume-cover.jpg" alt="${chapter.volume} cover art" />` : ""}\n      <p class="cover-summary">${escapeXml(chapter.summary)}</p>\n      <div class="tag-row">${chapter.tags.map((tag) => `<span class="tag">${escapeXml(tag)}</span>`).join("")}</div>\n      <p class="credit-line">作成：BiniFn</p>\n      <p class="note">Official offline chapter export from the Threadborn web reader.</p>\n    </div>\n  </section>\n
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    const isApp = window.__THREADBORN_APP_MODE || localStorage.getItem("threadborn_app_mode");
+                    if (isApp && window.Notification && Notification.permission === "default") {
+                        if (confirm("Threadborn: Would you like to enable notifications for new chapters, art, and updates?")) {
+                            if (typeof window.requestPushPermission === 'function') {
+                                window.requestPushPermission();
+                            }
+                        }
+                    }
+                }, 2000);
+            });
+        </script>
+        </body>
+\n</html>`;
 
                 const creditsPage = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>
-  \n  <title>${bookTitle} - Credits</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="credits-page">\n    <div class="credits-card">\n      <p class="eyebrow">クレジット</p>\n      <h1>リリースクレジット</h1>\n      <ul>${exportCredits.map((line) => `<li>${escapeXml(line)}</li>`).join("")}</ul>\n      <p class="note">Please keep the BiniFn credit attached if this EPUB is reposted or shared.</p>\n    </div>\n  </section>\n</body>\n</html>`;
+  \n  <title>${bookTitle} - Credits</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="credits-page">\n    <div class="credits-card">\n      <p class="eyebrow">クレジット</p>\n      <h1>リリースクレジット</h1>\n      <ul>${exportCredits.map((line) => `<li>${escapeXml(line)}</li>`).join("")}</ul>\n      <p class="note">Please keep the BiniFn credit attached if this EPUB is reposted or shared.</p>\n    </div>\n  </section>\n
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    const isApp = window.__THREADBORN_APP_MODE || localStorage.getItem("threadborn_app_mode");
+                    if (isApp && window.Notification && Notification.permission === "default") {
+                        if (confirm("Threadborn: Would you like to enable notifications for new chapters, art, and updates?")) {
+                            if (typeof window.requestPushPermission === 'function') {
+                                window.requestPushPermission();
+                            }
+                        }
+                    }
+                }, 2000);
+            });
+        </script>
+        </body>
+\n</html>`;
 
                 const pageFiles = chapter.pages.map((pageHtml, index) => ({
                     name: `OEBPS/text/page-${index + 1}.xhtml`,
                     mediaType: "application/xhtml+xml",
                     title: `${chapter.title} - Page ${index + 1}`,
                     content: `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>
-  \n  <title>${escapeXml(`${chapter.title} - Page ${index + 1}`)}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="../styles.css" />\n</head>\n<body>\n  <section class="page">\n    <div class="page-frame">\n      <p class="page-eyebrow"><span>${escapeXml(`${chapter.volume} • ${chapter.chapter}`)}</span><span>Page ${index + 1} of ${chapter.pages.length}</span></p>\n      ${chapter.pages[index]}\n      <p class="page-footer-note">作成：BiniFn • Official Threadborn EPUB export</p>\n    </div>\n  </section>\n</body>\n</html>`,
+  \n  <title>${escapeXml(`${chapter.title} - Page ${index + 1}`)}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="../styles.css" />\n</head>\n<body>\n  <section class="page">\n    <div class="page-frame">\n      <p class="page-eyebrow"><span>${escapeXml(`${chapter.volume} • ${chapter.chapter}`)}</span><span>Page ${index + 1} of ${chapter.pages.length}</span></p>\n      ${chapter.pages[index]}\n      <p class="page-footer-note">作成：BiniFn • Official Threadborn EPUB export</p>\n    </div>\n  </section>\n
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    const isApp = window.__THREADBORN_APP_MODE || localStorage.getItem("threadborn_app_mode");
+                    if (isApp && window.Notification && Notification.permission === "default") {
+                        if (confirm("Threadborn: Would you like to enable notifications for new chapters, art, and updates?")) {
+                            if (typeof window.requestPushPermission === 'function') {
+                                window.requestPushPermission();
+                            }
+                        }
+                    }
+                }, 2000);
+            });
+        </script>
+        </body>
+\n</html>`,
                 }));
 
                 const manifestItems = [
@@ -11132,7 +11180,9 @@
                 ].join("\n    ");
 
                 const navLinks = [
-                    `<li><a href="cover.xhtml">Cover</a></li>`,
+                    `<li><a href="cover.xhtml">Cover</a>
+                                <a class="btn btn-secondary" id="apk-download-jp-secondary" href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/threadborn-jp.apk" download>Download Japan APK</a>
+                            <a class="btn btn-secondary" id="apk-download-jp" href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/threadborn-jp.apk" download>Download Japan APK</a></li>`,
                     ...pageFiles.map(
                         (page, index) =>
                             `<li><a href="text/page-${index + 1}.xhtml">${escapeXml(page.title)}</a></li>`,
@@ -11175,7 +11225,23 @@
                         name: "OEBPS/nav.xhtml",
                         data: encoder.encode(`<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">\n<head>
   \n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="nav-page">\n    <div class="nav-card">\n      <p class="eyebrow">Contents</p>\n      <nav epub:type="toc" id="toc">\n        <h1>${bookTitle}</h1>\n        <ol>${navLinks}</ol>\n        <a class="nav-btn" id="lang-jp" href="./index-jp.html" onclick="localStorage.setItem('threadborn_lang', 'ja')">JP</a>
-      </nav>\n    </div>\n  </section>\n</body>\n</html>`),
+      </nav>\n    </div>\n  </section>\n
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    const isApp = window.__THREADBORN_APP_MODE || localStorage.getItem("threadborn_app_mode");
+                    if (isApp && window.Notification && Notification.permission === "default") {
+                        if (confirm("Threadborn: Would you like to enable notifications for new chapters, art, and updates?")) {
+                            if (typeof window.requestPushPermission === 'function') {
+                                window.requestPushPermission();
+                            }
+                        }
+                    }
+                }, 2000);
+            });
+        </script>
+        </body>
+\n</html>`),
                     },
                     {
                         name: "OEBPS/content.opf",
@@ -11545,6 +11611,38 @@
             toggleReaderTools(false);
             if ("speechSynthesis" in window) {
                 window.speechSynthesis.onvoiceschanged = loadVoices;
+
+            function loadVoices() {
+                ttsVoices = window.speechSynthesis.getVoices();
+                const voiceSelect = document.getElementById('tts-voice');
+                if (!voiceSelect) return;
+                const currentVal = voiceSelect.value;
+                voiceSelect.innerHTML = '';
+                ttsVoices.forEach((voice, i) => {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = voice.name + ' (' + voice.lang + ')';
+                    voiceSelect.appendChild(option);
+                });
+                if (currentVal && voiceSelect.querySelector(`option[value="${currentVal}"]`)) {
+                    voiceSelect.value = currentVal;
+                }
+            }
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.onvoiceschanged = loadVoices;
+                // Polling fallback for browsers that don't fire onvoiceschanged reliably
+                let ttsPolls = 0;
+                let ttsInterval = setInterval(() => {
+                    if (window.speechSynthesis.getVoices().length > 0) {
+                        loadVoices();
+                        clearInterval(ttsInterval);
+                    } else {
+                        ttsPolls++;
+                        if (ttsPolls > 10) clearInterval(ttsInterval);
+                    }
+                }, 500);
+            }
+
             } else {
                 updateTtsStatus("TTS unavailable");
             }
@@ -11730,5 +11828,21 @@
                 ></p>
             </div>
         </div>
-    </body>
+    
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    const isApp = window.__THREADBORN_APP_MODE || localStorage.getItem("threadborn_app_mode");
+                    if (isApp && window.Notification && Notification.permission === "default") {
+                        if (confirm("Threadborn: Would you like to enable notifications for new chapters, art, and updates?")) {
+                            if (typeof window.requestPushPermission === 'function') {
+                                window.requestPushPermission();
+                            }
+                        }
+                    }
+                }, 2000);
+            });
+        </script>
+        </body>
+
 </html>
