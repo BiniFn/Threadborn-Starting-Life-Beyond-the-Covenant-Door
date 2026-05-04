@@ -132,9 +132,50 @@ jobs:
           name: macos-zip
           path: dist/mac-os.zip
 
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev build-essential python3-dev pkg-config
+
+      - name: Sync site
+        run: |
+          chmod +x scripts/sync-all.sh
+          ./scripts/sync-all.sh
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r desktop-app/requirements.txt pywebview[gtk]
+
+      - name: Build Linux app
+        run: python desktop-app/build.py
+
+      - name: Package Linux build
+        run: |
+          cd dist
+          tar -czvf linux.tar.gz Threadborn
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-tar
+          path: dist/linux.tar.gz
+
   release:
     runs-on: ubuntu-latest
-    needs: [build-apk, build-windows, build-macos]
+    needs: [build-apk, build-windows, build-macos, build-linux]
 
     steps:
       - name: Download build artifacts
@@ -147,10 +188,11 @@ jobs:
         with:
           tag_name: "latest-apps"
           name: "ThreadBorn Apps"
-          body: "Auto-built Windows, macOS, and Android packages from commit ${{ github.sha }}"
+          body: "Auto-built Windows, macOS, Linux, and Android packages from commit ${{ github.sha }}"
           make_latest: true
           files: |
             release-artifacts/threadborn-apk/threadborn.apk
             release-artifacts/threadborn-apk/threadborn-jp.apk
             release-artifacts/windows-zip/windows.zip
             release-artifacts/macos-zip/mac-os.zip
+            release-artifacts/linux-tar/linux.tar.gz

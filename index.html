@@ -603,6 +603,25 @@
                             Checking latest macOS build...
                         </p>
                     </article>
+                    <article class="card app-card">
+                        <strong>Linux Version</strong>
+                        <p>
+                            Get the fully offline Linux desktop app. Run it
+                            locally with no internet connection required.
+                        </p>
+                        <div class="link-cluster" style="margin-top: 18px">
+                            <a
+                                class="btn btn-secondary"
+                                id="linux-download-link"
+                                href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest"
+                                target="_blank"
+                                >Download Linux App</a
+                            >
+                        </div>
+                        <p class="apk-note" id="linux-download-note">
+                            Checking latest Linux build...
+                        </p>
+                    </article>
                 </div>
                 <article class="card app-start web-app-promo">
                     <div class="app-start-head">
@@ -7980,6 +7999,7 @@
                     let apkJpAsset = null;
                     let windowsAsset = null;
                     let macAsset = null;
+                    let linuxAsset = null;
 
                     releases.forEach((release) => {
                         if (!release.assets) {
@@ -8009,6 +8029,13 @@
                             macAsset = release.assets.find(
                                 (asset) =>
                                     asset.name === "mac-os.zip" || asset.name === "Threadborn-macOS.zip",
+                            );
+                        }
+
+                        if (!linuxAsset) {
+                            linuxAsset = release.assets.find(
+                                (asset) =>
+                                    asset.name === "linux.tar.gz" || asset.name === "Threadborn-Linux.tar.gz",
                             );
                         }
                     });
@@ -8094,6 +8121,23 @@
                         macNote.textContent =
                             "macOS build not found yet. This button opens the Releases page until it finishes publishing.";
                         macLink.href = releasesUrl;
+                    }
+
+                    const linuxLink = document.getElementById("linux-download-link");
+                    const linuxNote = document.getElementById("linux-download-note");
+                    if (linuxLink) {
+                        if (linuxAsset) {
+                            linuxLink.href = linuxAsset.browser_download_url;
+                            linuxLink.setAttribute("download", "");
+                            if (linuxNote) {
+                                linuxNote.textContent =
+                                    "Latest Linux desktop build found and ready to download.";
+                            }
+                        } else if (linuxNote) {
+                            linuxNote.textContent =
+                                "Linux build not found yet. This button opens the Releases page until it finishes publishing.";
+                            linuxLink.href = releasesUrl;
+                        }
                     }
                 } catch (error) {
                     if (apkLink) {
@@ -11113,8 +11157,6 @@
                         if (ttsPolls > 10) clearInterval(ttsInterval);
                     }
                 }, 500);
-            }
-
             } else {
                 updateTtsStatus("TTS unavailable");
             }

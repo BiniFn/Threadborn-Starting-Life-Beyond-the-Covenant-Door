@@ -572,6 +572,24 @@
                             最新のmacOSビルドを確認中...
                         </p>
                     </article>
+                    <article class="card app-card">
+                        <strong>Linux バージョン</strong>
+                        <p>
+                            完全なオフラインLinuxデスクトップアプリを入手します。インターネット接続なしでローカルで実行できます。
+                        </p>
+                        <div class="link-cluster" style="margin-top: 18px">
+                            <a
+                                class="btn btn-secondary"
+                                id="linux-download-link"
+                                href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest"
+                                target="_blank"
+                                >Linuxアプリをダウンロード</a
+                            >
+                        </div>
+                        <p class="apk-note" id="linux-download-note">
+                            最新のLinuxビルドを確認中...
+                        </p>
+                    </article>
                 </div>
                 <article class="card app-start web-app-promo">
                     <div class="app-start-head">
@@ -8512,6 +8530,7 @@
                     let apkEnAsset = null;
                     let windowsAsset = null;
                     let macAsset = null;
+                    let linuxAsset = null;
 
                     releases.forEach((release) => {
                         if (!release.assets) {
@@ -8541,6 +8560,13 @@
                             macAsset = release.assets.find(
                                 (asset) =>
                                     asset.name === "mac-os.zip" || asset.name === "Threadborn-macOS.zip",
+                            );
+                        }
+
+                        if (!linuxAsset) {
+                            linuxAsset = release.assets.find(
+                                (asset) =>
+                                    asset.name === "linux.tar.gz" || asset.name === "Threadborn-Linux.tar.gz",
                             );
                         }
                     });
@@ -11617,8 +11643,6 @@
                         if (ttsPolls > 10) clearInterval(ttsInterval);
                     }
                 }, 500);
-            }
-
             } else {
                 updateTtsStatus("TTS unavailable");
             }
