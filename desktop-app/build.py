@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import platform
 import shutil
 import subprocess
 import sys
@@ -46,8 +47,12 @@ def sync_site_assets() -> None:
 def main() -> None:
   sync_site_assets()
   separator = ";" if os.name == "nt" else ":"
-  icon_ext = "ico" if os.name == "nt" else "icns"
-  icon_path = ROOT / "assets" / f"app-icon.{icon_ext}"
+  if os.name == "nt":
+    icon_path = ROOT / "assets" / "app-icon.ico"
+  elif platform.system() == "Linux":
+    icon_path = ROOT / "assets" / "threadborn-app-icon.png"
+  else:
+    icon_path = ROOT / "assets" / "app-icon.icns"
 
   cmd = [
     sys.executable,
