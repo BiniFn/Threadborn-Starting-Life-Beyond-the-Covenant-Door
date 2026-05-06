@@ -495,6 +495,7 @@ return async (req, res) => {
         if (activity === "bookmark_created") toAward.push("bookmarker");
         if (activity === "reaction_posted") toAward.push("reactor");
         if (activity === "community_post") toAward.push("commenter");
+        if (activity === "all_volumes") toAward.push("all_volumes");
         if (cs >= 3) toAward.push("streak_3");
         if (cs >= 7) toAward.push("streak_7");
         if (cs >= 30) toAward.push("streak_30");

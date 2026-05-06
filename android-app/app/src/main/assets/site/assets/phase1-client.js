@@ -504,6 +504,11 @@
     toggleAuthNav();
     await syncLocalBookmarks();
     await loadBookmarks();
+    // Inform the unified notification system of the resolved user
+    if (window.TB_Notif) {
+      window.TB_Notif.setUser(authUser);
+      if (authUser) window.TB_Notif.loadServerNotifications();
+    }
   }
 
   async function hydrateServerProgress() {
@@ -1593,7 +1598,7 @@
     const btn = document.getElementById("spoiler-toggle-btn");
     if (btn) btn.classList.toggle("on", revealed);
     document
-      .querySelectorAll(".leaks-panel .spoiler-body, #view-leaks .spoiler-body")
+      .querySelectorAll(".spoiler-body")
       .forEach((el) => {
         el.classList.toggle("revealed", revealed);
       });
@@ -1709,258 +1714,50 @@
   };
 
   // ═══════════════════════════════════════════════════════
-  //  NOTIFICATIONS
+  //  NOTIFICATIONS — delegated to assets/notifications.js
   // ═══════════════════════════════════════════════════════
-  let notifCache = [];
-  let notifUnread = 0;
+  // notifications.js is loaded before this script and exposes window.TB_Notif.
+  // The shims below keep backwards-compat for any inline onclick handlers.
+  window.loadNotifications      = function () { window.TB_Notif?.loadServerNotifications(); };
+  window.toggleNotifPanel       = function () { window.TB_Notif?.toggleNotifPanel(); };
+  window.markNotifRead          = function (id) { window.TB_Notif?.markRead(id); };
+  window.requestPushPermission  = function () { window.TB_Notif?.requestPushPermission(); };
+  window.disablePushNotifications = function () { window.TB_Notif?.disablePushNotifications(); };
 
-  window.loadNotifications = async function loadNotifications() {
-    if (!authUser) return;
-    try {
-      const data = await apiFetch("/api/user/profile?action=notifications");
-      notifCache = data.notifications || [];
-      notifUnread = data.unread || 0;
-      renderNotifBell();
-      renderNotifDropdown();
-    } catch (_) {}
-  };
-
-  function renderNotifBell() {
-    const bell = document.getElementById("notif-bell");
-    const badge = document.getElementById("notif-badge");
-    if (!bell) return;
-    bell.style.display = authUser ? "" : "none";
-    if (badge) {
-      badge.textContent = notifUnread > 9 ? "9+" : notifUnread || "";
-      badge.style.display = notifUnread > 0 ? "" : "none";
-    }
-  }
-
-  function renderNotifDropdown() {
-    const list = document.getElementById("notif-list");
-    if (!list) return;
-    if (!notifCache.length) {
-      list.innerHTML = `<div class="notif-empty">No notifications yet.</div>`;
-      return;
-    }
-    list.innerHTML = notifCache
-      .map(
-        (n) => `
-      <div class="notif-item ${n.read ? "" : "unread"}" onclick="markNotifRead('${n.id}')">
-        <div class="notif-title">${escapeHtml(n.title)}</div>
-        <div class="notif-body">${escapeHtml(n.body || "")}</div>
-        <div class="notif-time">${formatRelativeTime(n.created_at)}</div>
-      </div>`,
-      )
-      .join("");
-  }
-
-  function formatRelativeTime(ts) {
-    if (!ts) return "";
-    const diff = Date.now() - new Date(ts).getTime();
-    const m = Math.floor(diff / 60000);
-    if (m < 1) return "just now";
-    if (m < 60) return `${m}m ago`;
-    const h = Math.floor(m / 60);
-    if (h < 24) return `${h}h ago`;
-    return `${Math.floor(h / 24)}d ago`;
-  }
-
-  window.toggleNotifPanel = function () {
-    const panel = document.getElementById("notif-panel");
-    if (!panel) return;
-    const open = panel.style.display !== "none";
-    panel.style.display = open ? "none" : "block";
-    if (!open && notifUnread > 0) {
-      apiFetch("/api/user/profile?action=notifications", {
-        method: "POST",
-        body: JSON.stringify({ markAllRead: true }),
-      })
-        .then(() => {
-          notifUnread = 0;
-          notifCache = notifCache.map((n) => ({ ...n, read: true }));
-          renderNotifBell();
-          renderNotifDropdown();
-        })
-        .catch(() => {});
-    }
-  };
-
-  window.markNotifRead = function (id) {
-    apiFetch("/api/user/profile?action=notifications", {
-      method: "POST",
-      body: JSON.stringify({ id }),
-    }).catch(() => {});
-    notifCache = notifCache.map((n) =>
-      n.id === id ? { ...n, read: true } : n,
-    );
-    notifUnread = Math.max(0, notifUnread - 1);
-    renderNotifBell();
-    renderNotifDropdown();
-  };
-
-  // ═══════════════════════════════════════════════════════
-  //  WEB PUSH — Native OS Notifications
-  // ═══════════════════════════════════════════════════════
-
-  function base64UrlToUint8Array(base64String) {
-    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding)
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
-    const raw = atob(base64);
-    return new Uint8Array([...raw].map((c) => c.charCodeAt(0)));
-  }
-
-  window.requestPushPermission = async function requestPushPermission() {
-    const btn = document.getElementById("push-enable-btn");
-    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-      if (btn) btn.textContent = "Push not supported";
-      return;
-    }
-
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = "Requesting…";
-    }
-
-    try {
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = "🔔 Enable Notifications";
+  // Record chapter read for badge/streak then ping notifications module
+  const _origOpen = window.openChapter;
+  if (typeof _origOpen === "function") {
+    window.openChapter = function (index, page) {
+      _origOpen.call(this, index, page);
+      if (authUser) {
+        let activities = ["chapter_read"];
+        if (typeof chapters !== "undefined" && chapters[index]) {
+          const chap = chapters[index];
+          if (chap.volume && chap.volume.includes("1") && chap.chapter && chap.chapter.includes("15")) activities.push("volume1_complete");
+          if (chap.volume && chap.volume.includes("2") && chap.chapter && chap.chapter.includes("1")) activities.push("volume2_started");
+          if (chap.volume && chap.volume.includes("EX")) activities.push("ex_read");
+          if (index === chapters.length - 1) activities.push("all_volumes");
         }
-        return;
-      }
-
-      // Get VAPID key from server
-      const { publicKey } = await apiFetch(
-        "/api/user/profile?action=push-vapid",
-      );
-      if (!publicKey) {
-        if (btn) btn.textContent = "Push not configured";
-        return;
-      }
-
-      const reg = await navigator.serviceWorker.ready;
-      let sub = await reg.pushManager.getSubscription();
-      if (!sub) {
-        sub = await reg.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: base64UrlToUint8Array(publicKey),
+        activities.forEach(act => {
+          apiFetch("/api/reader/analytics?action=badges", {
+            method: "POST",
+            body: JSON.stringify({ activity: act }),
+          }).catch(() => {});
         });
       }
-
-      await apiFetch("/api/user/profile?action=push-subscribe", {
-        method: "POST",
-        body: JSON.stringify({
-          endpoint: sub.endpoint,
-          p256dh: btoa(
-            String.fromCharCode(...new Uint8Array(sub.getKey("p256dh"))),
-          ),
-          auth: btoa(
-            String.fromCharCode(...new Uint8Array(sub.getKey("auth"))),
-          ),
-        }),
-      });
-
-      localStorage.setItem("threadborn_push_enabled", "1");
-      if (btn) {
-        btn.textContent = "✓ Notifications On";
-        btn.classList.add("push-active");
-      }
-      updatePushButtonState();
-    } catch (e) {
-      console.error("[push] subscription failed:", e);
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = "🔔 Enable Notifications";
-      }
-    }
-  };
-
-  window.disablePushNotifications = async function disablePushNotifications() {
-    try {
-      const reg = await navigator.serviceWorker.ready;
-      const sub = await reg.pushManager.getSubscription();
-      if (sub) {
-        await apiFetch("/api/user/profile?action=push-unsubscribe", {
-          method: "POST",
-          body: JSON.stringify({ endpoint: sub.endpoint }),
-        });
-        await sub.unsubscribe();
-      }
-      localStorage.removeItem("threadborn_push_enabled");
-      updatePushButtonState();
-    } catch (e) {
-      console.error("[push] unsubscribe failed:", e);
-    }
-  };
-
-  function updatePushButtonState() {
-    const btn = document.getElementById("push-enable-btn");
-    if (!btn) return;
-    const enabled =
-      localStorage.getItem("threadborn_push_enabled") === "1" &&
-      Notification.permission === "granted";
-    btn.textContent = enabled
-      ? "✓ Notifications On"
-      : "🔔 Enable Notifications";
-    btn.classList.toggle("push-active", enabled);
-    btn.onclick = enabled ? disablePushNotifications : requestPushPermission;
+      // Re-check content counts so notifications.js detects chapter progress
+      window.TB_Notif?.pollContent();
+    };
   }
-
-  // Auto-subscribe on page load if previously enabled and logged in
-  window.addEventListener("load", () => {
-    updatePushButtonState();
-    if (
-      authUser &&
-      localStorage.getItem("threadborn_push_enabled") === "1" &&
-      Notification.permission === "granted" &&
-      "serviceWorker" in navigator &&
-      "PushManager" in window
-    ) {
-      // Re-subscribe silently to keep subscription fresh
-      navigator.serviceWorker.ready
-        .then(async (reg) => {
-          const sub = await reg.pushManager.getSubscription();
-          if (!sub) {
-            localStorage.removeItem("threadborn_push_enabled");
-            updatePushButtonState();
-          }
-        })
-        .catch(() => {});
-    }
-  });
 
   // Close notification panel when clicking outside
   document.addEventListener("click", (e) => {
     const panel = document.getElementById("notif-panel");
-    const bell = document.getElementById("notif-bell");
-    if (
-      panel &&
-      bell &&
-      !bell.contains(e.target) &&
-      !panel.contains(e.target)
-    ) {
+    const bell  = document.getElementById("notif-bell");
+    if (panel && bell && !bell.contains(e.target) && !panel.contains(e.target)) {
       panel.style.display = "none";
     }
   });
-
-  // Record chapter read activity for badge + streak updates
-  const originalOpenChapter = window.openChapter;
-  if (typeof originalOpenChapter === "function") {
-    window.openChapter = function (index, page) {
-      originalOpenChapter.call(this, index, page);
-      if (authUser) {
-        apiFetch("/api/reader/analytics?action=badges", {
-          method: "POST",
-          body: JSON.stringify({ activity: "chapter_read" }),
-        }).catch(() => {});
-      }
-    };
-  }
 
   // ═══════════════════════════════════════════════════════
   //  INIT
@@ -1974,15 +1771,9 @@
     applySpoilerState();
     if (authUser) {
       loadFollows();
-      loadNotifications();
-      // Poll for new notifications every 90 seconds
-      setInterval(() => {
-        if (authUser) loadNotifications();
-      }, 90_000);
     }
 
     // Background service worker update check — runs every 10 minutes
-    // so users always get fresh content without needing to hard-refresh
     if ("serviceWorker" in navigator) {
       setInterval(
         () => {
@@ -2004,3 +1795,4 @@
     }
   });
 })();
+

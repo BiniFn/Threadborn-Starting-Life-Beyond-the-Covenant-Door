@@ -1598,7 +1598,7 @@
     const btn = document.getElementById("spoiler-toggle-btn");
     if (btn) btn.classList.toggle("on", revealed);
     document
-      .querySelectorAll(".leaks-panel .spoiler-body, #view-leaks .spoiler-body")
+      .querySelectorAll(".spoiler-body")
       .forEach((el) => {
         el.classList.toggle("revealed", revealed);
       });
@@ -1730,10 +1730,20 @@
     window.openChapter = function (index, page) {
       _origOpen.call(this, index, page);
       if (authUser) {
-        apiFetch("/api/reader/analytics?action=badges", {
-          method: "POST",
-          body: JSON.stringify({ activity: "chapter_read" }),
-        }).catch(() => {});
+        let activities = ["chapter_read"];
+        if (typeof chapters !== "undefined" && chapters[index]) {
+          const chap = chapters[index];
+          if (chap.volume && chap.volume.includes("1") && chap.chapter && chap.chapter.includes("15")) activities.push("volume1_complete");
+          if (chap.volume && chap.volume.includes("2") && chap.chapter && chap.chapter.includes("1")) activities.push("volume2_started");
+          if (chap.volume && chap.volume.includes("EX")) activities.push("ex_read");
+          if (index === chapters.length - 1) activities.push("all_volumes");
+        }
+        activities.forEach(act => {
+          apiFetch("/api/reader/analytics?action=badges", {
+            method: "POST",
+            body: JSON.stringify({ activity: act }),
+          }).catch(() => {});
+        });
       }
       // Re-check content counts so notifications.js detects chapter progress
       window.TB_Notif?.pollContent();

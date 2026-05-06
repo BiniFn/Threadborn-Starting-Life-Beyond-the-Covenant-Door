@@ -6587,3 +6587,936 @@ And in the black hall, the next sealed cord gold and patient and old felt the ch
 > *This will not go well for the source.*
 
 ***
+# Threadborn: Volume 2 · Chapter 7
+
+*Volume 02 · Chapter 07*
+
+---
+
+*In which the seal finally gets its reason, someone loses their shirt, and the source stops recalculating.*
+
+---
+
+> **Chapter Unlocks Yono Kazeshima**
+> **Thread Edict** → Yono can speak a single absolute statement and the world treats it as law. One per seal cycle. Cannot be undone by the same voice twice. The world does not argue. It simply obeys.
+> **Authority Pulse** → A radial burst of will that rewrites enemy intent within range. Does not destroy. Redirects. Everything within the pulse range forgets what it was attacking and becomes briefly confused about why it exists.
+
+> **Violet Arden Status Update**
+> *Held concepts: 2 → Deployed.*
+> *The last door: Found.*
+> *New designation pending. Archive has flagged it as unprecedented.*
+> *She has stopped denying everything. She is now denying most things, which counts as growth.*
+
+---
+
+### I. Morning. Again.
+
+The morning was the same.
+
+Too much light. Birds. The specific creak of Meryn's kitchen floor that Yono had started to think of as a clock.
+
+He woke up with violet hair in his face.
+
+He did not move.
+
+Violet was still asleep, which happened once in a long while and only when she had spent something real the night before. The runes on her arms were dim. Low burn. Resting the same way the crescent rested in his palm, quiet and warm and not asking anything of either of them for now.
+
+Her face was different when she slept.
+
+Not softer. That was the wrong word. More honest. The composure was still there, because composure for Violet was structural, not a mask but the actual bones of how she held herself. But the part of her that was always slightly ahead of the present moment the part that watched everything, tracked everything, stayed ready for everything had let go for a few hours.
+
+He watched her for a moment.
+
+Then he looked at the ceiling.
+
+Then he looked at the ceiling a while longer and thought about nothing in particular.
+
+The crescent was warm. The hall behind the last seal had moved during the night. He could feel it the same way you feel a room shift in the dark. The door was not open. But the door had decided something.
+
+*One more,* it had said.
+
+He did not know yet what that meant.
+
+He was learning that not knowing yet was fine. You waited. The story told you.
+
+Violet's hand was still on his shoulder from where she had moved it during the night, loosely, the way a hand settles when sleep takes over the decision making. He did not move that either.
+
+It was a good morning.
+
+He let it be one.
+
+---
+
+### II. Downstairs, Everyone Already Knows
+
+He made it downstairs first this time.
+
+Violet took another twenty minutes, which he understood to mean she had woken up, assessed the situation, made several decisions about what the situation would officially be described as going forward, and taken her time arranging herself accordingly.
+
+He poured two cups of tea.
+
+Mirika came in from the hall. She looked at the two cups. She sat down and opened her notebook and said nothing.
+
+Liri came in. She looked at the two cups. She sat next to Mirika and very carefully took an apple from the bowl and began peeling it with focused innocence.
+
+Lyra came in. She looked at the two cups. She pulled out her map, which was now three sheets taped together, and began adding measurements.
+
+Meryn came in from outside. She looked at the two cups. She checked the bread in the oven and said: "I made extra."
+
+Yono looked at all of them.
+
+"You all know," he said.
+
+"Know what?" Mirika said, without looking up.
+
+"Nothing," Liri said, peeling.
+
+"The ward's extended range is interesting," Lyra said.
+
+Meryn put more bread on the table.
+
+Yono drank his tea.
+
+Violet came downstairs four minutes later, hair pinned, robe straight, the specific composure of someone who has pre-answered every possible question. She looked at her cup. She sat down. She picked it up and drank it and looked at the window.
+
+Nobody said anything.
+
+"The ward readings were stable overnight," she said.
+
+"Yes," Lyra said.
+
+"No incursions."
+
+"No incursions."
+
+Violet nodded. "Good."
+
+Liri, without looking up from her apple, said: "Your runes are a different color this morning."
+
+Violet's cup paused halfway to the table.
+
+The runes, which were a shade of white that had not been present in any previous chapter, sat on her arms with quiet certainty.
+
+"That is a function of last night's combat deployment," Violet said.
+
+"Oh," Liri said.
+
+Long pause.
+
+"They look nice," Liri said.
+
+Mirika turned a page.
+
+Yono looked at the wall.
+
+Violet set her cup down with great precision and said, in the tone of someone declaring the subject permanently closed: "More tea."
+
+She refilled her cup herself.
+
+Nobody pushed it.
+
+This was called surviving a tsundere's morning.
+
+---
+
+### III. What the Source Sent Next
+
+It arrived at noon.
+
+No ground opening this time. No constructs. No hunger field that dimmed the color from the air.
+
+This time the forest simply went quiet.
+
+Not the quiet of absence. The quiet of *displacement* as if something had arrived that was so far past construct class that the ambient noise of the world had stepped out of the way for it without being asked.
+
+Yono's Pre Attack Sight ignited.
+
+Not single points this time. A single massive projection, hanging in his awareness like a city.
+
+He stood up from the table so fast his chair scraped back.
+
+"We have a problem," he said.
+
+He was already outside by the time the others reached the door.
+
+---
+
+### IV. The Emissary
+
+It stood at the ward boundary.
+
+Single entity. Height of three men. Not built from thread and bone the way the constructs had been. This was something that had always been what it was, the same way old mountains had always been mountains. It wore the shape of a person the way a coat wears a person. From inside the shape, through the spaces where a face should be, there was an eye.
+
+Not eyes.
+
+*Eye.* One. Open. Looking.
+
+Behind it, the forest had turned grey for forty meters in every direction.
+
+Not damaged. Not burned. Just grey, as if the color had been convinced to leave quietly.
+
+Lyra came to stand beside Yono and looked at the thing for a long time.
+
+"That's not a construct," she said.
+
+"No."
+
+"That's not even close to a construct."
+
+"No."
+
+"That is," she said slowly, "something Velkor sent himself. Not a signal. Not a message. An actual piece of his *intent*, shaped and deployed."
+
+She looked at her map.
+
+"I need to draw a new category," she said.
+
+The entity had not moved. It stood at the ward line and looked at Yono with its single eye. Not at the ward. Not at Violet. At *Yono specifically,* with the specific quality of attention that says: *I was told about you.*
+
+Then it spoke.
+
+Not in sound. In the specific direct resonance of something bypassing language entirely and pressing meaning into the air.
+
+> *Your rules are new.*
+> *His are older.*
+> *Come out from the ward and discuss terms.*
+
+Yono looked at it.
+
+"No," he said.
+
+The eye blinked.
+
+That was apparently not the expected answer.
+
+---
+
+### V. Terms
+
+"What terms?" Violet said, coming to stand beside him. Her runes were already lit.
+
+The entity turned its attention to her and the new color of her runes and made a sound that was not quite a sound. Assessment. Recognition.
+
+> *The goddess has been reclassified.*
+> *Velkor noted the shift.*
+> *He is interested.*
+
+"Tell him the interest is mutual," Violet said, in a voice cold enough to drop the local temperature. "Tell him the next time he deploys something at this safehouse I will personally walk it back to him and he will not enjoy how I knock."
+
+The eye regarded her.
+
+> *He said you would say something like that.*
+> *He asked me to pass a counter.*
+
+It reached one hand, slowly, into the space where a chest would be on a person, and removed something.
+
+A thread.
+
+Black. Old. Tied at one end in a knot that Yono recognized.
+
+He had seen that knot before. In the black hall. On the sealed cord behind the door.
+
+His crescent went scorching hot.
+
+*His* thread.
+
+A piece of his own sealed cord, cut out and carried here.
+
+"Where did you get that," he said, and his voice had gone very flat in the way it did when the crescent and his composure were having different reactions.
+
+> *Velkor has studied you carefully.*
+> *He has read several chapters.*
+> *He knows what your seals are built from.*
+> *He knows what the hall costs you.*
+> *He wanted you to know that he knows.*
+
+Yono looked at the thread.
+
+The thread from his own sealed cord.
+
+Carried here. In something's chest. As a message.
+
+The seal behind the last door did not move.
+
+But it went white hot.
+
+*There it is,* something said, deep in the hall. Not angry. Not afraid. Just ready. *There is the reason.*
+
+---
+
+### VI. The Hall Opens
+
+It was not dramatic.
+
+There was no light.
+
+No sound.
+
+The crescent simply went from gold to white and then past white into something that did not have a color name, burning up his forearm, reaching his elbow, and the door at the end of the hall that had been asking for one more reason found it.
+
+The seal broke.
+
+Two things arrived simultaneously.
+
+One registered in Yono's mind like a word he had always known but had never been given permission to say.
+
+The other landed in his body like something that had been waiting outside a locked door for a very long time and had finally been let in.
+
+He felt the hall rearrange. Something reshuffled. The shape of what he was reorganizing itself to include what it had just been given.
+
+Mirika, from the doorway, watching, said quietly to Lyra:
+
+"Are you seeing this."
+
+"I'm seeing this," Lyra said.
+
+"His seal line just"
+
+"I know."
+
+"That's both the new ones at once. I didn't know that was possible."
+
+"It wasn't," Lyra said. "Until now."
+
+---
+
+### VII. Thread Edict
+
+Yono looked at the emissary.
+
+He took the thread it was holding from the air, not physically but through the crescent, the gold white pull that recognized what was its and brought it back, and the piece of his sealed cord returned to his palm and dissolved back into the mark with a sound like a lock engaging.
+
+His thread. Back.
+
+The emissary stared.
+
+He looked at it.
+
+He said one thing.
+
+He said it simply, the way you say something that has always been true: "You are leaving."
+
+The word *leaving* had, in the moment he spoke it, the weight of a law.
+
+Not a command. Not a wish. A statement of what was now real.
+
+Thread Edict. One per seal cycle. Cannot be undone by the same voice twice.
+
+The world listened.
+
+The emissary felt it land, the absolute statement pressing itself into the fabric of the moment with the specific certainty of something that had decided to be permanent, and for three full seconds it resisted, which was three seconds more than a construct could have managed, which told Yono something about what it was.
+
+Then it left.
+
+Not destroyed. Not dissolved. *Left.*
+
+The way something leaves when the room has decided it is not staying.
+
+The grey forest came back to color. The eye blinked out. The presence withdrew, cleanly, the ward boundary closing behind it like a door on a cold day.
+
+The birds came back to the trees.
+
+Silence.
+
+Then Lyra said: "Thread Edict."
+
+"Yes," Yono said.
+
+"One use per cycle."
+
+"Yes."
+
+"You used it to tell something to leave."
+
+"It had my thread."
+
+Lyra looked at the space where the emissary had been. Looked at her map. "I need," she said, very calmly, "to go inside and sit down for a moment."
+
+---
+
+### VIII. What Happened After
+
+They went back inside.
+
+Meryn put more food on the table, because Meryn's response to every reality shift was to ensure people had eaten. Nobody argued with this. The food was good and the arguing would have been pointless.
+
+Liri ate two pieces of bread and watched Yono's crescent with her head tilted.
+
+"Does it hurt?" she said.
+
+"Not anymore," he said. "It did for a second."
+
+She nodded. "It looks different now."
+
+He looked at his palm. She was right. The crescent had changed slightly in the break. The same shape, but the gold had deepened, a richer tone, the edges no longer burning but steady and even.
+
+"Better," she decided.
+
+"Yeah," he said.
+
+She reached out and very briefly touched the back of his hand, with the small certain gravity of a child who has decided that something is hers to protect too.
+
+He looked at her.
+
+She had already gone back to her bread.
+
+His chest did something complicated.
+
+He had not expected that.
+
+---
+
+### IX. What Violet Did Not Say
+
+She found him on the south side of the ward, twenty minutes later.
+
+He was standing where the emissary had been, looking at the place in the grass where the grey had reached. The color was back. But the ground still remembered the weight. He could feel it through the thread sense.
+
+She came to stand beside him.
+
+She said nothing for a while.
+
+"He's studied me," Yono said.
+
+"Yes."
+
+"He knows about the seals."
+
+"He knew enough to take a piece. Not enough to stop them breaking." She looked at the grass. "If he'd understood what you actually were, he would not have sent that piece as a taunt. He would have kept it and used it differently."
+
+"Misjudged me."
+
+"He misjudged what the seal cord is." She crossed her arms. "It's not a weakness. The thread in you is not a vulnerability to be cut out. It's a *spine.* You don't weaken something by removing part of its spine. You make it angry."
+
+Yono looked at her.
+
+"I was angry," he agreed.
+
+"I noticed." Her jaw moved slightly, the faint not quite a smile she deployed when something had landed exactly where she wanted it. "You said one word and something three times the scale of last night's constructs simply left."
+
+"It felt simple."
+
+"It was not simple." She turned to look at him directly. The runes on her arms were the new white, steady and warm, the rearranged configuration settled into something she was beginning to treat as simply *hers.* "Nothing you have done since the first seal broke has been simple. You have made it look that way because you refuse to be dramatic about it."
+
+He looked at her.
+
+"Unlike some people," she added.
+
+"I wasn't going to say that."
+
+"You were thinking it."
+
+"I was thinking you're the most dramatic person I've met in two lifetimes."
+
+"I'm a goddess," she said. "Drama is structural."
+
+He laughed. A real one, the kind that surprised him, and she looked away before it could mean something but her runes did a single warm pulse that she was absolutely not aware of.
+
+"Velkor knows our location now," she said, back to business. "Or knows approximately. The emissary read enough to triangulate."
+
+"He'll send something bigger."
+
+"Yes. And now he knows about Thread Edict. He won't underestimate the Edict next time."
+
+"One use per cycle," Yono said. "He'll wait until I've used it."
+
+"So don't use it until it matters." She looked at him sideways. "You can manage that. You are not impulsive."
+
+"I used it to tell something to go home."
+
+"It had your *thread,*" she said, and her voice was sharper than she intended, the edge of something that was not strategic objection. "It had a piece of you in its chest. I would have done the same."
+
+He registered this. Said nothing.
+
+She registered that he had registered it. Said nothing.
+
+They stood at the ward edge in comfortable silence for a moment that lasted exactly as long as either of them was willing to let it be comfortable, which was longer than it used to be.
+
+"We need to move soon," she said finally.
+
+"Lyra thinks two days."
+
+"One." She looked at the horizon. "I want to move on my terms, not his."
+
+"Alright."
+
+"And Yono."
+
+He looked at her.
+
+Her jaw was set. The runes on her arms were steady. She looked ahead, not at him, with the practiced dignity of someone saying something important from a side angle.
+
+"What you did today with the Edict." She paused. "And the thread. Taking it back." Another pause. "That was the right move. And it was very." She stopped a third time.
+
+"Violet."
+
+"Impressive," she said. Quickly. Flatly. Like ripping off a bandage. "It was impressive. Don't repeat that back to me."
+
+His mouth moved.
+
+"Yono."
+
+"I wasn't saying anything."
+
+"You were about to be insufferable."
+
+"I was going to say thank you."
+
+Long pause.
+
+"...Oh," she said.
+
+"Thank you," he said. "For what you said about the spine."
+
+She crossed her arms. The runes pulsed, soft and involuntary. "Don't make it something."
+
+"It already was something," he said.
+
+She did not answer.
+
+But she also did not walk away.
+
+---
+
+### X. The Incident During the Afternoon Drill
+
+This part was not planned.
+
+Lyra had decided that before the move, everyone who would be traveling needed to practice the emergency thread anchor protocol. This was a sensible decision that involved Yono, Violet, and Lyra herself running a timed scenario in the cleared south ward.
+
+The scenario involved a simulated incursion from two directions simultaneously.
+
+It was going well.
+
+Right up until the point where Yono moved to cover the east vector, Lyra moved to cover the west, and Violet moved for the center, and a root in the old section of the ward boundary caught Violet's foot.
+
+She went down.
+
+Yono caught her.
+
+This was reflexive. Pre Attack Sight was tuned to threat vectors, not tripping hazards, but his body moved anyway, the same way it had learned to move, and he caught her at the waist a half second before she hit the ground and they both ended up on one knee instead.
+
+Very close.
+
+His arm around her waist. Her hand against his chest. Her face approximately four inches from his. Hair half loose from the catch, which was happening more frequently than she was going to acknowledge.
+
+She looked at him.
+
+"You don't have to do that every time," she said.
+
+"You were falling."
+
+"I was handling it."
+
+"You were two inches from the ground."
+
+"I had a plan."
+
+"What was the plan?"
+
+She opened her mouth.
+
+Closed it.
+
+"The plan was developing," she said.
+
+His hand was still at her waist. The situation had not created an urgency to move it and neither of them had supplied one. The fabric of her combat robe was warm and the ward was quiet and Lyra was standing six meters away writing in her notes and being very focused on the western tree line.
+
+"Your shirt," Violet said.
+
+He looked down.
+
+During the catch, the top two buttons had gone. Not broken. Just. Gone. As buttons sometimes do when someone moves very fast and catches someone else. The shirt had opened to approximately mid chest, which in the light of the afternoon was a certain kind of unreasonable.
+
+She was still four inches from his face.
+
+She looked at the shirt.
+
+She looked at him.
+
+She looked at the shirt again.
+
+"I can see your crescent," she said.
+
+The crescent was, in fact, visible. The deepened gold mark on his palm extended to the wrist, and the fine thread traces from the seal breaks ran up his inner forearm, and where the shirt had opened the edge of the network was visible at the base of his collar, over his sternum.
+
+"I know," he said.
+
+"It's larger now."
+
+"The last seal."
+
+"It goes to your collarbone."
+
+"Yes."
+
+A pause.
+
+"Does it hurt," she said.
+
+"No."
+
+She looked at the thread trace at his collar. Then, with the specific deliberate composure of someone who has decided this is a medical assessment, she reached up and traced the edge of it with one finger, following the line of gold that ran just below his clavicle, checking the edges the way she checked her own rune lines.
+
+Her fingers were cool.
+
+He breathed.
+
+"Settled," she said, clinically. "No heat at the edges. Full integration."
+
+"Good," he said.
+
+She looked at him.
+
+He looked at her.
+
+She still had her finger at his collar.
+
+"Violet," he said.
+
+"I was checking," she said.
+
+"I know."
+
+"It's a standard post seal assessment."
+
+"I know."
+
+"This is not a moment."
+
+"Okay."
+
+"I am being professional."
+
+"Of course."
+
+Her finger had not moved.
+
+He did not point this out.
+
+She looked at the tree line.
+
+He looked at the tree line.
+
+Lyra, from six meters away, said, in the flat tone of someone who has been taking notes: "The eastern perimeter is clear. I can confirm. I was looking at it very carefully."
+
+Violet stood up.
+
+Straightened her robe.
+
+Reordered her hair.
+
+"Good," she said. "We'll run the protocol again from the top."
+
+She walked back to the center position with complete dignity.
+
+Yono fixed the buttons he still had and followed.
+
+Lyra wrote something very small in the margin of her notes.
+
+---
+
+### XI. Liri's Question
+
+Before dinner, Liri found Yono sitting on the safehouse steps.
+
+She sat next to him without asking.
+
+He moved over to make room.
+
+They sat there for a while, watching the light go down behind the ward boundary. The forest was back to normal. The birds were loud. It was almost hard to believe that something with three times the scale of the construct wave had stood here four hours ago with a piece of Yono's soul in its chest.
+
+Almost.
+
+"Do you know where we're going?" Liri said.
+
+"Not yet. Lyra and Violet are deciding."
+
+"Will it be far?"
+
+"Probably."
+
+She turned the ribbon on her wrist over. One full rotation. A thinking habit.
+
+"That's okay," she said. "I don't have anywhere I need to be."
+
+Something in Yono's chest did the same thing it had done at breakfast.
+
+"What about your family?" he said carefully.
+
+She was quiet for a moment.
+
+"I had a brother," she said. "Before the Covenant Door. He was trying to get me through when the constructs came." She paused. "He didn't make it through."
+
+Yono said nothing.
+
+She turned the ribbon again.
+
+"He gave me this before he pushed me in," she said. "He said it would keep me from being lost."
+
+The ribbon. White and slightly luminous. He had wondered where it came from.
+
+"He sounds like someone good," Yono said.
+
+"He was the best person," she said, in the way children say true things without embellishment.
+
+They sat with that for a while.
+
+"He would have liked you," she said eventually.
+
+"Yeah?"
+
+"He liked people who were calm. He said calm people were the ones who actually meant it when they said they'd try." She looked at the trees. "Most loud people stop trying when it gets hard. Calm people usually don't."
+
+Yono looked at the trees too.
+
+"I don't know if I'm that calm," he said.
+
+"You seem it."
+
+"I spend a lot of time thinking about how I'm going to not panic."
+
+"That's the same thing," she said.
+
+He looked at her.
+
+She was watching a bird in the far tree with complete focus.
+
+"You're very smart for ten," he said.
+
+"I'm eleven in three days," she said.
+
+He blinked. "When?"
+
+"Day after tomorrow."
+
+"You didn't say anything."
+
+She shrugged. One shoulder. "It's not a big thing."
+
+It was absolutely a big thing.
+
+He did not say this. He filed it.
+
+"Okay," he said.
+
+She leaned slightly against his arm, not dramatically, just weight, the way a person does when they have decided a place is safe enough to touch.
+
+He let her.
+
+---
+
+### XII. What Violet Overheard
+
+She was not eavesdropping.
+
+She had come out to check the southern thread anchor and had heard Liri's voice and paused and had then stayed because it was the kind of conversation you do not walk into.
+
+She heard about the ribbon.
+
+She heard about the brother.
+
+She heard Liri say: *He was the best person.*
+
+She stood still at the corner of the safehouse wall and looked at the ward boundary and breathed.
+
+She was a goddess. She had watched more grief than any person could carry and had tended the flowers that grew after and moved on. This was not new. She had seen children lose brothers before. She had seen families pass through doors and not all of them come through.
+
+But this was Liri.
+
+Who had been in their house for weeks now, eating Meryn's bread and peeling apples and asking questions about flower concepts with bright eyes and turning the ribbon on her wrist when she was thinking.
+
+Whose brother had pushed her through a door and stayed.
+
+Whose birthday was in two days.
+
+Violet stood at the ward wall and looked at the trees and felt the specific grief that is not personal but is still weight, the kind that comes from being old enough to know how often this is how things go.
+
+Then she felt something else.
+
+The ribbon on Liri's wrist had a thread in it. She had sensed it before but not investigated, not wanting to disturb what was clearly a grief object. But now, standing here, with the ward quiet and the new door open in her and more of herself available than before, she looked at the thread properly.
+
+It was not a standard binding.
+
+It was a *preservation thread.* Old construction. Not Velkor's style. Not instruction class. Something older, woven by a person who knew what they were doing and had one specific intent.
+
+The thread in the ribbon was not meant to keep Liri from getting lost.
+
+It was keeping something else.
+
+Violet's eyes widened slightly.
+
+She looked at the ribbon on Liri's wrist from across the yard.
+
+At the faint luminance that was not just the fabric.
+
+At the thread inside.
+
+She breathed.
+
+*Oh.*
+
+---
+
+### XIII. That Evening
+
+She told Yono after Liri was asleep.
+
+They were at the table, the others already in their rooms or working. She sat across from him and folded her hands and looked at the lamp.
+
+"The ribbon," she said. "There's a preservation thread inside it."
+
+He looked up.
+
+"Old construction. Intentional. Woven by someone who knew the technique well." She paused. "A preservation thread can hold many things. Memories. Intent. Messages."
+
+He looked at her for a moment.
+
+"Her brother," he said.
+
+"I believe so."
+
+A long silence.
+
+"Can you read it?"
+
+"Not without disturbing it. And I won't do that without her knowing." She looked at her hands. "But I can tell you what class of thing it is. It's not a memory thread. It's not a message thread." She looked up. "It's a *location* thread."
+
+He stared.
+
+"He's not dead," Yono said.
+
+"I don't know that." She was careful. "What I know is that someone put a thread in that ribbon that is currently pointing somewhere. A preservation thread of that type is used when you need to stay *findable.* When you go somewhere that is hard to return from and you want to leave a line home." She looked at him. "It could be a memorial construction. He could have done it before he died expecting to die."
+
+"Or."
+
+"Or," she said, "he went somewhere he could not easily leave and he threaded back."
+
+Yono looked at the ceiling.
+
+The crescent was warm.
+
+"We can't tell her until we know," he said.
+
+"Agreed. False hope is cruelty." She looked at him. "But we can follow the thread. After the move. When we know where we're going."
+
+He nodded.
+
+Silence.
+
+"She said her birthday is in two days," he said.
+
+Violet looked at him.
+
+"She said it was not a big thing," he said.
+
+Violet's jaw set slightly. "It is a big thing."
+
+"I know."
+
+"We should." She stopped. "I should see what Meryn can do about that."
+
+He looked at her.
+
+She was looking at the table. The runes were the new white, steady and warm and entirely involuntary.
+
+"You like her," he said.
+
+"She is under our protection," Violet said.
+
+"You like her."
+
+She looked up. Her eyes had something in them that was less tsundere and more just *true.* "She is eleven years old in two days and she lost her brother to a Covenant Door and she carries his ribbon without complaint and she asks intelligent questions and she peels apples very carefully." She looked back at the table. "Of course I like her."
+
+Yono said nothing.
+
+He reached across the table.
+
+He put his hand over hers.
+
+She turned her hand over and held his.
+
+Not startled. Not dramatic. Just.
+
+Real.
+
+"We'll find him," he said.
+
+"We'll try to find him," she said.
+
+"That's the same thing," he said.
+
+She looked at him. The corner of her mouth moved.
+
+"You got that from Liri," she said.
+
+"She said something similar earlier."
+
+"She is unnervingly wise."
+
+"She is."
+
+They sat for a while in the lamp light, the crescent warm, the runes glowing steadily, the ribbon upstairs on a sleeping eleven year old's wrist pointing somewhere that was going to take them somewhere, and below that in Yono's inner hall the next sealed door not yet open but aware, and patient, and full of whatever chapter came next.
+
+---
+
+### XIV. What the Source Received
+
+In a place that did not have a location in the way locations worked, something read the report.
+
+The emissary had returned.
+
+The emissary had been sent back.
+
+By a word.
+
+One word.
+
+Something that called itself the Instruction Source processed this and was quiet for a time and then sent a different kind of message upward, toward the thing that had been watching chapters.
+
+The message said:
+
+*The boy has Thread Edict now.*
+
+A pause in the space above.
+
+Then, from wherever Velkor attended these things, a response arrived. Not alarmed. Not impressed. The tone of something that has been watching a game and has finally seen the move it was waiting for.
+
+*Good,* it said.
+
+*That means he is almost ready.*
+
+*Don't send anything else.*
+
+*Let him come to us.*
+
+---
+
+*End of Chapter 07*
+
+---
+
+> **Status Update Yono Kazeshima**
+> *Thread Edict: Active. One use per seal cycle. Used.*
+> *Authority Pulse: Active. Not yet deployed. Enemy does not know it exists.*
+> *Damage Denial: Active.*
+> *Rule Maker: Active.*
+> *Pre Attack Sight: Active.*
+> *Thread Cut: Active.*
+> *Crescent: Deepened gold. Collar to palm. Settled. No heat at edges.*
+> *Next seal: Listening.*
+
+> **Status Update Violet Arden**
+> *Held concepts: Deployed. All 40 available.*
+> *Preservation thread in ribbon: Identified. Source: Liri's brother. Location thread. Pointing somewhere. Investigation pending.*
+> *New archive designation: Still pending. Archive is arguing about categories.*
+> *Personal status: Holding his hand at the table. Denying nothing for approximately 90 seconds. Personal record.*
+
+> **Threat Velkor**
+> *Emissary: Returned. Unharmed. Arrived home via Thread Edict.*
+> *Velkor's response to Thread Edict: "Good."*
+> *Velkor is not recalculating. Velkor was expecting this.*
+> *The game has changed shape.*
+> *They are being let in.*
+
+---

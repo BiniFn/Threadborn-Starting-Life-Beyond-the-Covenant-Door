@@ -74,7 +74,7 @@
             href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"
             rel="stylesheet"
         />
-        <link rel="stylesheet" href="./global.css?v=32" />
+        <link rel="stylesheet" href="./global.css?v=39" />
         <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css"
@@ -275,7 +275,7 @@
                     "
                     title="Enable push notifications"
                 >
-                    🔔 Enable Notifications
+                    🔔 <span class="push-label">Enable Notifications</span>
                 </button>
                 <div
                     id="notif-bell"
@@ -532,7 +532,7 @@
                                 id="apk-download-link"
                                 href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/Threadborn.apk"
                                 download
-                                >Download APK</a
+                                >Download APK (English)</a
                             >
                         </div>
                         <p class="apk-note" id="apk-version-note">
@@ -541,6 +541,27 @@
                         <p class="apk-note" id="apk-note">
                             The APK is rebuilt to match the current website
                             layout and content.
+                        </p>
+                    </article>
+                    <article class="card app-card">
+                        <strong>Download Android APK (日本語)</strong>
+                        <p>
+                            Get the full offline Japanese Android app — bundled
+                            with the Japanese translation, local chapter files,
+                            and direct PDF/EPUB saving.
+                        </p>
+                        <div class="link-cluster" style="margin-top: 18px">
+                            <a
+                                class="btn btn-secondary"
+                                id="apk-download-jp-link"
+                                href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/threadborn-jp.apk"
+                                download
+                                >Download Japan APK</a
+                            >
+                        </div>
+                        <p class="apk-note" id="apk-jp-note">
+                            Japanese edition APK — rebuilds alongside the
+                            English build on every release.
                         </p>
                     </article>
                     <article class="card app-card">
@@ -580,6 +601,25 @@
                         </div>
                         <p class="apk-note" id="mac-download-note">
                             Checking latest macOS build...
+                        </p>
+                    </article>
+                    <article class="card app-card">
+                        <strong>Linux Version</strong>
+                        <p>
+                            Get the fully offline Linux desktop app. Run it
+                            locally with no internet connection required.
+                        </p>
+                        <div class="link-cluster" style="margin-top: 18px">
+                            <a
+                                class="btn btn-secondary"
+                                id="linux-download-link"
+                                href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest"
+                                target="_blank"
+                                >Download Linux App</a
+                            >
+                        </div>
+                        <p class="apk-note" id="linux-download-note">
+                            Checking latest Linux build...
                         </p>
                     </article>
                 </div>
@@ -635,7 +675,14 @@
                                     id="apk-download-link-secondary"
                                     href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/Threadborn.apk"
                                     download
-                                    >Download APK</a
+                                    >Download APK (EN)</a
+                                >
+                                <a
+                                    class="btn btn-secondary"
+                                    id="apk-download-jp-link-secondary"
+                                    href="https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/threadborn-jp.apk"
+                                    download
+                                    >Download APK (JP)</a
                                 >
                             </div>
                         </article>
@@ -6619,6 +6666,18 @@
             ];
 
             const powers = [
+      {
+        name: "Thread Edict",
+        type: "covenant",
+        desc: "A power that allows the user to command threads of fate and manipulate the rules of the world directly. Yono unlocks this after the first seal breaks.",
+        holder: "Yono Kazeshima"
+      },
+      {
+        name: "Authority Pulse",
+        type: "covenant",
+        desc: "An overwhelming wave of authority that suppresses lesser beings and disrupts thread constructs.",
+        holder: "Yono Kazeshima"
+      },
                 {
                     name: "Latest-Chapter Supremacy",
                     text: "From Volume 2 onward, Yono's newest chapter is always his strongest version. The story treats every previous peak as draft material.",
@@ -7872,13 +7931,20 @@
                     "https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases";
                 const latestApkDirect =
                     "https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/Threadborn.apk";
+                const latestJpApkDirect =
+                    "https://github.com/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest/download/threadborn-jp.apk";
                 const latestReleaseApi =
                     "https://api.github.com/repos/BiniFn/Threadborn-Starting-Life-Beyond-the-Covenant-Door/releases/latest";
                 const apkLink = document.getElementById("apk-download-link");
                 const apkLinkSecondary = document.getElementById(
                     "apk-download-link-secondary",
                 );
+                const apkJpLink = document.getElementById("apk-download-jp-link");
+                const apkJpLinkSecondary = document.getElementById(
+                    "apk-download-jp-link-secondary",
+                );
                 const apkNote = document.getElementById("apk-note");
+                const apkJpNote = document.getElementById("apk-jp-note");
                 const apkVersionNote =
                     document.getElementById("apk-version-note");
                 const windowsLink = document.getElementById(
@@ -7901,6 +7967,14 @@
                 if (apkLinkSecondary) {
                     apkLinkSecondary.href = latestApkDirect;
                     apkLinkSecondary.setAttribute("download", "");
+                }
+                if (apkJpLink) {
+                    apkJpLink.href = latestJpApkDirect;
+                    apkJpLink.setAttribute("download", "");
+                }
+                if (apkJpLinkSecondary) {
+                    apkJpLinkSecondary.href = latestJpApkDirect;
+                    apkJpLinkSecondary.setAttribute("download", "");
                 }
                 if (apkNote) {
                     apkNote.textContent =
@@ -7934,8 +8008,10 @@
                     }
                     releases = await response.json();
                     let apkAsset = null;
+                    let apkJpAsset = null;
                     let windowsAsset = null;
                     let macAsset = null;
+                    let linuxAsset = null;
 
                     releases.forEach((release) => {
                         if (!release.assets) {
@@ -7945,6 +8021,12 @@
                         if (!apkAsset) {
                             apkAsset = release.assets.find(
                                 (asset) => asset.name === "threadborn.apk" || asset.name === "Threadborn.apk",
+                            );
+                        }
+
+                        if (!apkJpAsset) {
+                            apkJpAsset = release.assets.find(
+                                (asset) => asset.name === "threadborn-jp.apk",
                             );
                         }
 
@@ -7959,6 +8041,13 @@
                             macAsset = release.assets.find(
                                 (asset) =>
                                     asset.name === "mac-os.zip" || asset.name === "Threadborn-macOS.zip",
+                            );
+                        }
+
+                        if (!linuxAsset) {
+                            linuxAsset = release.assets.find(
+                                (asset) =>
+                                    asset.name === "linux.tar.gz" || asset.name === "Threadborn-Linux.tar.gz",
                             );
                         }
                     });
@@ -7992,6 +8081,34 @@
                         }
                     }
 
+                    if (apkJpAsset) {
+                        if (apkJpLink) {
+                            apkJpLink.href = apkJpAsset.browser_download_url;
+                            apkJpLink.setAttribute("download", "");
+                        }
+                        if (apkJpLinkSecondary) {
+                            apkJpLinkSecondary.href = apkJpAsset.browser_download_url;
+                            apkJpLinkSecondary.setAttribute("download", "");
+                        }
+                        if (apkJpNote) {
+                            apkJpNote.textContent =
+                                "Latest Japan APK release found and ready to download.";
+                        }
+                    } else {
+                        if (apkJpLink) {
+                            apkJpLink.href = latestJpApkDirect;
+                            apkJpLink.setAttribute("download", "");
+                        }
+                        if (apkJpLinkSecondary) {
+                            apkJpLinkSecondary.href = latestJpApkDirect;
+                            apkJpLinkSecondary.setAttribute("download", "");
+                        }
+                        if (apkJpNote) {
+                            apkJpNote.textContent =
+                                "Japan APK release not found yet — pointing to latest build.";
+                        }
+                    }
+
                     if (windowsAsset) {
                         windowsLink.href = windowsAsset.browser_download_url;
                         windowsLink.setAttribute("download", "");
@@ -8017,6 +8134,23 @@
                             "macOS build not found yet. This button opens the Releases page until it finishes publishing.";
                         macLink.href = releasesUrl;
                     }
+
+                    const linuxLink = document.getElementById("linux-download-link");
+                    const linuxNote = document.getElementById("linux-download-note");
+                    if (linuxLink) {
+                        if (linuxAsset) {
+                            linuxLink.href = linuxAsset.browser_download_url;
+                            linuxLink.setAttribute("download", "");
+                            if (linuxNote) {
+                                linuxNote.textContent =
+                                    "Latest Linux desktop build found and ready to download.";
+                            }
+                        } else if (linuxNote) {
+                            linuxNote.textContent =
+                                "Linux build not found yet. This button opens the Releases page until it finishes publishing.";
+                            linuxLink.href = releasesUrl;
+                        }
+                    }
                 } catch (error) {
                     if (apkLink) {
                         apkLink.href = releasesUrl;
@@ -8025,6 +8159,14 @@
                     if (apkLinkSecondary) {
                         apkLinkSecondary.href = releasesUrl;
                         apkLinkSecondary.removeAttribute("download");
+                    }
+                    if (apkJpLink) {
+                        apkJpLink.href = latestJpApkDirect;
+                        apkJpLink.setAttribute("download", "");
+                    }
+                    if (apkJpLinkSecondary) {
+                        apkJpLinkSecondary.href = latestJpApkDirect;
+                        apkJpLinkSecondary.setAttribute("download", "");
                     }
                     if (apkNote) {
                         apkNote.textContent =
@@ -10557,17 +10699,23 @@
                 }
 
                 const coverPage = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>
-  \n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="cover">\n    <div class="cover-card">\n      <p class="eyebrow">Threadborn Collector EPUB</p>\n      <h1 class="cover-title">${bookTitle}</h1>\n      ${volumeCover ? `<img class="cover-art" src="images/volume-cover.jpg" alt="${chapter.volume} cover art" />` : ""}\n      <p class="cover-summary">${escapeXml(chapter.summary)}</p>\n      <div class="tag-row">${chapter.tags.map((tag) => `<span class="tag">${escapeXml(tag)}</span>`).join("")}</div>\n      <p class="credit-line">Created by BiniFn</p>\n      <p class="note">Official offline chapter export from the Threadborn web reader.</p>\n    </div>\n  </section>\n</body>\n</html>`;
+  \n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="cover">\n    <div class="cover-card">\n      <p class="eyebrow">Threadborn Collector EPUB</p>\n      <h1 class="cover-title">${bookTitle}</h1>\n      ${volumeCover ? `<img class="cover-art" src="images/volume-cover.jpg" alt="${chapter.volume} cover art" />` : ""}\n      <p class="cover-summary">${escapeXml(chapter.summary)}</p>\n      <div class="tag-row">${chapter.tags.map((tag) => `<span class="tag">${escapeXml(tag)}</span>`).join("")}</div>\n      <p class="credit-line">Created by BiniFn</p>\n      <p class="note">Official offline chapter export from the Threadborn web reader.</p>\n    </div>\n  </section>\n
+</body>
+\n</html>`;
 
                 const creditsPage = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>
-  \n  <title>${bookTitle} - Credits</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="credits-page">\n    <div class="credits-card">\n      <p class="eyebrow">Credits</p>\n      <h1>Release Credits</h1>\n      <ul>${exportCredits.map((line) => `<li>${escapeXml(line)}</li>`).join("")}</ul>\n      <p class="note">Please keep the BiniFn credit attached if this EPUB is reposted or shared.</p>\n    </div>\n  </section>\n</body>\n</html>`;
+  \n  <title>${bookTitle} - Credits</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="credits-page">\n    <div class="credits-card">\n      <p class="eyebrow">Credits</p>\n      <h1>Release Credits</h1>\n      <ul>${exportCredits.map((line) => `<li>${escapeXml(line)}</li>`).join("")}</ul>\n      <p class="note">Please keep the BiniFn credit attached if this EPUB is reposted or shared.</p>\n    </div>\n  </section>\n
+</body>
+\n</html>`;
 
                 const pageFiles = chapter.pages.map((pageHtml, index) => ({
                     name: `OEBPS/text/page-${index + 1}.xhtml`,
                     mediaType: "application/xhtml+xml",
                     title: `${chapter.title} - Page ${index + 1}`,
                     content: `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>
-  \n  <title>${escapeXml(`${chapter.title} - Page ${index + 1}`)}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="../styles.css" />\n</head>\n<body>\n  <section class="page">\n    <div class="page-frame">\n      <p class="page-eyebrow"><span>${escapeXml(`${chapter.volume} • ${chapter.chapter}`)}</span><span>Page ${index + 1} of ${chapter.pages.length}</span></p>\n      ${chapter.pages[index]}\n      <p class="page-footer-note">Created by BiniFn • Official Threadborn EPUB export</p>\n    </div>\n  </section>\n</body>\n</html>`,
+  \n  <title>${escapeXml(`${chapter.title} - Page ${index + 1}`)}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="../styles.css" />\n</head>\n<body>\n  <section class="page">\n    <div class="page-frame">\n      <p class="page-eyebrow"><span>${escapeXml(`${chapter.volume} • ${chapter.chapter}`)}</span><span>Page ${index + 1} of ${chapter.pages.length}</span></p>\n      ${chapter.pages[index]}\n      <p class="page-footer-note">Created by BiniFn • Official Threadborn EPUB export</p>\n    </div>\n  </section>\n
+</body>
+\n</html>`,
                 }));
 
                 const manifestItems = [
@@ -10638,7 +10786,9 @@
                         name: "OEBPS/nav.xhtml",
                         data: encoder.encode(`<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">\n<head>
   \n  <title>${bookTitle}</title>\n  <meta charset="utf-8" />\n  <link rel="stylesheet" type="text/css" href="styles.css" />\n</head>\n<body>\n  <section class="nav-page">\n    <div class="nav-card">\n      <p class="eyebrow">Contents</p>\n      <nav epub:type="toc" id="toc">\n        <h1>${bookTitle}</h1>\n        <ol>${navLinks}</ol>\n        <a class="nav-btn" id="lang-jp" href="./index-jp.html" onclick="localStorage.setItem('threadborn_lang', 'ja')">JP</a>
-      </nav>\n    </div>\n  </section>\n</body>\n</html>`),
+      </nav>\n    </div>\n  </section>\n
+</body>
+\n</html>`),
                     },
                     {
                         name: "OEBPS/content.opf",
@@ -11008,6 +11158,17 @@
             toggleReaderTools(false);
             if ("speechSynthesis" in window) {
                 window.speechSynthesis.onvoiceschanged = loadVoices;
+                // Polling fallback for browsers that don't fire onvoiceschanged reliably
+                let ttsPolls = 0;
+                let ttsInterval = setInterval(() => {
+                    if (window.speechSynthesis.getVoices().length > 0) {
+                        loadVoices();
+                        clearInterval(ttsInterval);
+                    } else {
+                        ttsPolls++;
+                        if (ttsPolls > 10) clearInterval(ttsInterval);
+                    }
+                }, 500);
             } else {
                 updateTtsStatus("TTS unavailable");
             }
@@ -11059,7 +11220,8 @@
             }
         </style>
 
-        <script src="./assets/phase1-client.js?v=32"></script>
+        <script src="./assets/notifications.js?v=39"></script>
+        <script src="./assets/phase1-client.js?v=39"></script>
         <script>
             if ("serviceWorker" in navigator) {
                 let newWorker;
@@ -11193,5 +11355,21 @@
                 ></p>
             </div>
         </div>
-    </body>
+    
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const isApp = window.__THREADBORN_APP_MODE || localStorage.getItem("threadborn_app_mode");
+            if (isApp && window.Notification && Notification.permission === "default") {
+                if (confirm("Threadborn: Would you like to enable notifications for new chapters, art, and updates?")) {
+                    if (typeof window.requestPushPermission === 'function') {
+                        window.requestPushPermission();
+                    }
+                }
+            }
+        }, 2000);
+    });
+</script>
+</body>
+
 </html>

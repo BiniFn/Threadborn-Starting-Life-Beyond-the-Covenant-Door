@@ -93,26 +93,6 @@
                     autocomplete="new-password"
                     minlength="6"
                 />
-                <label for="avatar">Profile picture</label>
-                <input
-                    id="avatar"
-                    class="input-field"
-                    name="avatar"
-                    type="file"
-                    accept="image/*"
-                    style="padding: 10px"
-                />
-                <img
-                    id="avatar-preview"
-                    class="avatar-preview"
-                    alt="Avatar preview"
-                    style="
-                        display: none;
-                        margin-bottom: 18px;
-                        max-width: 96px;
-                        border-radius: 50%;
-                    "
-                />
                 <button id="submit-btn" class="btn-form" type="submit">
                     Create Account
                 </button>
@@ -190,10 +170,6 @@
             const form = document.getElementById("signup-form");
             const statusEl = document.getElementById("status");
             const submitBtn = document.getElementById("submit-btn");
-            const avatarInput = document.getElementById("avatar");
-            const avatarPreview = document.getElementById("avatar-preview");
-            let avatarDataUrl = "";
-
             function setStatus(message, type) {
                 statusEl.textContent = message || "";
                 statusEl.className = "status" + (type ? " " + type : "");
@@ -207,21 +183,6 @@
                 return text || "Signup failed.";
             }
 
-            avatarInput.addEventListener("change", () => {
-                const file = avatarInput.files && avatarInput.files[0];
-                if (!file) {
-                    avatarDataUrl = "";
-                    avatarPreview.removeAttribute("src");
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = () => {
-                    avatarDataUrl = String(reader.result || "");
-                    avatarPreview.src = avatarDataUrl;
-                };
-                reader.readAsDataURL(file);
-            });
-
             form.addEventListener("submit", async (event) => {
                 event.preventDefault();
                 setStatus("");
@@ -232,7 +193,7 @@
                     username: form.username.value.trim(),
                     email: form.email.value.trim().toLowerCase(),
                     password: form.password.value,
-                    avatarUrl: avatarDataUrl,
+                    avatarUrl: "",
                 };
 
                 try {
