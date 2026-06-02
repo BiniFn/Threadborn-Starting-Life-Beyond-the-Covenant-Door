@@ -8,26 +8,17 @@
                     if (!savedLang) return;
                     var path = window.location.pathname;
                     var isJp = path.indexOf("-jp") !== -1;
-
                     if (savedLang === "ja" && !isJp) {
-                        if (
-                            path === "/" ||
-                            path === "/index" ||
-                            path === "/index.html"
-                        ) {
+                        if (path === "/" || path === "/index" || path === "/index.html") {
                             window.location.replace("./index-jp.html");
                         } else if (path.indexOf(".html") !== -1) {
-                            window.location.replace(
-                                path.replace(".html", "-jp.html"),
-                            );
+                            window.location.replace(path.replace(".html", "-jp.html"));
                         } else {
                             window.location.replace(path + "-jp");
                         }
                     } else if (savedLang === "en" && isJp) {
                         if (path.indexOf("-jp.html") !== -1) {
-                            window.location.replace(
-                                path.replace("-jp.html", ".html"),
-                            );
+                            window.location.replace(path.replace("-jp.html", ".html"));
                         } else {
                             window.location.replace(path.replace("-jp", ""));
                         }
@@ -37,231 +28,182 @@
         </script>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Threadborn Profile JP</title>
-        <link
-            rel="icon"
-            type="image/png"
-            href="./assets/threadborn-favicon.png"
-        />
-        <link
-            rel="apple-touch-icon"
-            href="./assets/threadborn-apple-touch.png"
-        />
-
-        <link rel="stylesheet" href="./global.css?v=54" />
+        <title>Threadborn プロフィール</title>
+        <link rel="icon" type="image/png" href="./assets/threadborn-favicon.png" />
+        <link rel="apple-touch-icon" href="./assets/threadborn-apple-touch.png" />
+        <link rel="stylesheet" href="./global.css?v=56" />
     </head>
     <body>
         <main class="auth-shell">
-            <article class="card" style="margin-bottom: 24px; text-align: left">
-                <div class="row">
-                    <img
-                        id="avatar"
-                        class="avatar"
-                        alt="Avatar"
-                        src="./assets/threadborn-app-icon.png"
-                    />
-                    <div>
-                        <h1
-                            id="name"
-                            style="
-                                margin: 0;
-                                font-family:
-                                    &quot;Cormorant Garamond&quot;, serif;
-                                font-size: 28px;
-                            "
-                        >
-                            Profile
-                        </h1>
-                        <p id="meta" class="muted" style="margin: 6px 0 0">
-                            Loading...
-                        </p>
-                        <span
-                            id="verified"
-                            class="badge"
-                            style="display: none; margin-top: 8px"
-                            >Verified</span
-                        >
+
+            <!-- ── プロフィールヘッダー（バナー付き） ────────────── -->
+            <div class="profile-banner-header">
+                <div id="banner-display">
+                    <div class="profile-banner-placeholder" id="banner-placeholder"></div>
+                </div>
+                <div class="profile-banner-body">
+                    <img id="avatar" class="profile-banner-avatar" alt="アバター" src="./assets/threadborn-app-icon.png" />
+                    <div class="profile-banner-info">
+                        <h1 id="name">プロフィール</h1>
+                        <p id="meta" class="muted" style="margin: 4px 0 0; font-size: 13px;">読込中...</p>
+                        <span id="verified" class="badge" style="display: none; margin-top: 6px;">認証済み</span>
+                        <p id="bio-display" class="profile-banner-bio"></p>
                     </div>
                 </div>
-            </article>
+            </div>
 
-            <article class="card" style="text-align: left; margin-bottom: 24px">
-                <h2
-                    style="
-                        margin-top: 0;
-                        font-family: &quot;Cormorant Garamond&quot;, serif;
-                    "
-                >
-                    Profile Settings
+            <!-- ── プロフィール設定 ────────────────────────────── -->
+            <article class="card" style="text-align: left; margin-bottom: 24px;">
+                <h2 style="margin-top: 0; font-family: &quot;Cormorant Garamond&quot;, serif;">
+                    プロフィール設定
                 </h2>
                 <div class="grid">
                     <div>
-                        <label>Username</label>
-                        <input
-                            id="username"
-                            class="input-field"
-                            maxlength="24"
-                            pattern="[A-Za-z0-9_]{3,24}"
-                        />
+                        <label>ユーザー名</label>
+                        <input id="username" class="input-field" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" />
                     </div>
                 </div>
-                <div class="row" style="margin-top: 10px">
-                    <button
-                        id="save-profile"
-                        class="btn-form"
-                        style="width: auto; padding: 12px 24px"
-                    >
-                        Save Profile
+                <div style="margin-top: 14px;">
+                    <label>自己紹介 <span class="muted" style="font-size: 12px; font-weight: 400;">(公開プロフィールに表示されます)</span></label>
+                    <textarea id="bio" class="bio-field" maxlength="280" placeholder="読者に自己紹介を…"></textarea>
+                    <div class="bio-counter"><span id="bio-count">0</span> / 280</div>
+                </div>
+                <div class="row" style="margin-top: 14px;">
+                    <button id="save-profile" class="btn-form" style="width: auto; padding: 12px 24px;">
+                        プロフィールを保存
                     </button>
                 </div>
                 <p id="profile-status" class="muted"></p>
             </article>
 
-            <article class="card profile-avatar-editor" style="text-align: left; margin-bottom: 24px">
-                <h2
-                    style="
-                        margin-top: 0;
-                        font-family: &quot;Cormorant Garamond&quot;, serif;
-                    "
-                >
-                    Profile Picture
+            <!-- ── プロフィール画像 ────────────────────────────── -->
+            <article class="card profile-avatar-editor" style="text-align: left; margin-bottom: 24px;">
+                <h2 style="margin-top: 0; font-family: &quot;Cormorant Garamond&quot;, serif;">
+                    プロフィール画像
                 </h2>
-                <p class="muted">
-                    Pick an image, crop it into a square, then submit it for admin review.
-                </p>
+                <p class="muted">画像を選んで正方形にトリミングし、管理者の審査に提出してください。</p>
                 <label id="avatar-upload-zone" class="avatar-upload-zone" for="avatar-file">
                     <input id="avatar-file" type="file" accept="image/*" />
                     <span class="avatar-upload-copy">
-                        <strong>Drop an image or tap to choose</strong>
-                        <span class="muted">PNG, JPEG, WebP, or GIF. Crop changes go to admin review.</span>
+                        <strong>画像をドロップまたはタップして選択</strong>
+                        <span class="muted">PNG、JPEG、WebP、GIF。変更は管理者の審査が必要です。</span>
                     </span>
                 </label>
                 <div id="avatar-crop-wrap" class="avatar-crop-wrap" hidden>
                     <div class="avatar-preview-row">
-                        <canvas id="avatar-crop-canvas" width="512" height="512" aria-label="Avatar crop preview"></canvas>
+                        <canvas id="avatar-crop-canvas" width="512" height="512" aria-label="アバタートリミングプレビュー"></canvas>
                         <div>
-                            <div id="avatar-circle-preview" class="avatar-circle-preview" aria-label="Circular avatar preview"></div>
-                            <button id="reload-current-avatar" class="ghost-btn" type="button" style="margin-top: 12px">Re-edit current</button>
+                            <div id="avatar-circle-preview" class="avatar-circle-preview" aria-label="円形アバタープレビュー"></div>
+                            <button id="reload-current-avatar" class="ghost-btn" type="button" style="margin-top: 12px;">現在の画像を再編集</button>
                         </div>
                     </div>
                     <div class="avatar-crop-controls">
-                        <label for="avatar-zoom">Zoom</label>
+                        <label for="avatar-zoom">ズーム</label>
                         <input id="avatar-zoom" type="range" min="1" max="3" step="0.01" value="1" />
-                        <label for="avatar-x">Horizontal</label>
+                        <label for="avatar-x">横位置</label>
                         <input id="avatar-x" type="range" min="-1" max="1" step="0.01" value="0" />
-                        <label for="avatar-y">Vertical</label>
+                        <label for="avatar-y">縦位置</label>
                         <input id="avatar-y" type="range" min="-1" max="1" step="0.01" value="0" />
-                        <label for="avatar-rotate">Rotate</label>
+                        <label for="avatar-rotate">回転</label>
                         <input id="avatar-rotate" type="range" min="-180" max="180" step="1" value="0" />
                         <div class="crop-button-row">
-                            <button id="rotate-left" class="ghost-btn" type="button">Rotate left</button>
-                            <button id="rotate-right" class="ghost-btn" type="button">Rotate right</button>
-                            <button id="crop-reset" class="ghost-btn" type="button">Reset crop</button>
+                            <button id="rotate-left" class="ghost-btn" type="button">左に回転</button>
+                            <button id="rotate-right" class="ghost-btn" type="button">右に回転</button>
+                            <button id="crop-reset" class="ghost-btn" type="button">リセット</button>
                         </div>
                     </div>
                 </div>
-                <button
-                    id="save-avatar"
-                    class="btn-form"
-                    style="margin-top: 12px; width: auto; padding: 12px 24px"
-                    disabled
-                >
-                    Submit Picture
+                <button id="save-avatar" class="btn-form" style="margin-top: 12px; width: auto; padding: 12px 24px;" disabled>
+                    画像を提出
                 </button>
                 <p id="avatar-status" class="muted"></p>
             </article>
 
-            <article class="card" style="text-align: left; margin-bottom: 24px">
-                <h2
-                    style="
-                        margin-top: 0;
-                        font-family: &quot;Cormorant Garamond&quot;, serif;
-                    "
-                >
-                    Pending Review
+            <!-- ── プロフィールバナー ──────────────────────────── -->
+            <article class="card" style="text-align: left; margin-bottom: 24px;">
+                <h2 style="margin-top: 0; font-family: &quot;Cormorant Garamond&quot;, serif;">
+                    プロフィールバナー
                 </h2>
-                <div id="pending-review" class="muted">Loading pending changes...</div>
+                <p class="muted">横長の画像をアップロードしてください。3:1でトリミングされ、管理者の審査に提出されます。</p>
+                <label id="banner-upload-zone" class="banner-upload-zone" for="banner-file">
+                    <input id="banner-file" type="file" accept="image/*" />
+                    <span class="avatar-upload-copy">
+                        <strong>バナーをドロップまたはタップして選択</strong>
+                        <span class="muted">PNG、JPEG、WebP、GIF · 3:1 横長 · 審査が必要です。</span>
+                    </span>
+                </label>
+                <div id="banner-crop-wrap" hidden style="margin-top: 16px;">
+                    <div class="banner-preview-row">
+                        <canvas id="banner-crop-canvas" width="900" height="300" aria-label="バナートリミングプレビュー"></canvas>
+                        <div>
+                            <div id="banner-strip-preview" class="banner-strip-preview" aria-label="バナーサムネイル"></div>
+                            <button id="reload-current-banner" class="ghost-btn" type="button" style="margin-top: 10px; font-size: 12px;">現在のバナーを再編集</button>
+                        </div>
+                    </div>
+                    <div class="avatar-crop-controls" style="margin-top: 14px;">
+                        <label for="banner-zoom">ズーム</label>
+                        <input id="banner-zoom" type="range" min="1" max="3" step="0.01" value="1" />
+                        <label for="banner-x">横位置</label>
+                        <input id="banner-x" type="range" min="-1" max="1" step="0.01" value="0" />
+                        <label for="banner-y">縦位置</label>
+                        <input id="banner-y" type="range" min="-1" max="1" step="0.01" value="0" />
+                        <div class="crop-button-row">
+                            <button id="banner-reset" class="ghost-btn" type="button">リセット</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="save-banner" class="btn-form" style="margin-top: 12px; width: auto; padding: 12px 24px;" disabled>
+                    バナーを提出
+                </button>
+                <p id="banner-status" class="muted"></p>
             </article>
 
-            <article class="card" style="text-align: left; margin-bottom: 24px">
-                <h2
-                    style="
-                        margin-top: 0;
-                        font-family: &quot;Cormorant Garamond&quot;, serif;
-                    "
-                >
-                    Reading Settings
-                </h2>
+            <!-- ── 審査待ち ────────────────────────────────────── -->
+            <article class="card" style="text-align: left; margin-bottom: 24px;">
+                <h2 style="margin-top: 0; font-family: &quot;Cormorant Garamond&quot;, serif;">審査待ち</h2>
+                <div id="pending-review" class="muted">読込中...</div>
+            </article>
+
+            <!-- ── 読書設定 ─────────────────────────────────────── -->
+            <article class="card" style="text-align: left; margin-bottom: 24px;">
+                <h2 style="margin-top: 0; font-family: &quot;Cormorant Garamond&quot;, serif;">読書設定</h2>
                 <div class="grid">
                     <div>
-                        <label>Theme</label>
+                        <label>テーマ</label>
                         <select id="setting-theme" class="input-field">
-                            <option value="night">Night</option>
-                            <option value="paper">Paper</option>
-                            <option value="ember">Ember</option>
+                            <option value="night">ナイト</option>
+                            <option value="paper">ペーパー</option>
+                            <option value="ember">エンバー</option>
                         </select>
                     </div>
                     <div>
-                        <label>Text size</label>
-                        <input
-                            id="setting-size"
-                            class="input-field"
-                            type="number"
-                            min="15"
-                            max="24"
-                            step="1"
-                        />
+                        <label>文字サイズ</label>
+                        <input id="setting-size" class="input-field" type="number" min="15" max="24" step="1" />
                     </div>
                 </div>
-                <button
-                    id="save-settings"
-                    class="btn-form"
-                    style="margin-top: 10px; width: auto; padding: 12px 24px"
-                >
-                    Save Settings
-                </button>
+                <button id="save-settings" class="btn-form" style="margin-top: 10px; width: auto; padding: 12px 24px;">設定を保存</button>
                 <p id="settings-status" class="muted"></p>
             </article>
 
-            <article class="card" style="text-align: left; margin-bottom: 24px">
-                <h2
-                    style="
-                        margin-top: 0;
-                        font-family: &quot;Cormorant Garamond&quot;, serif;
-                    "
-                >
-                    Bookmarks
-                </h2>
-                <div id="bookmarks" class="muted">Loading bookmarks...</div>
+            <!-- ── ブックマーク ────────────────────────────────── -->
+            <article class="card" style="text-align: left; margin-bottom: 24px;">
+                <h2 style="margin-top: 0; font-family: &quot;Cormorant Garamond&quot;, serif;">ブックマーク</h2>
+                <div id="bookmarks" class="muted">読込中...</div>
             </article>
 
-            <article class="card" style="text-align: left; margin-bottom: 24px">
-                <h2
-                    style="
-                        margin-top: 0;
-                        font-family: &quot;Cormorant Garamond&quot;, serif;
-                    "
-                >
-                    Reader Ratings & Comments
-                </h2>
-                <div id="profile-reactions" class="muted">
-                    Loading reactions...
-                </div>
+            <!-- ── 読者評価 ────────────────────────────────────── -->
+            <article class="card" style="text-align: left; margin-bottom: 24px;">
+                <h2 style="margin-top: 0; font-family: &quot;Cormorant Garamond&quot;, serif;">読者評価・コメント</h2>
+                <div id="profile-reactions" class="muted">読込中...</div>
             </article>
 
-            <article class="card" style="text-align: left">
-                <h2
-                    style="
-                        margin-top: 0;
-                        font-family: &quot;Cormorant Garamond&quot;, serif;
-                    "
-                >
-                    Reading Analytics
-                </h2>
-                <div id="analytics" class="muted">Loading analytics...</div>
+            <!-- ── 読書履歴 ────────────────────────────────────── -->
+            <article class="card" style="text-align: left;">
+                <h2 style="margin-top: 0; font-family: &quot;Cormorant Garamond&quot;, serif;">読書履歴</h2>
+                <div id="analytics" class="muted">読込中...</div>
             </article>
 
-            <a href="./index.html" class="back-link">← Back to Reader</a>
+            <a href="./index-jp.html" class="back-link">← リーダーに戻る</a>
         </main>
 
         <script src="./runtime-config.js"></script>
@@ -272,14 +214,9 @@
                     localStorage.getItem("threadborn_api_base") ||
                     ""
                 ).replace(/\/$/, "");
-                if (configured) {
-                    return configured;
-                }
+                if (configured) return configured;
                 const host = window.location.hostname;
-                if (
-                    host === "appassets.androidplatform.net" ||
-                    window.location.protocol === "file:"
-                ) {
+                if (host === "appassets.androidplatform.net" || window.location.protocol === "file:") {
                     return "https://threadborn.vercel.app";
                 }
                 return "";
@@ -289,140 +226,60 @@
             const APP_SESSION_KEY = "threadborn_app_session";
 
             function getAppMode() {
-                return String(
-                    window.__THREADBORN_APP_MODE ||
-                        localStorage.getItem("threadborn_app_mode") ||
-                        "",
-                )
-                    .trim()
-                    .toLowerCase();
+                return String(window.__THREADBORN_APP_MODE || localStorage.getItem("threadborn_app_mode") || "").trim().toLowerCase();
             }
 
             function authHeaders() {
                 const headers = { "Content-Type": "application/json" };
                 const appMode = getAppMode();
                 const appSession = localStorage.getItem(APP_SESSION_KEY) || "";
-                if (appMode) {
-                    headers["X-Threadborn-App-Mode"] = appMode;
-                    localStorage.setItem("threadborn_app_mode", appMode);
-                }
-                if (appSession) {
-                    headers.Authorization = `Bearer ${appSession}`;
-                }
+                if (appMode) { headers["X-Threadborn-App-Mode"] = appMode; localStorage.setItem("threadborn_app_mode", appMode); }
+                if (appSession) headers.Authorization = `Bearer ${appSession}`;
                 return headers;
             }
 
-            function saveAuthSession(data) {
-                localStorage.setItem(
-                    "threadborn_csrf_token",
-                    data.csrfToken || "",
-                );
-                if (data.sessionToken) {
-                    localStorage.setItem(APP_SESSION_KEY, data.sessionToken);
-                }
-            }
-
-            const avatarEl = document.getElementById("avatar");
-            const nameEl = document.getElementById("name");
-            const metaEl = document.getElementById("meta");
-            const verifiedEl = document.getElementById("verified");
-            const profileStatus = document.getElementById("profile-status");
-            const avatarStatus = document.getElementById("avatar-status");
-            const settingsStatus = document.getElementById("settings-status");
-            const avatarFile = document.getElementById("avatar-file");
-            const avatarCanvas = document.getElementById("avatar-crop-canvas");
-            const avatarCropWrap = document.getElementById("avatar-crop-wrap");
-            const avatarZoom = document.getElementById("avatar-zoom");
-            const avatarX = document.getElementById("avatar-x");
-            const avatarY = document.getElementById("avatar-y");
-            const avatarRotate = document.getElementById("avatar-rotate");
-            const avatarUploadZone = document.getElementById("avatar-upload-zone");
-            const avatarCirclePreview = document.getElementById("avatar-circle-preview");
-            const saveAvatarBtn = document.getElementById("save-avatar");
-            const avatarCtx = avatarCanvas?.getContext("2d");
-            let avatarImage = null;
-            let csrfToken =
-                localStorage.getItem("threadborn_csrf_token") || "";
+            let csrfToken = localStorage.getItem("threadborn_csrf_token") || "";
 
             function rememberAuthData(data) {
-                if (!data || typeof data !== "object") {
-                    return;
-                }
-                if (data.csrfToken) {
-                    csrfToken = data.csrfToken;
-                    localStorage.setItem(
-                        "threadborn_csrf_token",
-                        data.csrfToken,
-                    );
-                }
-                if (data.sessionToken) {
-                    localStorage.setItem(APP_SESSION_KEY, data.sessionToken);
-                }
+                if (!data || typeof data !== "object") return;
+                if (data.csrfToken) { csrfToken = data.csrfToken; localStorage.setItem("threadborn_csrf_token", data.csrfToken); }
+                if (data.sessionToken) localStorage.setItem(APP_SESSION_KEY, data.sessionToken);
             }
 
             function makeApiError(response, json) {
-                const error = new Error(json.error || "Request failed");
+                const error = new Error(json.error || "リクエストに失敗しました");
                 error.status = response.status || 500;
                 return error;
             }
 
             function canRefreshAuth(error) {
-                return (
-                    error &&
-                    error.status === 403 &&
-                    /csrf|session/i.test(String(error.message || ""))
-                );
+                return error && error.status === 403 && /csrf|session/i.test(String(error.message || ""));
             }
 
             async function refreshAuthSession() {
                 const headers = authHeaders();
                 delete headers["X-CSRF-Token"];
-                const response = await fetch(`${API_BASE}/api/auth/me`, {
-                    method: "GET",
-                    credentials: "include",
-                    cache: "no-store",
-                    headers,
-                });
+                const response = await fetch(`${API_BASE}/api/auth/me`, { method: "GET", credentials: "include", cache: "no-store", headers });
                 const json = await response.json().catch(() => ({}));
-                if (!response.ok || !json.success) {
-                    return false;
-                }
+                if (!response.ok || !json.success) return false;
                 rememberAuthData(json.data);
                 return Boolean(json.data?.csrfToken);
             }
 
             async function apiFetchOnce(path, options = {}) {
-                const headers = Object.assign(
-                    authHeaders(),
-                    options.headers || {},
-                );
+                const headers = Object.assign(authHeaders(), options.headers || {});
                 if (csrfToken) headers["X-CSRF-Token"] = csrfToken;
-                const response = await fetch(
-                    `${API_BASE}${path}`,
-                    Object.assign({}, options, {
-                        credentials: "include",
-                        cache: "no-store",
-                        headers,
-                    }),
-                );
+                const response = await fetch(`${API_BASE}${path}`, Object.assign({}, options, { credentials: "include", cache: "no-store", headers }));
                 let json = {};
-                try {
-                    json = await response.json();
-                } catch (_) {
-                    json = { success: false, error: "Invalid server response" };
-                }
-                if (!response.ok || !json.success)
-                    throw makeApiError(response, json);
+                try { json = await response.json(); } catch (_) { json = { success: false, error: "サーバーレスポンスが無効です" }; }
+                if (!response.ok || !json.success) throw makeApiError(response, json);
                 return json.data;
             }
 
             async function apiFetch(path, options = {}) {
-                try {
-                    return await apiFetchOnce(path, options);
-                } catch (error) {
-                    if (canRefreshAuth(error) && (await refreshAuthSession())) {
-                        return apiFetchOnce(path, options);
-                    }
+                try { return await apiFetchOnce(path, options); }
+                catch (error) {
+                    if (canRefreshAuth(error) && (await refreshAuthSession())) return apiFetchOnce(path, options);
                     throw error;
                 }
             }
@@ -433,34 +290,61 @@
             }
 
             function escapeHtml(value) {
-                return String(value ?? "").replace(
-                    /[&<>"']/g,
-                    (char) =>
-                        ({
-                            "&": "&amp;",
-                            "<": "&lt;",
-                            ">": "&gt;",
-                            '"': "&quot;",
-                            "'": "&#39;",
-                        })[char],
-                );
+                return String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
             }
 
             async function requestAndroidImagePermission() {
-                if (!window.AndroidBridge?.requestImagePermission) {
-                    return true;
-                }
-                try {
-                    window.AndroidBridge.requestImagePermission();
-                } catch (_) {}
+                if (!window.AndroidBridge?.requestImagePermission) return true;
+                try { window.AndroidBridge.requestImagePermission(); } catch (_) {}
                 return true;
             }
 
-            function resetCropControls() {
-                avatarZoom.value = "1";
-                avatarX.value = "0";
-                avatarY.value = "0";
-                avatarRotate.value = "0";
+            // ── DOM refs ───────────────────────────────────────────────
+            const avatarEl          = document.getElementById("avatar");
+            const nameEl            = document.getElementById("name");
+            const metaEl            = document.getElementById("meta");
+            const verifiedEl        = document.getElementById("verified");
+            const bioDisplay        = document.getElementById("bio-display");
+            const profileStatus     = document.getElementById("profile-status");
+            const avatarStatus      = document.getElementById("avatar-status");
+            const bannerStatus      = document.getElementById("banner-status");
+            const settingsStatus    = document.getElementById("settings-status");
+
+            // Avatar crop
+            const avatarFile        = document.getElementById("avatar-file");
+            const avatarCanvas      = document.getElementById("avatar-crop-canvas");
+            const avatarCropWrap    = document.getElementById("avatar-crop-wrap");
+            const avatarZoom        = document.getElementById("avatar-zoom");
+            const avatarX           = document.getElementById("avatar-x");
+            const avatarY           = document.getElementById("avatar-y");
+            const avatarRotate      = document.getElementById("avatar-rotate");
+            const avatarUploadZone  = document.getElementById("avatar-upload-zone");
+            const avatarCirclePreview = document.getElementById("avatar-circle-preview");
+            const saveAvatarBtn     = document.getElementById("save-avatar");
+            const avatarCtx         = avatarCanvas?.getContext("2d");
+            let avatarImage = null;
+
+            // Banner crop
+            const bannerFile        = document.getElementById("banner-file");
+            const bannerCanvas      = document.getElementById("banner-crop-canvas");
+            const bannerCropWrap    = document.getElementById("banner-crop-wrap");
+            const bannerZoom        = document.getElementById("banner-zoom");
+            const bannerX           = document.getElementById("banner-x");
+            const bannerY           = document.getElementById("banner-y");
+            const bannerUploadZone  = document.getElementById("banner-upload-zone");
+            const bannerStripPreview = document.getElementById("banner-strip-preview");
+            const saveBannerBtn     = document.getElementById("save-banner");
+            const bannerCtx         = bannerCanvas?.getContext("2d");
+            let bannerImage = null;
+
+            // Bio counter
+            const bioField  = document.getElementById("bio");
+            const bioCount  = document.getElementById("bio-count");
+            bioField?.addEventListener("input", () => { bioCount.textContent = bioField.value.length; });
+
+            // ── Avatar crop ────────────────────────────────────────────
+            function resetAvatarCrop() {
+                avatarZoom.value = "1"; avatarX.value = "0"; avatarY.value = "0"; avatarRotate.value = "0";
             }
 
             function drawAvatarCrop() {
@@ -471,30 +355,22 @@
                 avatarCtx.fillRect(0, 0, size, size);
                 const zoom = Number(avatarZoom.value || 1);
                 const scale = Math.max(size / avatarImage.width, size / avatarImage.height) * zoom;
-                const width = avatarImage.width * scale;
-                const height = avatarImage.height * scale;
-                const x = (size - width) / 2 + Number(avatarX.value || 0) * size * 0.35;
-                const y = (size - height) / 2 + Number(avatarY.value || 0) * size * 0.35;
+                const w = avatarImage.width * scale;
+                const h = avatarImage.height * scale;
+                const x = (size - w) / 2 + Number(avatarX.value || 0) * size * 0.35;
+                const y = (size - h) / 2 + Number(avatarY.value || 0) * size * 0.35;
                 avatarCtx.save();
                 avatarCtx.translate(size / 2, size / 2);
                 avatarCtx.rotate((Number(avatarRotate.value || 0) * Math.PI) / 180);
-                avatarCtx.drawImage(avatarImage, x - size / 2, y - size / 2, width, height);
+                avatarCtx.drawImage(avatarImage, x - size / 2, y - size / 2, w, h);
                 avatarCtx.restore();
-                if (avatarCirclePreview) {
-                    avatarCirclePreview.style.backgroundImage = `url(${avatarCanvas.toDataURL("image/png", 0.92)})`;
-                }
+                if (avatarCirclePreview) avatarCirclePreview.style.backgroundImage = `url(${avatarCanvas.toDataURL("image/png", 0.92)})`;
             }
 
             function loadAvatarFile(file) {
                 if (!file) return;
-                if (!file.type.startsWith("image/")) {
-                    setMessage(avatarStatus, "Choose an image file.", false);
-                    return;
-                }
-                if (file.size > 6 * 1024 * 1024) {
-                    setMessage(avatarStatus, "Choose an image under 6MB.", false);
-                    return;
-                }
+                if (!file.type.startsWith("image/")) { setMessage(avatarStatus, "画像ファイルを選択してください。", false); return; }
+                if (file.size > 6 * 1024 * 1024) { setMessage(avatarStatus, "6MB以下の画像を選択してください。", false); return; }
                 const reader = new FileReader();
                 reader.onload = () => {
                     const image = new Image();
@@ -502,110 +378,46 @@
                         avatarImage = image;
                         avatarCropWrap.hidden = false;
                         saveAvatarBtn.disabled = false;
-                        resetCropControls();
+                        resetAvatarCrop();
                         drawAvatarCrop();
-                        setMessage(avatarStatus, "Crop the image, then submit it for review.", true);
+                        setMessage(avatarStatus, "画像をトリミングして提出してください。", true);
                     };
-                    image.onerror = () => setMessage(avatarStatus, "Could not read that image.", false);
+                    image.onerror = () => setMessage(avatarStatus, "画像を読み込めませんでした。", false);
                     image.src = String(reader.result || "");
                 };
                 reader.readAsDataURL(file);
             }
 
-            function renderPendingRequests(items = []) {
-                const box = document.getElementById("pending-review");
-                if (!box) return;
-                if (!items.length) {
-                    box.textContent = "No pending profile or comment changes.";
-                    return;
-                }
-                box.innerHTML = items
-                    .map((item) => {
-                        const payload = item.payload || {};
-                        const label = String(item.type || "request").replace(/_/g, " ");
-                        const detail =
-                            payload.username ||
-                            payload.title ||
-                            payload.content ||
-                            payload.volumeId ||
-                            payload.avatarUrl ||
-                            "";
-                        return `<div class="post-comment"><strong>${escapeHtml(label)}</strong><br>${escapeHtml(String(detail).slice(0, 180))}<br><span class="muted">${new Date(item.createdAt).toLocaleString()}</span></div>`;
-                    })
-                    .join("");
-            }
-
             avatarUploadZone?.addEventListener("click", requestAndroidImagePermission);
-            avatarUploadZone?.addEventListener("dragover", (event) => {
-                event.preventDefault();
-                avatarUploadZone.classList.add("dragging");
-            });
-            avatarUploadZone?.addEventListener("dragleave", () => {
-                avatarUploadZone.classList.remove("dragging");
-            });
-            avatarUploadZone?.addEventListener("drop", (event) => {
-                event.preventDefault();
-                avatarUploadZone.classList.remove("dragging");
-                loadAvatarFile(event.dataTransfer?.files?.[0]);
-            });
-
-            avatarFile?.addEventListener("change", () => {
-                loadAvatarFile(avatarFile.files && avatarFile.files[0]);
-            });
-
-            [avatarZoom, avatarX, avatarY, avatarRotate].forEach((control) => {
-                control?.addEventListener("input", drawAvatarCrop);
-            });
-
-            document.getElementById("rotate-left")?.addEventListener("click", () => {
-                avatarRotate.value = String(Number(avatarRotate.value || 0) - 90);
-                drawAvatarCrop();
-            });
-            document.getElementById("rotate-right")?.addEventListener("click", () => {
-                avatarRotate.value = String(Number(avatarRotate.value || 0) + 90);
-                drawAvatarCrop();
-            });
-            document.getElementById("crop-reset")?.addEventListener("click", () => {
-                resetCropControls();
-                drawAvatarCrop();
-            });
+            avatarUploadZone?.addEventListener("dragover", (e) => { e.preventDefault(); avatarUploadZone.classList.add("dragging"); });
+            avatarUploadZone?.addEventListener("dragleave", () => avatarUploadZone.classList.remove("dragging"));
+            avatarUploadZone?.addEventListener("drop", (e) => { e.preventDefault(); avatarUploadZone.classList.remove("dragging"); loadAvatarFile(e.dataTransfer?.files?.[0]); });
+            avatarFile?.addEventListener("change", () => loadAvatarFile(avatarFile.files?.[0]));
+            [avatarZoom, avatarX, avatarY, avatarRotate].forEach((c) => c?.addEventListener("input", drawAvatarCrop));
+            document.getElementById("rotate-left")?.addEventListener("click", () => { avatarRotate.value = String(Number(avatarRotate.value || 0) - 90); drawAvatarCrop(); });
+            document.getElementById("rotate-right")?.addEventListener("click", () => { avatarRotate.value = String(Number(avatarRotate.value || 0) + 90); drawAvatarCrop(); });
+            document.getElementById("crop-reset")?.addEventListener("click", () => { resetAvatarCrop(); drawAvatarCrop(); });
             document.getElementById("reload-current-avatar")?.addEventListener("click", () => {
-                const source = avatarEl.src;
-                if (!source) return;
+                const src = avatarEl.src;
+                if (!src) return;
                 const image = new Image();
                 image.crossOrigin = "anonymous";
-                image.onload = () => {
-                    avatarImage = image;
-                    avatarCropWrap.hidden = false;
-                    saveAvatarBtn.disabled = false;
-                    resetCropControls();
-                    drawAvatarCrop();
-                };
-                image.onerror = () => setMessage(avatarStatus, "Current image cannot be re-edited from cache. Choose the original file again.", false);
-                image.src = source + (source.includes("?") ? "&" : "?") + "edit=" + Date.now();
+                image.onload = () => { avatarImage = image; avatarCropWrap.hidden = false; saveAvatarBtn.disabled = false; resetAvatarCrop(); drawAvatarCrop(); };
+                image.onerror = () => setMessage(avatarStatus, "現在の画像は再編集できません。元のファイルを選択してください。", false);
+                image.src = src + (src.includes("?") ? "&" : "?") + "edit=" + Date.now();
             });
 
             saveAvatarBtn?.addEventListener("click", async () => {
                 try {
-                    if (!avatarImage || !avatarCanvas) {
-                        throw new Error("Choose and crop an image first.");
-                    }
+                    if (!avatarImage || !avatarCanvas) throw new Error("まず画像を選んでトリミングしてください。");
                     saveAvatarBtn.disabled = true;
-                    setMessage(avatarStatus, "Uploading for review...", true);
+                    setMessage(avatarStatus, "審査のためアップロード中…", true);
                     const dataUrl = avatarCanvas.toDataURL("image/png", 0.92);
                     const result = await apiFetch("/api/upload/avatar", {
                         method: "POST",
-                        body: JSON.stringify({
-                            dataUrl,
-                            crop: {
-                                x: Number(avatarX.value || 0),
-                                y: Number(avatarY.value || 0),
-                                size: 1 / Number(avatarZoom.value || 1),
-                                rotate: Number(avatarRotate.value || 0),
-                            },
-                        }),
+                        body: JSON.stringify({ dataUrl, purpose: "avatar", crop: { x: Number(avatarX.value || 0), y: Number(avatarY.value || 0), size: 1 / Number(avatarZoom.value || 1), rotate: Number(avatarRotate.value || 0) } }),
                     });
-                    setMessage(avatarStatus, result.message || "Profile picture submitted for review.", true);
+                    setMessage(avatarStatus, result.message || "プロフィール画像を審査に提出しました。", true);
                     await refreshProfileDetails();
                 } catch (error) {
                     setMessage(avatarStatus, error.message, false);
@@ -614,103 +426,161 @@
                 }
             });
 
-            document
-                .getElementById("save-profile")
-                .addEventListener("click", async () => {
-                    try {
-                        const username = document
-                            .getElementById("username")
-                            .value.trim();
-                        if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) {
-                            throw new Error(
-                                "Username must be 3-24 letters, numbers, or underscores.",
-                            );
-                        }
-                        const profile = await apiFetch("/api/user/profile", {
-                            method: "PATCH",
-                            body: JSON.stringify({ username }),
-                        });
-                        nameEl.textContent = profile.user.username;
-                        avatarEl.src =
-                            profile.user.avatarUrl ||
-                            "./assets/threadborn-app-icon.png";
-                        localStorage.setItem(
-                            "threadborn_user",
-                            JSON.stringify({
-                                id: profile.user.id,
-                                email: profile.user.email,
-                                displayName: profile.user.username,
-                                avatarUrl:
-                                    profile.user.avatarUrl ||
-                                    "./assets/threadborn-app-icon.png",
-                                verified: profile.user.verified,
-                                role: profile.user.role,
-                            }),
-                        );
-                        setMessage(
-                            profileStatus,
-                            profile.message || "Profile change submitted for review.",
-                            true,
-                        );
-                        await refreshProfileDetails();
-                    } catch (error) {
-                        setMessage(profileStatus, error.message, false);
-                    }
-                });
+            // ── Banner crop ────────────────────────────────────────────
+            function resetBannerCrop() {
+                bannerZoom.value = "1"; bannerX.value = "0"; bannerY.value = "0";
+            }
 
-            document
-                .getElementById("save-settings")
-                .addEventListener("click", async () => {
-                    const settings = {
-                        readerTheme:
-                            document.getElementById("setting-theme").value,
-                        readerSize: Number(
-                            document.getElementById("setting-size").value || 18,
-                        ),
+            function drawBannerCrop() {
+                if (!bannerImage || !bannerCtx || !bannerCanvas) return;
+                const W = bannerCanvas.width, H = bannerCanvas.height;
+                bannerCtx.clearRect(0, 0, W, H);
+                bannerCtx.fillStyle = "#111";
+                bannerCtx.fillRect(0, 0, W, H);
+                const zoom = Number(bannerZoom.value || 1);
+                const scale = Math.max(W / bannerImage.width, H / bannerImage.height) * zoom;
+                const w = bannerImage.width * scale;
+                const h = bannerImage.height * scale;
+                const x = (W - w) / 2 + Number(bannerX.value || 0) * W * 0.35;
+                const y = (H - h) / 2 + Number(bannerY.value || 0) * H * 0.35;
+                bannerCtx.drawImage(bannerImage, x, y, w, h);
+                if (bannerStripPreview) bannerStripPreview.style.backgroundImage = `url(${bannerCanvas.toDataURL("image/png", 0.85)})`;
+            }
+
+            function loadBannerFile(file) {
+                if (!file) return;
+                if (!file.type.startsWith("image/")) { setMessage(bannerStatus, "画像ファイルを選択してください。", false); return; }
+                if (file.size > 6 * 1024 * 1024) { setMessage(bannerStatus, "6MB以下の画像を選択してください。", false); return; }
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const image = new Image();
+                    image.onload = () => {
+                        bannerImage = image;
+                        bannerCropWrap.hidden = false;
+                        saveBannerBtn.disabled = false;
+                        resetBannerCrop();
+                        drawBannerCrop();
+                        setMessage(bannerStatus, "トリミングを調整して審査に提出してください。", true);
                     };
-                    try {
-                        await apiFetch("/api/user/profile?action=settings", {
-                            method: "PUT",
-                            body: JSON.stringify({ settings }),
-                        });
-                        localStorage.setItem(
-                            "threadborn_reader_settings_cache",
-                            JSON.stringify(settings),
-                        );
-                        setMessage(settingsStatus, "Settings saved.", true);
-                    } catch (error) {
-                        setMessage(settingsStatus, error.message, false);
-                    }
-                });
+                    image.onerror = () => setMessage(bannerStatus, "画像を読み込めませんでした。", false);
+                    image.src = String(reader.result || "");
+                };
+                reader.readAsDataURL(file);
+            }
+
+            bannerUploadZone?.addEventListener("click", requestAndroidImagePermission);
+            bannerUploadZone?.addEventListener("dragover", (e) => { e.preventDefault(); bannerUploadZone.classList.add("dragging"); });
+            bannerUploadZone?.addEventListener("dragleave", () => bannerUploadZone.classList.remove("dragging"));
+            bannerUploadZone?.addEventListener("drop", (e) => { e.preventDefault(); bannerUploadZone.classList.remove("dragging"); loadBannerFile(e.dataTransfer?.files?.[0]); });
+            bannerFile?.addEventListener("change", () => loadBannerFile(bannerFile.files?.[0]));
+            [bannerZoom, bannerX, bannerY].forEach((c) => c?.addEventListener("input", drawBannerCrop));
+            document.getElementById("banner-reset")?.addEventListener("click", () => { resetBannerCrop(); drawBannerCrop(); });
+            document.getElementById("reload-current-banner")?.addEventListener("click", () => {
+                const src = document.getElementById("banner-img-el")?.src || "";
+                if (!src) { setMessage(bannerStatus, "まだバナーがアップロードされていません。", false); return; }
+                const image = new Image();
+                image.crossOrigin = "anonymous";
+                image.onload = () => { bannerImage = image; bannerCropWrap.hidden = false; saveBannerBtn.disabled = false; resetBannerCrop(); drawBannerCrop(); };
+                image.onerror = () => setMessage(bannerStatus, "現在のバナーは再編集できません。元のファイルを選択してください。", false);
+                image.src = src + (src.includes("?") ? "&" : "?") + "edit=" + Date.now();
+            });
+
+            saveBannerBtn?.addEventListener("click", async () => {
+                try {
+                    if (!bannerImage || !bannerCanvas) throw new Error("まずバナー画像を選んでトリミングしてください。");
+                    saveBannerBtn.disabled = true;
+                    setMessage(bannerStatus, "審査のためアップロード中…", true);
+                    const dataUrl = bannerCanvas.toDataURL("image/png", 0.88);
+                    const result = await apiFetch("/api/upload/avatar", {
+                        method: "POST",
+                        body: JSON.stringify({ dataUrl, purpose: "banner", crop: { x: Number(bannerX.value || 0), y: Number(bannerY.value || 0), size: 1 / Number(bannerZoom.value || 1), rotate: 0 } }),
+                    });
+                    setMessage(bannerStatus, result.message || "バナーを審査に提出しました。", true);
+                    await refreshProfileDetails();
+                } catch (error) {
+                    setMessage(bannerStatus, error.message, false);
+                } finally {
+                    saveBannerBtn.disabled = false;
+                }
+            });
+
+            // ── Profile save ───────────────────────────────────────────
+            document.getElementById("save-profile").addEventListener("click", async () => {
+                try {
+                    const username = document.getElementById("username").value.trim();
+                    if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) throw new Error("ユーザー名は3〜24文字の英数字またはアンダースコアで入力してください。");
+                    const bio = document.getElementById("bio").value.trim();
+                    const profile = await apiFetch("/api/user/profile", { method: "PATCH", body: JSON.stringify({ username, bio }) });
+                    nameEl.textContent = profile.user.username;
+                    avatarEl.src = profile.user.avatarUrl || "./assets/threadborn-app-icon.png";
+                    bioDisplay.textContent = profile.user.bio || "";
+                    localStorage.setItem("threadborn_user", JSON.stringify({
+                        id: profile.user.id, email: profile.user.email, displayName: profile.user.username,
+                        avatarUrl: profile.user.avatarUrl || "./assets/threadborn-app-icon.png",
+                        verified: profile.user.verified, role: profile.user.role,
+                    }));
+                    setMessage(profileStatus, profile.message || "プロフィール変更を審査に提出しました。", true);
+                    await refreshProfileDetails();
+                } catch (error) {
+                    setMessage(profileStatus, error.message, false);
+                }
+            });
+
+            // ── Settings save ──────────────────────────────────────────
+            document.getElementById("save-settings").addEventListener("click", async () => {
+                const settings = {
+                    readerTheme: document.getElementById("setting-theme").value,
+                    readerSize: Number(document.getElementById("setting-size").value || 18),
+                };
+                try {
+                    await apiFetch("/api/user/profile?action=settings", { method: "PUT", body: JSON.stringify({ settings }) });
+                    localStorage.setItem("threadborn_reader_settings_cache", JSON.stringify(settings));
+                    setMessage(settingsStatus, "設定を保存しました。", true);
+                } catch (error) {
+                    setMessage(settingsStatus, error.message, false);
+                }
+            });
+
+            // ── Render helpers ─────────────────────────────────────────
+            function renderPendingRequests(items = []) {
+                const box = document.getElementById("pending-review");
+                if (!box) return;
+                if (!items.length) { box.textContent = "審査待ちのプロフィール変更またはコメントはありません。"; return; }
+                box.innerHTML = items.map((item) => {
+                    const payload = item.payload || {};
+                    const label = String(item.type || "request").replace(/_/g, " ");
+                    const detail = payload.username || payload.title || payload.content || payload.volumeId || payload.avatarUrl || payload.bannerUrl || "";
+                    return `<div class="post-comment"><strong>${escapeHtml(label)}</strong><br>${escapeHtml(String(detail).slice(0, 180))}<br><span class="muted">${new Date(item.createdAt).toLocaleString()}</span></div>`;
+                }).join("");
+            }
 
             function renderProfileReactions(reactions) {
                 const box = document.getElementById("profile-reactions");
                 if (!box) return;
-                if (!Array.isArray(reactions) || !reactions.length) {
-                    box.textContent = "No reader ratings or comments yet.";
-                    return;
+                if (!Array.isArray(reactions) || !reactions.length) { box.textContent = "まだ読者評価やコメントはありません。"; return; }
+                box.innerHTML = reactions.map((item) => {
+                    const target = item.targetType === "chapter" ? `${item.volumeId} • ${item.chapterId}` : `${item.volumeId}`;
+                    const rating = item.rating ? ` • ${"★".repeat(item.rating)}${"☆".repeat(5 - item.rating)}` : "";
+                    const category = item.category ? ` • ${item.category}` : "";
+                    return `<div class="post-comment"><strong>${target}</strong>${rating}${category}<br>${String(item.content || "評価のみ。").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c])}</div>`;
+                }).join("");
+            }
+
+            function applyBannerToHeader(bannerUrl) {
+                const display = document.getElementById("banner-display");
+                if (!display) return;
+                if (bannerUrl) {
+                    display.innerHTML = `<img id="banner-img-el" class="profile-banner-img" src="${escapeHtml(bannerUrl)}" alt="プロフィールバナー" />`;
+                } else {
+                    display.innerHTML = `<div class="profile-banner-placeholder" id="banner-placeholder"></div>`;
                 }
-                box.innerHTML = reactions
-                    .map((item) => {
-                        const target =
-                            item.targetType === "chapter"
-                                ? `${item.volumeId} • ${item.chapterId}`
-                                : `${item.volumeId}`;
-                        const rating = item.rating
-                            ? ` • ${"★".repeat(item.rating)}${"☆".repeat(5 - item.rating)}`
-                            : "";
-                        const category = item.category
-                            ? ` • ${item.category}`
-                            : "";
-                        return `<div class="post-comment"><strong>${target}</strong>${rating}${category}<br>${String(item.content || "Rating only.").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c])}</div>`;
-                    })
-                    .join("");
             }
 
             async function refreshProfileDetails() {
                 const profile = await apiFetch("/api/user/profile");
                 renderPendingRequests(profile.pending || []);
                 renderProfileReactions(profile.reactions || []);
+                if (profile.user?.bannerUrl) applyBannerToHeader(profile.user.bannerUrl);
                 return profile;
             }
 
@@ -720,139 +590,73 @@
                     const me = await apiFetch("/api/auth/me");
                     rememberAuthData(me);
                     user = me.user;
-
-                    localStorage.setItem(
-                        "threadborn_user",
-                        JSON.stringify({
-                            id: user.id,
-                            email: user.email,
-                            displayName: user.username,
-                            avatarUrl:
-                                user.avatarUrl ||
-                                "./assets/threadborn-app-icon.png",
-                            verified: user.verified,
-                            role: user.role,
-                        }),
-                    );
+                    localStorage.setItem("threadborn_user", JSON.stringify({
+                        id: user.id, email: user.email, displayName: user.username,
+                        avatarUrl: user.avatarUrl || "./assets/threadborn-app-icon.png",
+                        verified: user.verified, role: user.role,
+                    }));
                 } catch (error) {
-                    // Fallback to offline local storage
                     const localUser = localStorage.getItem("threadborn_user");
-                    if (localUser) {
-                        user = JSON.parse(localUser);
-                        user.username = user.displayName;
-                    } else {
-                        throw error;
-                    }
+                    if (localUser) { user = JSON.parse(localUser); user.username = user.displayName; }
+                    else throw error;
                 }
 
-                avatarEl.src =
-                    user.avatarUrl || "./assets/threadborn-app-icon.png";
+                avatarEl.src = user.avatarUrl || "./assets/threadborn-app-icon.png";
                 nameEl.textContent = user.username || user.displayName;
-                metaEl.textContent = `${user.email} • role: ${user.role || "user"}`;
-                verifiedEl.style.display = user.verified
-                    ? "inline-block"
-                    : "none";
-                document.getElementById("username").value =
-                    user.username || user.displayName;
+                metaEl.textContent = `${user.email} • ロール: ${user.role || "user"}`;
+                verifiedEl.style.display = user.verified ? "inline-block" : "none";
+                document.getElementById("username").value = user.username || user.displayName;
 
                 try {
                     const profile = await refreshProfileDetails();
-                    const posts = Array.isArray(profile.posts)
-                        ? profile.posts
-                        : [];
+                    const bio = profile.user?.bio || user.bio || "";
+                    bioField.value = bio;
+                    bioCount.textContent = bio.length;
+                    bioDisplay.textContent = bio;
+                    if (profile.user?.bannerUrl) applyBannerToHeader(profile.user.bannerUrl);
+
+                    const posts = Array.isArray(profile.posts) ? profile.posts : [];
                     if (posts.length > 0) {
-                        const lines = posts
-                            .map(
-                                (post) =>
-                                    `<div style="margin-bottom:8px;"><strong>${String(post.title || "(untitled)").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c])}</strong> <span style="opacity:0.6;font-size:0.85em;">${String(post.category || "post").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c])}</span></div>`,
-                            )
-                            .join("");
-                        document
-                            .getElementById("analytics")
-                            .insertAdjacentHTML(
-                                "beforebegin",
-                                `<article class="card" style="text-align: left; margin-bottom: 24px;"><h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">User Posts</h2>${lines}</article>`,
-                            );
+                        const lines = posts.map((post) => `<div style="margin-bottom:8px;"><strong>${escapeHtml(post.title || "(タイトルなし)")}</strong> <span style="opacity:0.6;font-size:0.85em;">${escapeHtml(post.category || "post")}</span></div>`).join("");
+                        document.getElementById("analytics").insertAdjacentHTML("beforebegin", `<article class="card" style="text-align: left; margin-bottom: 24px;"><h2 style="margin-top:0; font-family: 'Cormorant Garamond', serif;">投稿一覧</h2>${lines}</article>`);
                     }
-                } catch (e) {
-                    // ignore profile posts if offline
-                }
+                } catch (e) { /* ignore if offline */ }
             }
 
             async function loadBookmarks() {
-                const data = await apiFetch(
-                    "/api/reader/bookmarks?novelId=threadborn",
-                );
+                const data = await apiFetch("/api/reader/bookmarks?novelId=threadborn");
                 const bookmarks = data.bookmarks || [];
-                if (!bookmarks.length) {
-                    document.getElementById("bookmarks").textContent =
-                        "No bookmarks yet.";
-                    return;
-                }
-                document.getElementById("bookmarks").innerHTML = bookmarks
-                    .map(
-                        (item) =>
-                            `<div>• ${item.label || `${item.volume_id} ${item.chapter_id}`} (page ${Math.floor(item.scroll_position) + 1})</div>`,
-                    )
-                    .join("");
+                const el = document.getElementById("bookmarks");
+                if (!bookmarks.length) { el.textContent = "まだブックマークはありません。"; return; }
+                el.innerHTML = bookmarks.map((item) => `<div>• ${item.label || `${item.volume_id} ${item.chapter_id}`}（${Math.floor(item.scroll_position) + 1}ページ）</div>`).join("");
             }
 
             async function loadAnalytics() {
                 const data = await apiFetch("/api/reader/analytics");
                 const rows = data.volumes || [];
-                if (!rows.length) {
-                    document.getElementById("analytics").textContent =
-                        "No reading analytics yet.";
-                    return;
-                }
-                document.getElementById("analytics").innerHTML = rows
-                    .map(
-                        (row) =>
-                            `<div>• ${row.volume_id}: ${row.total_time}s (last read ${new Date(row.last_read_at).toLocaleString()})</div>`,
-                    )
-                    .join("");
+                const el = document.getElementById("analytics");
+                if (!rows.length) { el.textContent = "まだ読書履歴はありません。"; return; }
+                el.innerHTML = rows.map((row) => `<div>• ${row.volume_id}: ${row.total_time}秒（最終読書: ${new Date(row.last_read_at).toLocaleString("ja-JP")}）</div>`).join("");
             }
 
             (async () => {
                 try {
                     await loadProfile();
                     try {
-                        const settings = await apiFetch(
-                            "/api/user/profile?action=settings",
-                        );
+                        const settings = await apiFetch("/api/user/profile?action=settings");
                         const reader = settings.settings || {};
-                        document.getElementById("setting-theme").value =
-                            reader.readerTheme || "night";
-                        document.getElementById("setting-size").value = String(
-                            reader.readerSize || 18,
-                        );
+                        document.getElementById("setting-theme").value = reader.readerTheme || "night";
+                        document.getElementById("setting-size").value = String(reader.readerSize || 18);
                     } catch (error) {
-                        const local = JSON.parse(
-                            localStorage.getItem(
-                                "threadborn_reader_settings_cache",
-                            ) || "{}",
-                        );
-                        document.getElementById("setting-theme").value =
-                            local.readerTheme || "night";
-                        document.getElementById("setting-size").value = String(
-                            local.readerSize || 18,
-                        );
+                        const local = JSON.parse(localStorage.getItem("threadborn_reader_settings_cache") || "{}");
+                        document.getElementById("setting-theme").value = local.readerTheme || "night";
+                        document.getElementById("setting-size").value = String(local.readerSize || 18);
                     }
-                    try {
-                        await loadBookmarks();
-                    } catch (e) {
-                        const el = document.getElementById("bookmarks");
-                        if (el) el.textContent = "Could not load bookmarks.";
-                    }
-                    try {
-                        await loadAnalytics();
-                    } catch (e) {
-                        const el = document.getElementById("analytics");
-                        if (el) el.textContent = "Could not load analytics.";
-                    }
+                    try { await loadBookmarks(); } catch (e) { const el = document.getElementById("bookmarks"); if (el) el.textContent = "ブックマークを読み込めませんでした。"; }
+                    try { await loadAnalytics(); } catch (e) { const el = document.getElementById("analytics"); if (el) el.textContent = "読書履歴を読み込めませんでした。"; }
                 } catch (error) {
-                    metaEl.textContent = "Login required.";
-                    setMessage(profileStatus, "Please login first.", false);
+                    metaEl.textContent = "ログインが必要です。";
+                    setMessage(profileStatus, "先にログインしてください。", false);
                 }
             })();
         </script>

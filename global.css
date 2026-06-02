@@ -129,13 +129,46 @@ header {
 }
 
 .nav-row {
-    overflow-x: auto;
-    overflow-y: hidden;
     white-space: nowrap;
     padding: 2px;
     scrollbar-width: none;
     flex: 1 1 auto;
     min-width: 0;
+    /* Removed overflow:hidden to allow dropdowns */
+}
+
+/* Dropdown styling */
+.nav-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.nav-dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+    background: rgba(8, 10, 16, 0.95);
+    backdrop-filter: blur(20px);
+    min-width: 160px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 8px;
+    z-index: 100;
+    box-shadow: var(--shadow);
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-dropdown:hover .nav-dropdown-content {
+    display: flex;
+}
+
+.nav-dropdown-content .nav-btn {
+    text-align: left;
+    width: 100%;
+    justify-content: flex-start;
 }
 
 .nav-row::-webkit-scrollbar {

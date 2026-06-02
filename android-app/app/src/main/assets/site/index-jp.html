@@ -74,7 +74,7 @@
             href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"
             rel="stylesheet"
         />
-        <link rel="stylesheet" href="./global.css?v=54" />
+        <link rel="stylesheet" href="./global.css?v=55" />
         <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css"
@@ -103,132 +103,30 @@
                 </a>
 
                 <nav class="nav-row">
-                    <button
-                        class="nav-btn active"
-                        data-view="home"
-                        onclick="switchView('home')"
-                    >
-                        ホーム
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="volumes"
-                        onclick="switchView('volumes')"
-                    >
-                        巻
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="reactions"
-                        onclick="switchView('reactions')"
-                    >
-                        Discuss
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="chapters"
-                        onclick="switchView('chapters')"
-                    >
-                        チャプター
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="app"
-                        onclick="switchView('app')"
-                    >
-                        アプリ
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="community"
-                        onclick="switchView('community')"
-                    >
-                        コミュニティ
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="buy"
-                        onclick="switchView('buy')"
-                    >
-                        購入
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="characters"
-                        onclick="switchView('characters')"
-                    >
-                        キャラクター
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="powers"
-                        onclick="switchView('powers')"
-                    >
-                        能力
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="leaks"
-                        onclick="switchView('leaks')"
-                    >
-                        リーク
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="lore"
-                        onclick="switchView('lore')"
-                    >
-                        世界観
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="drawings"
-                        onclick="switchView('drawings')"
-                    >
-                        アート
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="manga"
-                        onclick="switchView('manga')"
-                    >
-                        漫画
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="search"
-                        onclick="switchView('search')"
-                    >
-                        🔍 検索
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="timeline"
-                        onclick="switchView('timeline')"
-                    >
-                        タイムライン
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="codex"
-                        onclick="switchView('codex')"
-                    >
-                        用語集
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="stats"
-                        onclick="switchView('stats')"
-                    >
-                        統計
-                    </button>
-                    <button
-                        class="nav-btn"
-                        data-view="credits"
-                        onclick="switchView('credits')"
-                    >
-                        クレジット
-                    </button>
+                    <button class="nav-btn active" data-view="home" onclick="switchView('home')">ホーム</button>
+                    <button class="nav-btn" data-view="volumes" onclick="switchView('volumes')">巻</button>
+                    <button class="nav-btn" data-view="reactions" onclick="switchView('reactions')">Discuss</button>
+                    <button class="nav-btn" data-view="chapters" onclick="switchView('chapters')">チャプター</button>
+                    <button class="nav-btn" data-view="buy" onclick="switchView('buy')">購入</button>
+                    
+                    <div class="nav-dropdown">
+                        <button class="nav-btn">もっと ▾</button>
+                        <div class="nav-dropdown-content">
+                            <button class="nav-btn" data-view="app" onclick="switchView('app')">アプリ</button>
+                            <button class="nav-btn" data-view="community" onclick="switchView('community')">コミュニティ</button>
+                            <button class="nav-btn" data-view="characters" onclick="switchView('characters')">キャラクター</button>
+                            <button class="nav-btn" data-view="powers" onclick="switchView('powers')">能力</button>
+                            <button class="nav-btn" data-view="leaks" onclick="switchView('leaks')">リーク</button>
+                            <button class="nav-btn" data-view="lore" onclick="switchView('lore')">世界観</button>
+                            <button class="nav-btn" data-view="drawings" onclick="switchView('drawings')">アート</button>
+                            <button class="nav-btn" data-view="manga" onclick="switchView('manga')">漫画</button>
+                            <button class="nav-btn" data-view="search" onclick="switchView('search')">🔍 検索</button>
+                            <button class="nav-btn" data-view="timeline" onclick="switchView('timeline')">タイムライン</button>
+                            <button class="nav-btn" data-view="codex" onclick="switchView('codex')">用語集</button>
+                            <button class="nav-btn" data-view="stats" onclick="switchView('stats')">統計</button>
+                            <button class="nav-btn" data-view="credits" onclick="switchView('credits')">クレジット</button>
+                        </div>
+                    </div>
                     <a class="nav-btn" id="nav-login" href="./login.html"
                         >ログイン</a
                     >
@@ -774,9 +672,12 @@
                             maxlength="1600"
                             placeholder="Message #threadborn-discuss"
                         ></textarea>
-                        <button class="btn btn-primary" type="submit">
-                            送信
-                        </button>
+                        <div class="discuss-action-row" style="display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 8px;">
+                            <input type="file" id="reaction-image" accept="image/png, image/jpeg, image/gif, image/webp" style="flex: 1;" />
+                            <button class="btn btn-primary" type="submit">
+                                送信
+                            </button>
+                        </div>
                     </form>
                     <div id="reaction-status" class="toolbar-note">
                         読者チャットを読み込み中...
@@ -2299,7 +2200,6 @@
                     status: "完結",
                     summary:
                         "ヨノは東京で死に、バイオレットによってルメラへ引きずり込まれ、シェードの債務編を生き延び、森に立つヴェルコールの封印牢を見つける。",
-                    coverArt: "./assets/volume1-cover.png",
                     chips: [
                         "転生",
                         "シェードの債務",
@@ -2315,7 +2215,6 @@
                     status: "連載中",
                     summary:
                         "ヨノ、バイオレット、ミリカ、メリン、ライラは旧コヴナントの封印へ戻り、ヴェルコールが目覚め、新章ごとに前の天井が次の床になる。",
-                    coverArt: "./assets/volume2-cover.jpg",
                     chips: ["ヴェルコール", "扉編", "章ごとの上昇", "ロマンス"],
                     actionLabel: "第2巻を読む",
                     action: "openVolumeStart('第2巻')",
@@ -8334,6 +8233,7 @@
               </div>
               ${ping ? `<div class="chat-ping">↳ ${ping}</div>` : ''}
               <div class="chat-body ${contentClass}" ${contentClass ? "onclick=\"this.classList.add('revealed')\"" : ""}>${content || "<em>No message text.</em>"}</div>
+              ${post.image_url ? `<img src="${safeImageUrl(post.image_url)}" class="chat-embed-image" style="max-width:300px; max-height:300px; border-radius:8px; display:block; margin:8px 0;" />` : ''}
               <div class="discord-message-actions">
                 <button class="btn btn-ghost" type="button" onclick="toggleCommunityLike('${postId}')">${post.liked_by_me ? "Unlike" : "Like"} • ${Number(post.like_count || 0)}</button>
                 <button class="btn btn-ghost" type="button" onclick="focusDiscussReply('${postId}')">Reply</button>
@@ -8364,6 +8264,11 @@
                 return `<article class="post-comment"><strong>${escapeHtml(item.title || "Post")}</strong><br><span class="muted">${escapeHtml(item.category || "post")} • ${item.createdAt ? formatCommunityTime(item.createdAt) : ""}</span><br>${escapeHtml(item.content || "")}</article>`;
             }
 
+            function renderPublicProfileHistory(item) {
+                const target = item.chapterId ? `${escapeHtml(item.volumeId)} • ${escapeHtml(item.chapterId)}` : escapeHtml(item.volumeId || "Volume");
+                return `<article class="post-comment"><strong>${target}</strong><br><span class="muted">${item.lastReadAt ? formatCommunityTime(item.lastReadAt) : "recently"}</span></article>`;
+            }
+
             async function openPublicProfile(username) {
                 const clean = String(username || "").replace(/[^A-Za-z0-9_]/g, "");
                 if (!clean) return;
@@ -8376,20 +8281,30 @@
                     const user = data.user || {};
                     const reactions = data.reactions || [];
                     const posts = data.posts || [];
+                    const history = data.readingHistory || [];
                     if (heading) heading.textContent = `${user.username || clean}'s Profile`;
                     if (card) {
+                        const bannerHtml = user.bannerUrl ? `<div class="public-profile-banner" style="background-image: url('${safeImageUrl(user.bannerUrl)}');"></div>` : '';
+                        const bioHtml = user.bio ? `<p class="public-profile-bio">${escapeHtml(user.bio)}</p>` : '';
                         card.innerHTML = `
-                          <div class="public-profile-hero">
-                            <img src="${safeImageUrl(user.avatarUrl)}" alt="${escapeHtml(user.username || clean)} avatar" />
+                          ${bannerHtml}
+                          <div class="public-profile-hero" ${user.bannerUrl ? 'style="margin-top: -40px;"' : ''}>
+                            <img src="${safeImageUrl(user.avatarUrl)}" alt="${escapeHtml(user.username || clean)} avatar" style="border: 4px solid var(--black);" />
                             <div>
                               <h3 style="margin:0;">${escapeHtml(user.username || clean)}${renderNameBadges(user)}</h3>
                               <p class="muted" style="margin:6px 0 0;">Joined ${user.createdAt ? formatCommunityTime(user.createdAt) : "recently"}</p>
                             </div>
                           </div>
+                          ${bioHtml}
                           <div class="public-profile-stats">
+                            <span>${history.length} chapters read</span>
                             <span>${reactions.length} reader comments</span>
                             <span>${posts.length} community posts</span>
                             <span>${escapeHtml(user.role || "reader")}</span>
+                          </div>
+                          <div>
+                            <h3>Reading History</h3>
+                            <div class="profile-feed-grid">${history.length ? history.map(renderPublicProfileHistory).join("") : `<div class="muted">No reading history available.</div>`}</div>
                           </div>
                           <div>
                             <h3>Reader Activity</h3>
@@ -8532,10 +8447,11 @@
                     document.getElementById("reaction-category")?.value ||
                     "chat";
                 const textEl = document.getElementById("reaction-text");
+                const imageEl = document.getElementById("reaction-image");
                 const content = (textEl?.value || "").trim();
                 const status = document.getElementById("reaction-status");
-                if (!content) {
-                    if (status) status.textContent = "メッセージ本文が必要です。";
+                if (!content && (!imageEl || !imageEl.files || !imageEl.files[0])) {
+                    if (status) status.textContent = "メッセージ本文または画像が必要です。";
                     return;
                 }
                 const pingLabel =
@@ -8546,6 +8462,30 @@
                         : "General chat";
                 if (status) status.textContent = "送信中...";
                 try {
+                    let uploadedImageUrl = "";
+                    if (imageEl && imageEl.files && imageEl.files[0]) {
+                        if (status) status.textContent = "画像をアップロード中...";
+                        const file = imageEl.files[0];
+                        const reader = new FileReader();
+                        const base64Data = await new Promise((resolve, reject) => {
+                            reader.onload = () => resolve(reader.result.split(",")[1]);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(file);
+                        });
+                        const uploadRes = await apiJson("/api/upload/avatar", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                purpose: "community",
+                                contentType: file.type,
+                                base64: base64Data
+                            })
+                        });
+                        if (uploadRes && uploadRes.url) {
+                            uploadedImageUrl = uploadRes.url;
+                        }
+                    }
+
+                    if (status) status.textContent = "メッセージを送信中...";
                     await apiJson("/api/reader/community", {
                         method: "POST",
                         body: JSON.stringify({
@@ -8553,9 +8493,11 @@
                             title: pingLabel,
                             category,
                             content,
+                            imageUrl: uploadedImageUrl
                         }),
                     });
                     if (textEl) textEl.value = "";
+                    if (imageEl) imageEl.value = "";
                     if (status) status.textContent = "";
                     await setReactionTarget(
                         target.targetType,
@@ -11768,10 +11710,8 @@
                     return volumeCoversPromises[volumeStr];
                 }
 
-                let coverPath = "./assets/volume1-cover.png";
-                if (volumeStr === "第2巻") {
-                    coverPath = "./assets/volume2-cover.jpg";
-                }
+                let coverPath = null;
+                if (!coverPath) return null;
 
                 volumeCoversPromises[volumeStr] = (async () => {
                     const response = await fetch(coverPath);
@@ -13036,8 +12976,8 @@
             }
         </style>
 
-        <script src="./assets/notifications.js?v=54"></script>
-        <script src="./assets/phase1-client.js?v=54"></script>
+        <script src="./assets/notifications.js?v=55"></script>
+        <script src="./assets/phase1-client.js?v=55"></script>
         <script>
             if ("serviceWorker" in navigator) {
                 let newWorker;

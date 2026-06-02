@@ -1643,7 +1643,7 @@ return async (req, res) => {
       ["title", "content"],
     );
 
-    if (payloadWithSignals.moderation.filtered) {
+    if (payloadWithSignals.moderation.filtered || imageUrl) {
       const request = await createModerationRequest(
         session.user_id,
         "community_post",
@@ -1654,7 +1654,7 @@ return async (req, res) => {
         {
           pending: true,
           requestId: request.id,
-          message: "Message held for review due to inappropriate language.",
+          message: imageUrl ? "Post submitted with image for review." : "Message held for review due to inappropriate language.",
         },
         202,
       );
@@ -2574,6 +2574,25 @@ async function loadPostsForUser(userId) {
   return postRows(result.rows);
 }
 
+async function loadReadingHistoryForUser(userId) {
+  const result = await pool
+    .query(
+      `select volume_id, chapter_id, last_read_at
+       from reading_analytics
+       where user_id = $1 and novel_id = 'threadborn'
+       order by last_read_at desc
+       limit 50`,
+      [userId],
+    )
+    .catch(() => ({ rows: [] }));
+  return result.rows.map(row => ({
+    volumeId: row.volume_id,
+    chapterId: row.chapter_id,
+    lastReadAt: row.last_read_at,
+  }));
+}
+
+
 return async (req, res) => {
   if (allowCors(req, res)) {
     return;
@@ -2604,6 +2623,7 @@ return async (req, res) => {
       user: publicUser(user),
       reactions: await loadReactionsForUser(user.id),
       posts: await loadPostsForUser(user.id),
+      readingHistory: await loadReadingHistoryForUser(user.id),
     });
     return;
   }
