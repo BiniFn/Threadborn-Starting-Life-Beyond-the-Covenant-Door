@@ -141,7 +141,9 @@ function isAllowedCommunityImageUrl(value) {
     if (parsed.protocol !== "https:") return false;
     return (
       parsed.hostname === "blob.vercel-storage.com" ||
-      parsed.hostname.endsWith(".public.blob.vercel-storage.com")
+      parsed.hostname.endsWith(".public.blob.vercel-storage.com") ||
+      parsed.hostname === "media.tenor.com" ||
+      parsed.hostname.endsWith(".tenor.com")
     );
   } catch {
     return false;
