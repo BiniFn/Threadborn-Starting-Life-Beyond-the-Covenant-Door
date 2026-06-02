@@ -8240,8 +8240,8 @@
                 ${deleteBtn}
               </div>
               ${ping ? `<div class="chat-ping">↳ ${ping}</div>` : ''}
-              <div class="chat-body ${contentClass}" ${contentClass ? "onclick=\"this.classList.add('revealed')\"" : ""}>${content || "<em>No message text.</em>"}</div>
-              ${post.image_url ? `<img src="${safeImageUrl(post.image_url)}" class="chat-embed-image" style="max-width:300px; max-height:300px; border-radius:8px; display:block; margin:8px 0;" />` : ''}
+              ${content ? `<div class="chat-body ${contentClass}" ${contentClass ? "onclick=\"this.classList.add('revealed')\"" : ""}>${content}</div>` : ""}
+              ${post.image_url === "pending" ? `<div class="chat-embed-image pending-image" style="max-width:300px; padding: 16px; border: 2px dashed var(--accent, #66b2ff); border-radius: 8px; text-align: center; color: var(--accent, #66b2ff); font-weight: bold; margin: 8px 0; background: rgba(0,0,0,0.2);">画像は審査中です</div>` : (post.image_url ? `<img src="${safeImageUrl(post.image_url)}" class="chat-embed-image" style="max-width:300px; max-height:300px; border-radius:8px; display:block; margin:8px 0;" />` : '')}
               <div class="discord-message-actions">
                 <button class="btn btn-ghost" type="button" onclick="toggleCommunityLike('${postId}')">${post.liked_by_me ? "Unlike" : "Like"} • ${Number(post.like_count || 0)}</button>
                 <button class="btn btn-ghost" type="button" onclick="focusDiscussReply('${postId}')">Reply</button>

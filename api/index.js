@@ -393,6 +393,22 @@ async function approveModerationRequest(request) {
     return;
   }
 
+  if (request.request_type === "community_post_image") {
+    if (payload.imageUrl && !isAllowedCommunityImageUrl(payload.imageUrl)) {
+      throw new Error("Invalid community image URL in request");
+    }
+    await pool.query(
+      `update posts set image_url = $1, updated_at = now() where id = $2`,
+      [payload.imageUrl, request.target_id]
+    );
+    // Notification for approval
+    await pool.query(
+      `insert into notifications (user_id, type, title, body) values ($1, 'moderation', 'Image Approved', 'Your image attached to a community post was approved.')`,
+      [request.user_id]
+    );
+    return;
+  }
+
   if (request.request_type === "community_comment") {
     await pool.query(
       `insert into comments (post_id, user_id, content, created_at, updated_at)
@@ -416,10 +432,20 @@ async function moderateRequest(requestId, reviewer, decision, note = "") {
   if (decision === "approved") {
     await approveModerationRequest(request);
   } else if (decision === "rejected") {
+    if (request.request_type === "community_post_image") {
+      await pool.query(
+        `update posts set image_url = null, updated_at = now() where id = $1`,
+        [request.target_id]
+      );
+      await pool.query(
+        `insert into notifications (user_id, type, title, body) values ($1, 'moderation', 'Image Declined', 'Your image attached to a community post was declined.')`,
+        [request.user_id]
+      );
+    }
     const pendingUrl = String(
       request.request_type === "avatar_update"
         ? request.payload?.avatarUrl || ""
-        : request.request_type === "community_post"
+        : request.request_type === "community_post" || request.request_type === "community_post_image"
           ? request.payload?.imageUrl || ""
           : "",
     );
@@ -1645,7 +1671,7 @@ return async (req, res) => {
       ["title", "content"],
     );
 
-    if (payloadWithSignals.moderation.filtered || imageUrl) {
+    if (payloadWithSignals.moderation.filtered) {
       const request = await createModerationRequest(
         session.user_id,
         "community_post",
@@ -1656,22 +1682,34 @@ return async (req, res) => {
         {
           pending: true,
           requestId: request.id,
-          message: imageUrl ? "Post submitted with image for review." : "Message held for review due to inappropriate language.",
+          message: "Message held for review due to inappropriate language.",
         },
         202,
       );
     } else {
+      const postImageUrl = imageUrl ? "pending" : null;
       const { rows } = await pool.query(
         `insert into posts (user_id, title, content, image_url, category, created_at, updated_at)
          values ($1,$2,$3,$4,$5,now(),now()) returning id, created_at`,
-        [session.user_id, title, content, imageUrl || null, category]
+        [session.user_id, title, content, postImageUrl, category]
       );
+      const newPost = rows[0];
+
+      if (imageUrl) {
+        await createModerationRequest(
+          session.user_id,
+          "community_post_image",
+          { imageUrl },
+          { targetTable: "posts", targetId: newPost.id }
+        );
+      }
+
       success(
         res,
         {
           pending: false,
-          post: rows[0],
-          message: "Posted successfully.",
+          post: newPost,
+          message: imageUrl ? "Message posted. Image is held for review." : "Posted successfully.",
         },
         201,
       );
