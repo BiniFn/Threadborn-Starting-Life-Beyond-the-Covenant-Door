@@ -8541,10 +8541,7 @@
 
             function initializeReaderReactions() {
                 populateReactionTargets();
-                const first = volumes[0];
-                if (first) {
-                    setReactionTarget("volume", first.id || "Volume 1");
-                }
+                setReactionTarget("chat", "General", "");
                 loadReactionSummaries();
             }
 

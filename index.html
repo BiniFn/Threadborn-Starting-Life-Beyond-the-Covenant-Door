@@ -7558,7 +7558,7 @@
                 const imageEl = document.getElementById("reaction-image");
                 const content = (textEl?.value || "").trim();
                 const status = document.getElementById("reaction-status");
-                if (!content && (!imageEl || !imageEl.files || !imageEl.files[0])) {
+                if (!content && (!imageEl || !imageEl.files || !imageEl.files[0]) && !window.selectedGifUrl) {
                     if (status) status.textContent = "Message text or image is required.";
                     return;
                 }
@@ -7570,8 +7570,8 @@
                         : "General chat";
                 if (status) status.textContent = "Sending...";
                 try {
-                    let uploadedImageUrl = "";
-                    if (imageEl && imageEl.files && imageEl.files[0]) {
+                    let uploadedImageUrl = window.selectedGifUrl || "";
+                    if (!uploadedImageUrl && imageEl && imageEl.files && imageEl.files[0]) {
                         if (status) status.textContent = "Uploading image...";
                         const file = imageEl.files[0];
                         const reader = new FileReader();
@@ -7606,6 +7606,7 @@
                     });
                     if (textEl) textEl.value = "";
                     if (imageEl) imageEl.value = "";
+                    window.selectedGifUrl = null;
                     if (status) status.textContent = "";
                     await setReactionTarget(
                         target.targetType,
@@ -7640,10 +7641,7 @@
 
             function initializeReaderReactions() {
                 populateReactionTargets();
-                const first = volumes[0];
-                if (first) {
-                    setReactionTarget("volume", first.id || "Volume 1");
-                }
+                setReactionTarget("chat", "General", "");
                 loadReactionSummaries();
             }
 
