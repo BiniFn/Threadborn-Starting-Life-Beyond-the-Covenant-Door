@@ -1634,7 +1634,7 @@ return async (req, res) => {
     }
     if (
       !title ||
-      !content ||
+      (!content && !imageUrl) ||
       !["chat", "fan_art", "theory", "spoiler"].includes(category)
     ) {
       fail(res, 400, "Invalid post payload");
