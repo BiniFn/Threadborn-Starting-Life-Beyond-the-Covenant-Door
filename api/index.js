@@ -14,6 +14,7 @@ const {
   createSession,
   destroySession,
   getSession,
+  refreshSession,
   requireSession,
   validateCsrf,
   shouldExposeSessionToken,
@@ -592,6 +593,9 @@ return async (req, res) => {
       fail(res, 401, "Unauthorized");
       return;
     }
+    const expiresAt = await refreshSession(session.session_id).catch(
+      () => session.expires_at,
+    );
     success(res, {
       user: {
         id: session.user_id,
@@ -602,6 +606,7 @@ return async (req, res) => {
         role: session.role,
       },
       csrfToken: session.csrf_token,
+      expiresAt,
     });
   } catch (error) {
     fail(res, 500, "Service unavailable");
@@ -1363,6 +1368,51 @@ function cleanText(value, max = 2000) {
     .slice(0, max);
 }
 
+let communityCompatibilityReady = false;
+
+async function ensureCommunityCompatibility() {
+  if (communityCompatibilityReady) {
+    return;
+  }
+  await pool.query(`
+    alter table users
+      add column if not exists community_banned_until timestamptz,
+      add column if not exists community_ban_reason text
+  `);
+  await pool.query(`
+    alter table posts
+      drop constraint if exists posts_category_check
+  `);
+  await pool.query(`
+    alter table posts
+      add constraint posts_category_check
+      check (category in ('chat', 'fan_art', 'theory', 'spoiler')) not valid
+  `);
+  await pool.query(`
+    create table if not exists comments (
+      id uuid primary key default gen_random_uuid(),
+      post_id uuid not null references posts(id) on delete cascade,
+      user_id uuid not null references users(id) on delete cascade,
+      content text not null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )
+  `);
+  await pool.query(`
+    create table if not exists likes (
+      user_id uuid not null references users(id) on delete cascade,
+      post_id uuid not null references posts(id) on delete cascade,
+      created_at timestamptz not null default now(),
+      primary key (user_id, post_id)
+    )
+  `);
+  await pool.query(
+    "create index if not exists idx_comments_post_created on comments(post_id, created_at asc)",
+  );
+  await pool.query("create index if not exists idx_likes_post on likes(post_id)");
+  communityCompatibilityReady = true;
+}
+
 return async (req, res) => {
   try {
     if (allowCors(req, res)) {
@@ -1380,6 +1430,7 @@ return async (req, res) => {
       return;
     }
     await pool.ensureMigrations();
+    await ensureCommunityCompatibility();
 
   const meResult = session
     ? await pool.query(

@@ -74,7 +74,7 @@
             href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"
             rel="stylesheet"
         />
-        <link rel="stylesheet" href="./global.css?v=52" />
+        <link rel="stylesheet" href="./global.css?v=53" />
         <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css"
@@ -8573,27 +8573,78 @@
                 loadReactionSummaries();
             }
 
-            async function apiJson(path, options = {}) {
+            async function refreshApiAuth() {
+                const headers = buildApiHeaders();
+                delete headers["X-CSRF-Token"];
+                const response = await fetch(`${apiBase}/api/auth/me`, {
+                    method: "GET",
+                    credentials: "include",
+                    cache: "no-store",
+                    headers,
+                });
+                const json = await response.json().catch(() => ({}));
+                if (!response.ok || !json.success) {
+                    return false;
+                }
+                const data = json.data || {};
+                if (data.csrfToken) {
+                    localStorage.setItem("threadborn_csrf_token", data.csrfToken);
+                }
+                if (data.sessionToken) {
+                    localStorage.setItem("threadborn_app_session", data.sessionToken);
+                }
+                if (data.user) {
+                    localStorage.setItem(
+                        activeUserKey,
+                        JSON.stringify({
+                            id: data.user.id,
+                            email: data.user.email,
+                            displayName: data.user.username || data.user.displayName,
+                            avatarUrl: data.user.avatarUrl,
+                            verified: data.user.verified,
+                            role: data.user.role,
+                        }),
+                    );
+                    renderUserChip();
+                }
+                return Boolean(data.csrfToken);
+            }
+
+            function shouldRetryApiAuth(status, message) {
+                return status === 403 && /csrf|session/i.test(String(message || ""));
+            }
+
+            async function apiJson(path, options = {}, canRetry = true) {
                 const headers = buildApiHeaders(options.headers || {});
                 const response = await fetch(
                     `${apiBase}${path}`,
                     Object.assign({}, options, {
                         credentials: "include",
+                        cache: "no-store",
                         headers,
                     }),
                 );
                 const json = await response.json().catch(() => ({}));
                 if (!response.ok || !json.success) {
+                    const message =
+                        json.error ||
+                        (response.status === 403
+                            ? "セッションが切れました。もう一度ログインしてください。"
+                            : `リクエストに失敗しました (${response.status || "network"})`);
+                    if (
+                        canRetry &&
+                        shouldRetryApiAuth(response.status, message) &&
+                        (await refreshApiAuth())
+                    ) {
+                        return apiJson(path, options, false);
+                    }
                     if (response.status === 401) {
                         throw new Error("ログインが必要です");
                     }
                     if (response.status === 403) {
-                        throw new Error(json.error || "セッションが切れました。もう一度ログインしてください。");
+                        throw new Error(message);
                     }
-                    throw new Error(
-                        json.error ||
-                            `リクエストに失敗しました (${response.status || "network"})`,
-                    );
+                    throw new Error(message);
                 }
                 return json.data;
             }
@@ -10731,7 +10782,7 @@
                 highlightSpokenRange(segment.start, Math.min(24, segment.end - segment.start));
 
                 try {
-                    const response = await fetch("/api/reader/reactions?action=tts", {
+                    const response = await fetch(`${apiBase}/api/reader/reactions?action=tts`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         signal: ttsAbortController.signal,
@@ -12961,8 +13012,8 @@
             }
         </style>
 
-        <script src="./assets/notifications.js?v=52"></script>
-        <script src="./assets/phase1-client.js?v=52"></script>
+        <script src="./assets/notifications.js?v=53"></script>
+        <script src="./assets/phase1-client.js?v=53"></script>
         <script>
             if ("serviceWorker" in navigator) {
                 let newWorker;

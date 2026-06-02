@@ -42,7 +42,7 @@
   const QUEUE_KEY = "threadborn_sync_queue_v1";
   const FALLBACK_PROGRESS_KEY = "threadborn_reader_progress";
   const APP_SESSION_KEY = "threadborn_app_session";
-  let csrfToken = "";
+  let csrfToken = localStorage.getItem("threadborn_csrf_token") || "";
   let authUser = null;
   let bookmarkCache = [];
   let analyticsBuffer = [];
@@ -79,7 +79,66 @@
     return next;
   }
 
-  async function apiFetch(path, options = {}) {
+  function rememberAuthData(data) {
+    if (!data || typeof data !== "object") {
+      return;
+    }
+    if (data.csrfToken) {
+      csrfToken = data.csrfToken;
+      localStorage.setItem("threadborn_csrf_token", data.csrfToken);
+    }
+    if (data.sessionToken) {
+      localStorage.setItem(APP_SESSION_KEY, data.sessionToken);
+    }
+    if (data.user) {
+      authUser = data.user;
+      localStorage.setItem(
+        "threadborn_user",
+        JSON.stringify({
+          id: data.user.id,
+          email: data.user.email,
+          displayName: data.user.username || data.user.displayName,
+          avatarUrl: data.user.avatarUrl,
+          verified: data.user.verified,
+          role: data.user.role,
+        }),
+      );
+    }
+  }
+
+  function makeApiError(response, payload) {
+    const err = new Error(payload.error || "Request failed");
+    err.status = response.status || 500;
+    err.payload = payload;
+    return err;
+  }
+
+  function isRecoverableCsrfError(error) {
+    return (
+      error &&
+      error.status === 403 &&
+      /csrf|session/i.test(String(error.message || ""))
+    );
+  }
+
+  async function refreshAuthSession() {
+    const headers = buildAuthHeaders();
+    delete headers["X-CSRF-Token"];
+    const response = await fetch(apiPath("/api/auth/me"), {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+      headers,
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || !payload.success) {
+      return false;
+    }
+    rememberAuthData(payload.data);
+    return Boolean(payload.data?.csrfToken);
+  }
+
+  async function apiFetchOnce(path, options = {}) {
     const headers = buildAuthHeaders(options.headers || {});
     if (csrfToken) {
       headers["X-CSRF-Token"] = csrfToken;
@@ -99,12 +158,23 @@
       payload = { success: false, error: "Invalid response" };
     }
     if (!response.ok || !payload.success) {
-      const err = new Error(payload.error || "Request failed");
-      err.status = response.status || 500;
-      throw err;
+      throw makeApiError(response, payload);
     }
     return payload.data;
   }
+
+  async function apiFetch(path, options = {}) {
+    try {
+      return await apiFetchOnce(path, options);
+    } catch (error) {
+      if (isRecoverableCsrfError(error) && (await refreshAuthSession())) {
+        return apiFetchOnce(path, options);
+      }
+      throw error;
+    }
+  }
+
+  window.apiFetch = apiFetch;
 
   function saveQueue(queue) {
     localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
@@ -470,20 +540,8 @@
   async function hydrateAuth() {
     try {
       const data = await apiFetch("/api/auth/me", { method: "GET" });
-      authUser = data.user;
-      csrfToken = data.csrfToken || "";
+      rememberAuthData(data);
       authConfigMissing = false;
-      localStorage.setItem(
-        "threadborn_user",
-        JSON.stringify({
-          id: authUser.id,
-          email: authUser.email,
-          displayName: authUser.username,
-          avatarUrl: authUser.avatarUrl,
-          verified: authUser.verified,
-          role: authUser.role,
-        }),
-      );
     } catch (error) {
       const isAuthError = error.status === 401 || error.status === 403;
       if (isAuthError) {
