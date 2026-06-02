@@ -2428,7 +2428,6 @@
                     status: "Complete",
                     summary:
                         "Yono dies in Tokyo, gets dragged into Lumera by Violet, survives the Shade debt arc, and finds Velkor's sealed prison standing alone in the forest.",
-                    coverArt: "./assets/volume1-cover.png",
                     chips: [
                         "reincarnation",
                         "shade debt",
@@ -2444,7 +2443,6 @@
                     status: "Active",
                     summary:
                         "Yono, Violet, Mirika, Meryn, and Lyra return to the Old Covenant seal, Velkor wakes up, and every new chapter turns Yono's last ceiling into the floor of the next one.",
-                    coverArt: "./assets/volume2-cover.jpg",
                     chips: [
                         "Velkor",
                         "door arc",
@@ -10812,10 +10810,8 @@
                     return volumeCoversPromises[volumeStr];
                 }
 
-                let coverPath = "./assets/volume1-cover.png";
-                if (volumeStr === "Volume 2" || volumeStr === "第2巻") {
-                    coverPath = "./assets/volume2-cover.jpg";
-                } else if (
+                let coverPath = null;
+                if (
                     volumeStr === "EX Novel Vol 1" ||
                     volumeStr === "EX小説 第1巻"
                 ) {
@@ -10823,6 +10819,8 @@
                         ? "./assets/threadborn-logo-jp-wide.png"
                         : "./assets/threadborn-logo-en-new.png";
                 }
+
+                if (!coverPath) return null;
 
                 volumeCoversPromises[volumeStr] = (async () => {
                     const response = await fetch(coverPath);

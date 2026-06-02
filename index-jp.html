@@ -2299,7 +2299,6 @@
                     status: "完結",
                     summary:
                         "ヨノは東京で死に、バイオレットによってルメラへ引きずり込まれ、シェードの債務編を生き延び、森に立つヴェルコールの封印牢を見つける。",
-                    coverArt: "./assets/volume1-cover.png",
                     chips: [
                         "転生",
                         "シェードの債務",
@@ -2315,7 +2314,6 @@
                     status: "連載中",
                     summary:
                         "ヨノ、バイオレット、ミリカ、メリン、ライラは旧コヴナントの封印へ戻り、ヴェルコールが目覚め、新章ごとに前の天井が次の床になる。",
-                    coverArt: "./assets/volume2-cover.jpg",
                     chips: ["ヴェルコール", "扉編", "章ごとの上昇", "ロマンス"],
                     actionLabel: "第2巻を読む",
                     action: "openVolumeStart('第2巻')",
@@ -11768,10 +11766,8 @@
                     return volumeCoversPromises[volumeStr];
                 }
 
-                let coverPath = "./assets/volume1-cover.png";
-                if (volumeStr === "第2巻") {
-                    coverPath = "./assets/volume2-cover.jpg";
-                }
+                let coverPath = null;
+                if (!coverPath) return null;
 
                 volumeCoversPromises[volumeStr] = (async () => {
                     const response = await fetch(coverPath);
