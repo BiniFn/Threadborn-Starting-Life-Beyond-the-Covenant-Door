@@ -15,6 +15,9 @@ threadborn-remotion-trailer/.DS_Store
 /build/
 /dist/
 /*.spec
+node_modules/
+.next/
+out/
 
 __pycache__/
 *.pyc

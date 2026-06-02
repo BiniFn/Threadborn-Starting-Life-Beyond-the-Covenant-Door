@@ -58,13 +58,12 @@ function parseSimpleCookies(req) {
 }
 
 function sanitizeOAuthReturnTo(value) {
-  const fallback = "/index.html";
+  const fallback = "/";
   const raw = String(value || fallback).trim();
   if (!raw || raw.startsWith("//")) return fallback;
   try {
     const parsed = new URL(raw, "https://threadborn.local");
     if (parsed.origin !== "https://threadborn.local") return fallback;
-    if (!parsed.pathname.endsWith(".html")) return fallback;
     if (parsed.pathname.includes("/api/")) return fallback;
     return `${parsed.pathname}${parsed.search || ""}${parsed.hash || ""}`;
   } catch {
