@@ -168,27 +168,7 @@
                 </nav>
 
                 <!-- Notification Bell -->
-                <!-- Push notification enable button -->
-                <button
-                    id="push-enable-btn"
-                    onclick="requestPushPermission()"
-                    style="
-                        display: none;
-                        background: none;
-                        border: 1px solid rgba(255, 255, 255, 0.1);
-                        color: var(--mist);
-                        font-size: 12px;
-                        padding: 6px 12px;
-                        border-radius: 999px;
-                        cursor: pointer;
-                        transition: 0.2s;
-                        font-family: &quot;Space Mono&quot;, monospace;
-                        margin-right: 6px;
-                    "
-                    title="Enable push notifications"
-                >
-                    🔔 <span class="push-label">Enable Notifications</span>
-                </button>
+
                 <div
                     id="notif-bell"
                     style="position: relative; display: none; margin-right: 8px"
@@ -251,14 +231,37 @@
                                 padding: 12px 16px;
                                 border-bottom: 1px solid
                                     rgba(255, 255, 255, 0.08);
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <span style="
                                 font-family: &quot;Space Mono&quot;, monospace;
                                 font-size: 11px;
                                 letter-spacing: 0.1em;
                                 text-transform: uppercase;
                                 color: var(--mist);
-                            "
-                        >
-                            Notifications
+                            ">Notifications</span>
+                            <button
+                                id="push-enable-btn"
+                                onclick="requestPushPermission()"
+                                style="
+                                    display: none;
+                                    background: rgba(138, 43, 226, 0.15);
+                                    border: 1px solid rgba(138, 43, 226, 0.4);
+                                    color: #c4b5fd;
+                                    font-size: 10px;
+                                    padding: 4px 8px;
+                                    border-radius: 4px;
+                                    cursor: pointer;
+                                    transition: 0.2s;
+                                    font-family: &quot;Space Mono&quot;, monospace;
+                                "
+                                title="Enable push notifications"
+                            >
+                                Enable
+                            </button>
                         </div>
                         <div id="notif-list" style="padding: 8px 0"></div>
                     </div>
@@ -709,16 +712,24 @@
                             ></select>
                         </div>
                         <div id="comment-list" class="comment-list discord-message-list"></div>
-                        <textarea
-                            id="reaction-text"
-                            maxlength="1600"
-                            placeholder="Message #threadborn-discuss"
-                        ></textarea>
-                        <div class="discuss-action-row" style="display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 8px;">
-                            <input type="file" id="reaction-image" accept="image/png, image/jpeg, image/gif, image/webp" style="flex: 1;" />
-                            <button class="btn btn-primary" type="submit">
-                                Send Message
+                        <div class="chat-input-wrapper" style="display: flex; gap: 8px; align-items: flex-end; margin-top: 8px; position: relative;">
+                            <button type="button" class="chat-action-btn" id="chat-attach-btn" aria-label="Attach file" title="Attach Image">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                             </button>
+                            <button type="button" class="chat-action-btn" id="chat-gif-btn" aria-label="Add GIF" title="Search GIFs" style="font-size: 11px; font-weight: bold;">GIF</button>
+                            <div style="flex: 1; position: relative;">
+                                <textarea
+                                    id="reaction-text"
+                                    maxlength="1600"
+                                    placeholder="Message #threadborn-discuss"
+                                    class="chat-textarea"
+                                    rows="1"
+                                ></textarea>
+                            </div>
+                            <button class="chat-send-btn" type="submit" aria-label="Send Message">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            </button>
+                            <input type="file" id="reaction-image" accept="image/png, image/jpeg, image/gif, image/webp" style="display: none;" />
                         </div>
                     </form>
                     <div id="reaction-status" class="toolbar-note">
@@ -7306,9 +7317,9 @@
                         const bioHtml = user.bio ? `<p class="public-profile-bio">${escapeHtml(user.bio)}</p>` : '';
                         card.innerHTML = `
                           ${bannerHtml}
-                          <div class="public-profile-hero" ${user.bannerUrl ? 'style="margin-top: -40px;"' : ''}>
-                            <img src="${safeImageUrl(user.avatarUrl)}" alt="${escapeHtml(user.username || clean)} avatar" style="border: 4px solid var(--black);" />
-                            <div>
+                          <div class="public-profile-hero" style="align-items: flex-start; margin-top: ${user.bannerUrl ? '-40px' : '0'};">
+                            <img src="${safeImageUrl(user.avatarUrl)}" alt="${escapeHtml(user.username || clean)} avatar" style="border: 4px solid var(--black); width: 80px; height: 80px; position: relative; z-index: 2;" />
+                            <div style="margin-top: ${user.bannerUrl ? '40px' : '0'};">
                               <h3 style="margin:0;">${escapeHtml(user.username || clean)}${renderNameBadges(user)}</h3>
                               <p class="muted" style="margin:6px 0 0;">Joined ${user.createdAt ? formatCommunityTime(user.createdAt) : "recently"}</p>
                             </div>
@@ -7453,6 +7464,84 @@
                 const chapter = chapters[index];
                 if (!chapter) return;
                 openReactionTarget("chapter", chapter.volume, chapter.chapter);
+            }
+
+            async function submitCommunityReaction(event) {
+                event.preventDefault();
+                const targetRaw = parseReactionTarget(
+                    document.getElementById("reaction-target")?.value,
+                );
+                // If no target selected, use a general chat sentinel
+                const target = targetRaw || { targetType: "general", volumeId: "general-chat", chapterId: "" };
+                const category =
+                    document.getElementById("reaction-category")?.value ||
+                    "chat";
+                const textEl = document.getElementById("reaction-text");
+                const imageEl = document.getElementById("reaction-image");
+                const content = (textEl?.value || "").trim();
+                const status = document.getElementById("reaction-status");
+                if (!content && (!imageEl || !imageEl.files || !imageEl.files[0]) && !window.selectedGifUrl) {
+                    if (status) status.textContent = "Message text or image is required.";
+                    return;
+                }
+                const pingLabel =
+                    targetRaw
+                        ? (target.targetType === "chapter"
+                            ? `${target.volumeId} • ${target.chapterId}`
+                            : target.volumeId)
+                        : "General chat";
+                if (status) status.textContent = "Sending...";
+                try {
+                    let uploadedImageUrl = window.selectedGifUrl || "";
+                    if (!uploadedImageUrl && imageEl && imageEl.files && imageEl.files[0]) {
+                        if (status) status.textContent = "Uploading image...";
+                        const file = imageEl.files[0];
+                        const reader = new FileReader();
+                        const base64Data = await new Promise((resolve, reject) => {
+                            reader.onload = () => resolve(reader.result.split(",")[1]);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(file);
+                        });
+                        const uploadRes = await apiJson("/api/upload/avatar", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                purpose: "community",
+                                contentType: file.type,
+                                base64: base64Data
+                            })
+                        });
+                        if (uploadRes && uploadRes.url) {
+                            uploadedImageUrl = uploadRes.url;
+                        }
+                    }
+
+                    if (status) status.textContent = "Sending message...";
+                    await apiJson("/api/reader/community", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            action: "create_post",
+                            title: pingLabel,
+                            category,
+                            content,
+                            imageUrl: uploadedImageUrl
+                        }),
+                    });
+                    if (textEl) textEl.value = "";
+                    if (imageEl) imageEl.value = "";
+                    window.selectedGifUrl = null;
+                    if (status) status.textContent = "";
+                    await setReactionTarget(
+                        target.targetType,
+                        target.volumeId,
+                        target.chapterId,
+                    );
+                } catch (error) {
+                    if (status)
+                        status.textContent =
+                            error.message === "Unauthorized"
+                                ? "Login required to post."
+                                : error.message;
+                }
             }
 
             async function submitReaderReaction(event) {

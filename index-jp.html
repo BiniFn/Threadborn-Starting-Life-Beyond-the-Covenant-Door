@@ -667,16 +667,24 @@
                             ></select>
                         </div>
                         <div id="comment-list" class="comment-list discord-message-list"></div>
-                        <textarea
-                            id="reaction-text"
-                            maxlength="1600"
-                            placeholder="Message #threadborn-discuss"
-                        ></textarea>
-                        <div class="discuss-action-row" style="display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 8px;">
-                            <input type="file" id="reaction-image" accept="image/png, image/jpeg, image/gif, image/webp" style="flex: 1;" />
-                            <button class="btn btn-primary" type="submit">
-                                送信
+                        <div class="chat-input-wrapper" style="display: flex; gap: 8px; align-items: flex-end; margin-top: 8px; position: relative;">
+                            <button type="button" class="chat-action-btn" id="chat-attach-btn" aria-label="Attach file" title="画像を添付">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                             </button>
+                            <button type="button" class="chat-action-btn" id="chat-gif-btn" aria-label="Add GIF" title="GIFを検索" style="font-size: 11px; font-weight: bold;">GIF</button>
+                            <div style="flex: 1; position: relative;">
+                                <textarea
+                                    id="reaction-text"
+                                    maxlength="1600"
+                                    placeholder="Message #threadborn-discuss"
+                                    class="chat-textarea"
+                                    rows="1"
+                                ></textarea>
+                            </div>
+                            <button class="chat-send-btn" type="submit" aria-label="送信">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            </button>
+                            <input type="file" id="reaction-image" accept="image/png, image/jpeg, image/gif, image/webp" style="display: none;" />
                         </div>
                     </form>
                     <div id="reaction-status" class="toolbar-note">
@@ -8288,9 +8296,9 @@
                         const bioHtml = user.bio ? `<p class="public-profile-bio">${escapeHtml(user.bio)}</p>` : '';
                         card.innerHTML = `
                           ${bannerHtml}
-                          <div class="public-profile-hero" ${user.bannerUrl ? 'style="margin-top: -40px;"' : ''}>
-                            <img src="${safeImageUrl(user.avatarUrl)}" alt="${escapeHtml(user.username || clean)} avatar" style="border: 4px solid var(--black);" />
-                            <div>
+                          <div class="public-profile-hero" style="align-items: flex-start; margin-top: ${user.bannerUrl ? '-40px' : '0'};">
+                            <img src="${safeImageUrl(user.avatarUrl)}" alt="${escapeHtml(user.username || clean)} avatar" style="border: 4px solid var(--black); width: 80px; height: 80px; position: relative; z-index: 2;" />
+                            <div style="margin-top: ${user.bannerUrl ? '40px' : '0'};">
                               <h3 style="margin:0;">${escapeHtml(user.username || clean)}${renderNameBadges(user)}</h3>
                               <p class="muted" style="margin:6px 0 0;">Joined ${user.createdAt ? formatCommunityTime(user.createdAt) : "recently"}</p>
                             </div>
@@ -8450,7 +8458,7 @@
                 const imageEl = document.getElementById("reaction-image");
                 const content = (textEl?.value || "").trim();
                 const status = document.getElementById("reaction-status");
-                if (!content && (!imageEl || !imageEl.files || !imageEl.files[0])) {
+                if (!content && (!imageEl || !imageEl.files || !imageEl.files[0]) && !window.selectedGifUrl) {
                     if (status) status.textContent = "メッセージ本文または画像が必要です。";
                     return;
                 }
@@ -8462,8 +8470,8 @@
                         : "General chat";
                 if (status) status.textContent = "送信中...";
                 try {
-                    let uploadedImageUrl = "";
-                    if (imageEl && imageEl.files && imageEl.files[0]) {
+                    let uploadedImageUrl = window.selectedGifUrl || "";
+                    if (!uploadedImageUrl && imageEl && imageEl.files && imageEl.files[0]) {
                         if (status) status.textContent = "画像をアップロード中...";
                         const file = imageEl.files[0];
                         const reader = new FileReader();
@@ -8498,6 +8506,7 @@
                     });
                     if (textEl) textEl.value = "";
                     if (imageEl) imageEl.value = "";
+                    window.selectedGifUrl = null;
                     if (status) status.textContent = "";
                     await setReactionTarget(
                         target.targetType,
