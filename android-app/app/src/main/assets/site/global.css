@@ -5179,7 +5179,7 @@ textarea::placeholder {
     }
     .profile-banner-img,
     .profile-banner-placeholder {
-        height: 120px;
+        aspect-ratio: 3/1;
     }
     .profile-banner-avatar {
         width: 64px;
@@ -5327,7 +5327,7 @@ textarea::placeholder {
 
 .public-profile-banner {
     width: 100%;
-    height: 120px;
+    aspect-ratio: 3/1;
     background-size: cover;
     background-position: center;
     border-radius: 12px 12px 0 0;
@@ -5375,7 +5375,7 @@ textarea::placeholder {
     resize: none;
     overflow-y: auto;
     min-height: 24px;
-    max-height: 120px;
+    max-aspect-ratio: 3/1;
     padding: 6px 4px;
     background: transparent;
     border: none;
