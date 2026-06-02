@@ -74,7 +74,7 @@
             href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"
             rel="stylesheet"
         />
-        <link rel="stylesheet" href="./global.css?v=53" />
+        <link rel="stylesheet" href="./global.css?v=54" />
         <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css"
@@ -789,26 +789,50 @@
                     <div>
                         <h2>購入</h2>
                         <p class="section-copy">
-                            Luluで紙の本を購入できます。
+                            紙の本はLuluで購入できます。決済はLulu側で行います。
                         </p>
                     </div>
                 </div>
-                <article class="buy-panel">
-                    <div class="buy-mark">Threadborn</div>
-                    <p class="eyebrow">ペーパーバック · Lulu</p>
-                    <h3>Threadborn 第1巻</h3>
-                    <p>
-                        本棚に置ける紙の一冊。血の赤いカバー、契約の扉、
-                        そしてアステリアで始まるヨノの二度目の人生を収録。
-                    </p>
-                    <a
-                        class="btn btn-primary"
-                        href="https://www.lulu.com/shop/binifn/threadborn/paperback/product-zmepder.html?q=threadborn+&page=1&pageSize=4"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        Luluを開く
-                    </a>
+                <article class="buy-panel buy-panel-premium">
+                    <div class="buy-cover-grid" aria-label="Threadborn 表紙プレビュー">
+                        <figure class="buy-cover-card is-featured">
+                            <img
+                                src="https://7quf9od1wnlcxfw6.public.blob.vercel-storage.com/art/____________-1779665962280-PNC5gAKKB6OjDvmvBzOsCfU47hWQFu.jpg"
+                                alt="赤い背景と紫のドレスのThreadborn第1巻カバー"
+                                loading="lazy"
+                            />
+                            <figcaption>第1巻カバープレビュー</figcaption>
+                        </figure>
+                        <figure class="buy-cover-card">
+                            <img
+                                src="https://7quf9od1wnlcxfw6.public.blob.vercel-storage.com/art/____________-1779665965509-QmE2is56JIQJj9Utm9f06kPVNbxv9I.jpg"
+                                alt="青いドレスのThreadborn第1巻カバーバリエーション"
+                                loading="lazy"
+                            />
+                            <figcaption>別カバープレビュー</figcaption>
+                        </figure>
+                    </div>
+                    <div class="buy-copy">
+                        <p class="eyebrow">ペーパーバック · Lulu</p>
+                        <h3>Threadborn 第1巻</h3>
+                        <p>
+                            第1巻を紙で残したい読者向けの一冊。赤い都市の影、
+                            契約の印、そしてアステリアで始まるヨノの物語を収録。
+                        </p>
+                        <div class="buy-meta-row">
+                            <span>紙の本</span>
+                            <span>Luluで決済</span>
+                            <span>Luluから発送</span>
+                        </div>
+                        <a
+                            class="btn btn-primary buy-cta"
+                            href="https://www.lulu.com/shop/binifn/threadborn/paperback/product-zmepder.html?q=threadborn+&page=1&pageSize=4"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            Luluで開く
+                        </a>
+                    </div>
                 </article>
             </section>
 
@@ -13012,8 +13036,8 @@
             }
         </style>
 
-        <script src="./assets/notifications.js?v=53"></script>
-        <script src="./assets/phase1-client.js?v=53"></script>
+        <script src="./assets/notifications.js?v=54"></script>
+        <script src="./assets/phase1-client.js?v=54"></script>
         <script>
             if ("serviceWorker" in navigator) {
                 let newWorker;

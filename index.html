@@ -74,7 +74,7 @@
             href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"
             rel="stylesheet"
         />
-        <link rel="stylesheet" href="./global.css?v=53" />
+        <link rel="stylesheet" href="./global.css?v=54" />
         <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css"
@@ -831,27 +831,52 @@
                     <div>
                         <h2>Buy</h2>
                         <p class="section-copy">
-                            Get the paperback from Lulu.
+                            Get the paperback from Lulu. The checkout opens on
+                            Lulu, so the site stays simple.
                         </p>
                     </div>
                 </div>
-                <article class="buy-panel">
-                    <div class="buy-mark">Threadborn</div>
-                    <p class="eyebrow">Paperback · Lulu</p>
-                    <h3>Threadborn, Volume 1</h3>
-                    <p>
-                        A print copy of the story for readers who want it on a
-                        shelf: blood-red cover, covenant door, and the first
-                        run of Yono's new life in Asteria.
-                    </p>
-                    <a
-                        class="btn btn-primary"
-                        href="https://www.lulu.com/shop/binifn/threadborn/paperback/product-zmepder.html?q=threadborn+&page=1&pageSize=4"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        Open Lulu
-                    </a>
+                <article class="buy-panel buy-panel-premium">
+                    <div class="buy-cover-grid" aria-label="Threadborn cover previews">
+                        <figure class="buy-cover-card is-featured">
+                            <img
+                                src="https://7quf9od1wnlcxfw6.public.blob.vercel-storage.com/art/____________-1779665962280-PNC5gAKKB6OjDvmvBzOsCfU47hWQFu.jpg"
+                                alt="Threadborn Volume 1 cover with red background and purple dress"
+                                loading="lazy"
+                            />
+                            <figcaption>Volume 1 cover preview</figcaption>
+                        </figure>
+                        <figure class="buy-cover-card">
+                            <img
+                                src="https://7quf9od1wnlcxfw6.public.blob.vercel-storage.com/art/____________-1779665965509-QmE2is56JIQJj9Utm9f06kPVNbxv9I.jpg"
+                                alt="Threadborn Volume 1 cover variant with blue dress"
+                                loading="lazy"
+                            />
+                            <figcaption>Alternate print preview</figcaption>
+                        </figure>
+                    </div>
+                    <div class="buy-copy">
+                        <p class="eyebrow">Paperback · Lulu</p>
+                        <h3>Threadborn, Volume 1</h3>
+                        <p>
+                            A shelf copy for readers who want the first volume in
+                            print: red skyline, covenant seal, and the beginning
+                            of Yono's life in Asteria.
+                        </p>
+                        <div class="buy-meta-row">
+                            <span>Print edition</span>
+                            <span>External checkout</span>
+                            <span>Ships from Lulu</span>
+                        </div>
+                        <a
+                            class="btn btn-primary buy-cta"
+                            href="https://www.lulu.com/shop/binifn/threadborn/paperback/product-zmepder.html?q=threadborn+&page=1&pageSize=4"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            Open Lulu paperback
+                        </a>
+                    </div>
                 </article>
             </section>
 
@@ -12062,8 +12087,8 @@
             }
         </style>
 
-        <script src="./assets/notifications.js?v=53"></script>
-        <script src="./assets/phase1-client.js?v=53"></script>
+        <script src="./assets/notifications.js?v=54"></script>
+        <script src="./assets/phase1-client.js?v=54"></script>
         <script>
             if ("serviceWorker" in navigator) {
                 let newWorker;
