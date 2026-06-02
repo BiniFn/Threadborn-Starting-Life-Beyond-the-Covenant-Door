@@ -4974,6 +4974,189 @@ textarea::placeholder {
 }
 
 
+/* ── Banner editor ─────────────────────────────────────────────────── */
+.banner-upload-zone {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 112px;
+    padding: 22px;
+    border: 1px dashed rgba(207, 47, 47, 0.42);
+    border-radius: 18px;
+    background:
+        linear-gradient(180deg, rgba(207, 47, 47, 0.07), transparent),
+        rgba(255, 255, 255, 0.03);
+    color: var(--bone);
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease;
+}
+
+.banner-upload-zone:hover,
+.banner-upload-zone.dragging {
+    transform: translateY(-2px);
+    border-color: rgba(207, 47, 47, 0.72);
+    background: rgba(207, 47, 47, 0.1);
+}
+
+.banner-upload-zone input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Banner canvas — wide 3:1 ratio */
+#banner-crop-canvas {
+    width: 100%;
+    max-width: 540px;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    display: block;
+}
+
+.banner-preview-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: start;
+    margin-top: 18px;
+    max-width: 100%;
+}
+
+/* Small inline banner thumbnail */
+.banner-strip-preview {
+    width: 120px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background-size: cover;
+    background-position: center;
+    box-shadow: inset 0 0 0 4px rgba(0, 0, 0, 0.28);
+    flex-shrink: 0;
+}
+
+/* Profile header card with banner */
+.profile-banner-header {
+    position: relative;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: rgba(18, 20, 28, 0.96);
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+}
+
+.profile-banner-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    background: linear-gradient(135deg, rgba(207,47,47,0.18), rgba(132,208,199,0.12));
+}
+
+.profile-banner-placeholder {
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(135deg, rgba(207,47,47,0.12), rgba(132,208,199,0.08));
+}
+
+.profile-banner-body {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 0 24px 20px;
+    margin-top: -40px;
+    position: relative;
+}
+
+.profile-banner-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(18,20,28,0.96);
+    background: rgba(255,255,255,0.06);
+    flex-shrink: 0;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+}
+
+.profile-banner-info {
+    flex: 1;
+    min-width: 0;
+    padding-bottom: 4px;
+}
+
+.profile-banner-info h1 {
+    margin: 0 0 4px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.profile-banner-bio {
+    margin: 4px 0 0;
+    color: var(--mist);
+    font-size: 13px;
+    line-height: 1.55;
+    max-width: 60ch;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Bio textarea */
+.bio-field {
+    width: 100%;
+    min-height: 90px;
+    max-height: 200px;
+    resize: vertical;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line-strong);
+    background: rgba(255,255,255,0.04);
+    color: var(--bone);
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+    transition: border-color 0.18s ease;
+}
+
+.bio-field:focus {
+    outline: none;
+    border-color: rgba(132,208,199,0.5);
+    background: rgba(255,255,255,0.06);
+}
+
+.bio-counter {
+    text-align: right;
+    font-size: 11px;
+    color: var(--mist);
+    margin-top: 4px;
+}
+
+@media (max-width: 640px) {
+    .avatar-crop-controls .crop-button-row {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    .banner-preview-row {
+        grid-template-columns: 1fr;
+    }
+    .profile-banner-img,
+    .profile-banner-placeholder {
+        height: 120px;
+    }
+    .profile-banner-avatar {
+        width: 64px;
+        height: 64px;
+    }
+}
+
+
 /* Reader tools polish: app-grade sheet, no overlap, touch-safe controls */
 .reader.tools-open .reader-toolbar {
     gap: 14px;

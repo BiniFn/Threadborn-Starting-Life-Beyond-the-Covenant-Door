@@ -325,6 +325,36 @@ async function approveModerationRequest(request) {
     return;
   }
 
+  if (request.request_type === "banner_update") {
+    const bannerUrl = String(payload.bannerUrl || "").trim();
+    const crop = payload.crop && typeof payload.crop === "object" ? payload.crop : {};
+    if (!bannerUrl.startsWith("https://")) {
+      throw new Error("Invalid banner URL in request");
+    }
+    const existing = await pool.query(
+      "select banner_url from users where id = $1",
+      [request.user_id],
+    );
+    const oldUrl = existing.rows[0]?.banner_url || "";
+    await pool.query(
+      "update users set banner_url = $1, banner_crop = $2::jsonb, updated_at = now() where id = $3",
+      [bannerUrl, normalizeModerationPayload(crop, 2000), request.user_id],
+    );
+    if (
+      oldUrl &&
+      oldUrl !== bannerUrl &&
+      oldUrl.includes("blob.vercel-storage.com") &&
+      process.env.BLOB_READ_WRITE_TOKEN
+    ) {
+      try {
+        await del(oldUrl, { token: process.env.BLOB_READ_WRITE_TOKEN });
+      } catch (error) {
+        console.error("[moderation] old banner delete failed:", error);
+      }
+    }
+    return;
+  }
+
   if (request.request_type === "reader_reaction") {
     await pool.query(
       `insert into reader_reactions
@@ -2402,6 +2432,37 @@ return async (req, res) => {
       return;
     }
 
+    if (purpose === "banner") {
+      const fileName = `banners/pending/${session.user_id}-${Date.now()}.${ext}`;
+      const blob = await put(fileName, bytes, {
+        access: "public",
+        addRandomSuffix: false,
+        contentType,
+        token: process.env.BLOB_READ_WRITE_TOKEN,
+      });
+      const crop = body.crop && typeof body.crop === "object" ? body.crop : {};
+      const request = await createModerationRequest(
+        session.user_id,
+        "banner_update",
+        {
+          bannerUrl: blob.url,
+          crop: {
+            x: Math.max(-1, Math.min(1, Number(crop.x) || 0)),
+            y: Math.max(-1, Math.min(1, Number(crop.y) || 0)),
+            size: Math.max(0.1, Math.min(1, Number(crop.size) || 1)),
+            rotate: Math.max(-180, Math.min(180, Number(crop.rotate) || 0)),
+          },
+        },
+      );
+      success(res, {
+        url: blob.url,
+        pending: true,
+        requestId: request.id,
+        message: "Banner submitted for review.",
+      });
+      return;
+    }
+
     const fileName = `avatars/pending/${session.user_id}-${Date.now()}.${ext}`;
     const blob = await put(fileName, bytes, {
       access: "public",
@@ -2450,6 +2511,8 @@ function publicUser(row) {
     id: row.id,
     username: row.username,
     avatarUrl: row.avatar_url || "",
+    bannerUrl: row.banner_url || "",
+    bio: row.bio || "",
     verified: row.verified,
     role: row.role,
     createdAt: row.created_at || null,
@@ -2529,7 +2592,7 @@ return async (req, res) => {
     await pool.ensureMigrations();
     const username = String(req.query.username || "").trim();
     const userResult = await pool.query(
-      "select id, username, avatar_url, verified, role, created_at from users where lower(username) = lower($1) limit 1",
+      "select id, username, avatar_url, banner_url, bio, verified, role, created_at from users where lower(username) = lower($1) limit 1",
       [username],
     );
     if (!userResult.rowCount) {
@@ -2765,14 +2828,21 @@ return async (req, res) => {
         [session.user_id],
       )
       .catch(() => ({ rows: [] }));
+    const userRow = await pool.query(
+      "select id, email, username, avatar_url, banner_url, bio, verified, role from users where id = $1",
+      [session.user_id],
+    ).catch(() => ({ rows: [session] }));
+    const u = userRow.rows[0] || session;
     success(res, {
       user: {
-        id: session.user_id,
-        email: session.email,
-        username: session.username,
-        avatarUrl: session.avatar_url || "",
-        verified: session.verified,
-        role: session.role,
+        id: u.id || session.user_id,
+        email: u.email || session.email,
+        username: u.username || session.username,
+        avatarUrl: u.avatar_url || "",
+        bannerUrl: u.banner_url || "",
+        bio: u.bio || "",
+        verified: u.verified ?? session.verified,
+        role: u.role || session.role,
       },
       posts: postsResult.rows,
       pending: pendingResult.rows.map((row) => ({
@@ -2801,13 +2871,10 @@ return async (req, res) => {
     const body = await parseJsonBody(req);
     const username = String(body.username || "").trim();
     if (!username || !/^[a-zA-Z0-9_]{3,24}$/.test(username)) {
-      fail(
-        res,
-        400,
-        "Username must be 3-24 chars (letters, numbers, underscore)",
-      );
+      fail(res, 400, "Username must be 3-24 chars (letters, numbers, underscore)");
       return;
     }
+    const bio = String(body.bio ?? "").trim().slice(0, 280);
 
     const duplicate = await pool.query(
       "select id from users where lower(username) = lower($1) and id <> $2 limit 1",
@@ -2817,19 +2884,23 @@ return async (req, res) => {
       fail(res, 409, "Username is already in use");
       return;
     }
+
+    // Save bio immediately (no moderation needed for short bios)
+    await pool.query(
+      "update users set bio = $1, updated_at = now() where id = $2",
+      [bio, session.user_id],
+    );
+
     const request = await createModerationRequest(
       session.user_id,
       "profile_update",
       withModerationSignals(
-        {
-          username,
-          previousUsername: session.username,
-        },
-        ["username"],
+        { username, bio, previousUsername: session.username },
+        ["username", "bio"],
       ),
     );
     const { rows } = await pool.query(
-      "select id, email, username, avatar_url, verified, role from users where id = $1",
+      "select id, email, username, avatar_url, banner_url, bio, verified, role from users where id = $1",
       [session.user_id],
     );
     success(res, {
@@ -2841,6 +2912,8 @@ return async (req, res) => {
         email: rows[0].email,
         username: rows[0].username,
         avatarUrl: rows[0].avatar_url || "",
+        bannerUrl: rows[0].banner_url || "",
+        bio: rows[0].bio || "",
         verified: rows[0].verified,
         role: rows[0].role,
       },
@@ -3354,6 +3427,7 @@ const routeHandlers = new Map([
   ["/api/reader/progress", exports.handleProgress],
   ["/api/reader/reactions", exports.handleReactions],
   ["/api/upload/avatar", exports.handleAvatar],
+  ["/api/upload/banner", exports.handleAvatar],
   ["/api/user/profile", exports.handleProfile],
 ]);
 
