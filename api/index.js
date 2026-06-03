@@ -1542,7 +1542,7 @@ return async (req, res) => {
     const postsResult = await pool.query(
       `
       select
-        p.id, p.user_id, p.title, p.content, p.image_url, p.category, p.created_at,
+        p.id, p.user_id, p.title, p.content, p.image_url, p.category, p.created_at, p.is_edited, p.is_deleted,
         u.username, u.avatar_url, u.verified, u.role,
         coalesce(l.like_count, 0)::int as like_count,
         coalesce(c.comment_count, 0)::int as comment_count,
@@ -1567,7 +1567,7 @@ return async (req, res) => {
     if (ids.length) {
       const commentsResult = await pool.query(
         `
-        select c.id, c.post_id, c.content, c.image_url, c.created_at, c.user_id, u.username, u.avatar_url, u.verified, u.role
+        select c.id, c.post_id, c.content, c.image_url, c.created_at, c.user_id, c.is_edited, c.is_deleted, u.username, u.avatar_url, u.verified, u.role
         from comments c
         join users u on u.id = c.user_id
         where c.post_id = any($1::uuid[])
@@ -1719,7 +1719,7 @@ return async (req, res) => {
         202,
       );
     } else {
-      const postImageUrl = imageUrl ? "https://threadborn.app/assets/pending-moderation.png" : null;
+      const postImageUrl = imageUrl ? "https://threadborn.app/assets/pending.svg" : null;
       const { rows } = await pool.query(
         `insert into posts (user_id, title, content, image_url, category, created_at, updated_at)
          values ($1,$2,$3,$4,$5,now(),now()) returning id, created_at`,
@@ -1746,6 +1746,64 @@ return async (req, res) => {
         201,
       );
     }
+    return;
+  }
+
+  if (req.method === "POST" && action === "edit_post") {
+    const postId = cleanText(body.postId, 80);
+    const content = cleanText(body.content, 3000);
+    if (!postId || !content) {
+      fail(res, 400, "postId and content are required");
+      return;
+    }
+    const existing = await pool.query("select user_id, title, category from posts where id = $1", [postId]);
+    if (!existing.rowCount) {
+      fail(res, 404, "Post not found");
+      return;
+    }
+    if (existing.rows[0].user_id !== session.user_id) {
+      fail(res, 403, "You can only edit your own posts");
+      return;
+    }
+    
+    const payloadWithSignals = withModerationSignals(
+      { title: existing.rows[0].title, content, category: existing.rows[0].category },
+      ["title", "content"]
+    );
+
+    if (payloadWithSignals.moderation.filtered) {
+      fail(res, 400, "Message edit rejected due to inappropriate language.");
+      return;
+    }
+
+    await pool.query(
+      `update posts set content = $1, is_edited = true, updated_at = now() where id = $2`,
+      [content, postId]
+    );
+    success(res, { ok: true });
+    return;
+  }
+
+  if (req.method === "POST" && action === "delete_post") {
+    const postId = cleanText(body.postId, 80);
+    if (!postId) {
+      fail(res, 400, "postId is required");
+      return;
+    }
+    const existing = await pool.query("select user_id from posts where id = $1", [postId]);
+    if (!existing.rowCount) {
+      fail(res, 404, "Post not found");
+      return;
+    }
+    if (existing.rows[0].user_id !== session.user_id && !isModerator) {
+      fail(res, 403, "You can only delete your own posts");
+      return;
+    }
+    await pool.query(
+      `update posts set content = '[Deleted message]', image_url = null, is_deleted = true, updated_at = now() where id = $1`,
+      [postId]
+    );
+    success(res, { ok: true });
     return;
   }
 
@@ -1814,7 +1872,7 @@ return async (req, res) => {
         202,
       );
     } else {
-      const commentImageUrl = imageUrl ? "https://threadborn.app/assets/pending-moderation.png" : null;
+      const commentImageUrl = imageUrl ? "https://threadborn.app/assets/pending.svg" : null;
       const { rows } = await pool.query(
         `insert into comments (post_id, user_id, content, image_url, created_at, updated_at)
          values ($1,$2,$3,$4,now(),now()) returning id, created_at`,
@@ -1844,44 +1902,54 @@ return async (req, res) => {
     return;
   }
 
-  if (req.method === "POST" && action === "delete_post") {
-    if (!isModerator) {
-      fail(res, 403, "Only owner/admin can delete posts");
+  if (req.method === "POST" && action === "edit_comment") {
+    const commentId = cleanText(body.commentId, 80);
+    const content = cleanText(body.content, 1200);
+    if (!commentId || !content) {
+      fail(res, 400, "commentId and content are required");
       return;
     }
-    const postId = cleanText(body.postId, 80);
-    if (!postId) {
-      fail(res, 400, "postId is required");
+    const existing = await pool.query("select user_id, post_id from comments where id = $1", [commentId]);
+    if (!existing.rowCount) {
+      fail(res, 404, "Comment not found");
       return;
     }
-    const client = await pool.connect();
-    try {
-      await client.query("begin");
-      await client.query("delete from likes where post_id = $1", [postId]);
-      await client.query("delete from comments where post_id = $1", [postId]);
-      await client.query("delete from posts where id = $1", [postId]);
-      await client.query("commit");
-    } catch (txErr) {
-      await client.query("rollback");
-      throw txErr;
-    } finally {
-      client.release();
+    if (existing.rows[0].user_id !== session.user_id) {
+      fail(res, 403, "You can only edit your own comments");
+      return;
     }
+    const payloadWithSignals = withModerationSignals({ content, postId: existing.rows[0].post_id }, ["content"]);
+    if (payloadWithSignals.moderation.filtered) {
+      fail(res, 400, "Comment edit rejected due to inappropriate language.");
+      return;
+    }
+    await pool.query(
+      `update comments set content = $1, is_edited = true, updated_at = now() where id = $2`,
+      [content, commentId]
+    );
     success(res, { ok: true });
     return;
   }
 
   if (req.method === "POST" && action === "delete_comment") {
-    if (!isModerator) {
-      fail(res, 403, "Only owner/admin can delete comments");
-      return;
-    }
     const commentId = cleanText(body.commentId, 80);
     if (!commentId) {
       fail(res, 400, "commentId is required");
       return;
     }
-    await pool.query("delete from comments where id = $1", [commentId]);
+    const existing = await pool.query("select user_id from comments where id = $1", [commentId]);
+    if (!existing.rowCount) {
+      fail(res, 404, "Comment not found");
+      return;
+    }
+    if (existing.rows[0].user_id !== session.user_id && !isModerator) {
+      fail(res, 403, "You can only delete your own comments");
+      return;
+    }
+    await pool.query(
+      `update comments set content = '[Deleted message]', image_url = null, is_deleted = true, updated_at = now() where id = $1`,
+      [commentId]
+    );
     success(res, { ok: true });
     return;
   }

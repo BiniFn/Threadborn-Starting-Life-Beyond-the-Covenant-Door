@@ -7235,35 +7235,45 @@
                         const isOwner =
                             currentUser.role === "owner" ||
                             currentUser.role === "admin";
-                        const deleteBtn = isOwner
-                            ? `<button onclick="deleteCommunityPost(\'${escapeHtml(post.id || "")}\')" style="background:none;border:none;color:red;cursor:pointer;font-size:12px;margin-left:10px;">[Delete]</button>`
+                        const isMyPost = currentUser.id === post.user_id;
+                        const deleteBtn = isOwner || isMyPost
+                            ? `<button onclick="deleteCommunityPost('${escapeHtml(post.id || "")}')" style="background:none;border:none;color:red;cursor:pointer;font-size:12px;margin-left:10px;">[Delete]</button>`
                             : "";
+                        const editBtn = isMyPost && !post.is_deleted
+                            ? `<button onclick="editCommunityPost('${escapeHtml(post.id || "")}')" style="background:none;border:none;color:var(--accent, #66b2ff);cursor:pointer;font-size:12px;margin-left:10px;">[Edit]</button>`
+                            : "";
+                        const editedBadge = post.is_edited ? `<small class="muted" style="margin-left:6px;">(edited)</small>` : "";
+
                         const comments = (post.comments || [])
                             .map((comment) => {
                                 const commentUser = escapeHtml(
                                     comment.username || "reader",
                                 );
-                                return `<div class="discord-reply">
-                                  <button class="profile-link-btn" type="button" onclick="openPublicProfile('${commentUser}')">${commentUser}${renderNameBadges(comment)}</button>
-                                  <span>${escapeHtml(comment.content || "")}</span>
-                                  ${comment.image_url === "https://threadborn.app/assets/pending-moderation.png" ? `<div class="chat-embed-image pending-image" style="max-width:200px; padding: 8px; border: 2px dashed var(--accent, #66b2ff); border-radius: 8px; text-align: center; color: var(--accent, #66b2ff); font-weight: bold; margin: 4px 0; font-size: 12px; background: rgba(0,0,0,0.2);">Image is under review</div>` : (comment.image_url ? `<img src="${safeImageUrl(comment.image_url)}" class="chat-embed-image" style="max-width:200px; max-height:200px; border-radius:8px; display:block; margin:4px 0;" />` : '')}
-                                  ${isOwner ? `<button onclick="deleteCommunityComment(\'${escapeHtml(comment.id || "")}\')" class="discord-delete-btn">Delete</button>` : ""}
+                                const isMyComment = currentUser.id === comment.user_id;
+                                const cEdited = comment.is_edited ? `<small class="muted" style="margin-left:6px;">(edited)</small>` : "";
+                                const cDelete = isOwner || isMyComment ? `<button onclick="deleteCommunityComment('${escapeHtml(comment.id || "")}')" class="discord-delete-btn" style="background:none;border:none;color:red;font-size:11px;cursor:pointer;margin-left:6px;">[Del]</button>` : "";
+                                const cEdit = isMyComment && !comment.is_deleted ? `<button onclick="editCommunityComment('${escapeHtml(comment.id || "")}')" style="background:none;border:none;color:var(--accent, #66b2ff);font-size:11px;cursor:pointer;margin-left:6px;">[Edit]</button>` : "";
+                                
+                                return `<div class="discord-reply" id="comment-${comment.id}">
+                                  <button class="profile-link-btn" type="button" onclick="openPublicProfile('${commentUser}')">${commentUser}${renderNameBadges(comment)}</button>${cEdited}${cEdit}${cDelete}
+                                  <span class="comment-content">${comment.is_deleted ? `<em class="muted">[Deleted message]</em>` : escapeHtml(comment.content || "")}</span>
+                                  ${comment.is_deleted ? '' : (comment.image_url === "https://threadborn.app/assets/pending.svg" ? `<div class="chat-embed-image pending-image" style="max-width:200px; padding: 8px; border: 2px dashed var(--accent, #66b2ff); border-radius: 8px; text-align: center; color: var(--accent, #66b2ff); font-weight: bold; margin: 4px 0; font-size: 12px; background: rgba(0,0,0,0.2);">Image is under review</div>` : (comment.image_url ? `<img src="${safeImageUrl(comment.image_url)}" class="chat-embed-image" style="max-width:200px; max-height:200px; border-radius:8px; display:block; margin:4px 0;" />` : ''))}
                                 </div>`;
                             })
                             .join("");
                         return `
-          <div class="chat-message-row">
+          <div class="chat-message-row" id="post-${postId}">
             <img class="chat-avatar clickable-avatar" src="${avatar}" alt="${username} avatar" onclick="openPublicProfile('${username}')" />
             <div class="chat-message-content">
               <div class="chat-message-header">
                 <button class="chat-username profile-link-btn" type="button" onclick="openPublicProfile('${username}')">${username}${renderNameBadges(user)}</button>
-                <span class="chat-timestamp">${when}</span>
+                <span class="chat-timestamp">${when}</span>${editedBadge}
                 ${post.category && post.category !== 'chat' ? `<span class="chat-type-chip">${category}</span>` : ''}
-                ${deleteBtn}
+                ${editBtn}${deleteBtn}
               </div>
               ${ping ? `<div class="chat-ping">↳ ${ping}</div>` : ''}
-              ${content ? `<div class="chat-body ${contentClass}" ${contentClass ? "onclick=\"this.classList.add('revealed')\"" : ""}>${content}</div>` : ""}
-              ${post.image_url === "pending" ? `<div class="chat-embed-image pending-image" style="max-width:300px; padding: 16px; border: 2px dashed var(--accent, #66b2ff); border-radius: 8px; text-align: center; color: var(--accent, #66b2ff); font-weight: bold; margin: 8px 0; background: rgba(0,0,0,0.2);">Image is under review</div>` : (post.image_url ? `<img src="${safeImageUrl(post.image_url)}" class="chat-embed-image" style="max-width:300px; max-height:300px; border-radius:8px; display:block; margin:8px 0;" />` : '')}
+              ${post.is_deleted ? `<div class="chat-body"><em class="muted">[Deleted message]</em></div>` : (content ? `<div class="chat-body ${contentClass} post-content" ${contentClass ? "onclick=\"this.classList.add('revealed')\"" : ""}>${content}</div>` : "")}
+              ${post.is_deleted ? '' : (post.image_url === "https://threadborn.app/assets/pending.svg" ? `<div class="chat-embed-image pending-image" style="max-width:300px; padding: 16px; border: 2px dashed var(--accent, #66b2ff); border-radius: 8px; text-align: center; color: var(--accent, #66b2ff); font-weight: bold; margin: 8px 0; background: rgba(0,0,0,0.2);">Image is under review</div>` : (post.image_url ? `<img src="${safeImageUrl(post.image_url)}" class="chat-embed-image" style="max-width:300px; max-height:300px; border-radius:8px; display:block; margin:8px 0;" />` : ''))}
               <div class="discord-message-actions">
                 <button class="btn btn-ghost" type="button" onclick="toggleCommunityLike('${postId}')">${post.liked_by_me ? "Unlike" : "Like"} • ${Number(post.like_count || 0)}</button>
                 <button class="btn btn-ghost" type="button" onclick="focusDiscussReply('${postId}')">Reply</button>
@@ -7725,19 +7735,30 @@
             </div>
           </div>
           <h4>${escapeHtml(post.title || "")}</h4>
-          <div class="${post.category === "spoiler" ? "spoiler-body" : ""}" onclick="this.classList.add('revealed')">${postContent}</div>
-          ${post.image_url ? `<img class="post-image" src="${safeImageUrl(post.image_url, "")}" alt="Community image" loading="lazy" />` : ""}
+          <div class="${post.category === "spoiler" ? "spoiler-body" : ""} post-content" onclick="this.classList.add('revealed')">
+            ${post.is_deleted ? `<em class="muted">[Deleted message]</em>` : postContent}
+          </div>
+          ${post.is_deleted ? '' : (post.image_url === "https://threadborn.app/assets/pending.svg" ? `<div class="chat-embed-image pending-image" style="max-width:300px; padding: 16px; border: 2px dashed var(--accent, #66b2ff); border-radius: 8px; text-align: center; color: var(--accent, #66b2ff); font-weight: bold; margin: 8px 0; background: rgba(0,0,0,0.2);">Image is under review</div>` : (post.image_url ? `<img class="post-image" src="${safeImageUrl(post.image_url, "")}" alt="Community image" loading="lazy" />` : ""))}
           <div class="post-actions">
             <button class="btn btn-ghost" onclick="toggleCommunityLike('${postId}')">${post.liked_by_me ? "Unlike" : "Like"} • ${Number(post.like_count || 0)}</button>
+            ${(currentUser.id === post.user_id && !post.is_deleted) ? `<button class="btn btn-ghost" style="color:var(--accent);" onclick="editCommunityPost('${postId}')">Edit</button>` : ''}
+            ${(currentUser.id === post.user_id || isModerator) ? `<button class="btn btn-ghost" style="color:red;" onclick="deleteCommunityPost('${postId}')">Delete</button>` : ''}
           </div>
           <div class="post-comments">
             ${(post.comments || [])
                 .map(
-                    (comment) => `
-              <div class="post-comment">
-                <button class="profile-link-btn" type="button" onclick="openPublicProfile('${escapeHtml(comment.username || "reader")}')">${escapeHtml(comment.username || "reader")}${renderNameBadges(comment)}:</button> ${isModerator ? `<button onclick="deleteCommunityComment(\'${escapeHtml(comment.id || "")}\')" style="background:none;border:none;color:red;cursor:pointer;font-size:12px;float:right;">[Delete]</button>` : ""} ${escapeHtml(comment.content || "")}
+                    (comment) => {
+                        const isMyComment = currentUser.id === comment.user_id;
+                        const cEdited = comment.is_edited ? `<small class="muted" style="margin-left:6px;">(edited)</small>` : "";
+                        const cDelete = isModerator || isMyComment ? `<button onclick="deleteCommunityComment('${escapeHtml(comment.id || "")}')" style="background:none;border:none;color:red;cursor:pointer;font-size:12px;margin-left:6px;">[Del]</button>` : "";
+                        const cEdit = isMyComment && !comment.is_deleted ? `<button onclick="editCommunityComment('${escapeHtml(comment.id || "")}')" style="background:none;border:none;color:var(--accent, #66b2ff);cursor:pointer;font-size:12px;margin-left:6px;">[Edit]</button>` : "";
+                        return `
+              <div class="post-comment" id="comment-${comment.id}">
+                <button class="profile-link-btn" type="button" onclick="openPublicProfile('${escapeHtml(comment.username || "reader")}')">${escapeHtml(comment.username || "reader")}${renderNameBadges(comment)}:</button>${cEdited}${cEdit}${cDelete}
+                <span class="comment-content">${comment.is_deleted ? `<em class="muted">[Deleted message]</em>` : escapeHtml(comment.content || "")}</span>
               </div>
-            `,
+            `;
+                    }
                 )
                 .join("")}
             <div class="row-inline">
@@ -7938,6 +7959,114 @@
                 const input = document.getElementById(`comment-input-${postId}`);
                 if (box) box.classList.toggle("active", true);
                 if (input) input.focus();
+            }
+
+            async function deleteCommunityPost(postId) {
+                if (!confirm("Are you sure you want to delete this message?")) return;
+                try {
+                    await apiJson("/api/reader/community", {
+                        method: "POST",
+                        body: JSON.stringify({ action: "delete_post", postId }),
+                    });
+                    const activeView = document.querySelector(".view.active")?.id;
+                    if (activeView === "view-reactions") {
+                        await setReactionTarget(reactionState.target.targetType, reactionState.target.volumeId, reactionState.target.chapterId);
+                    } else {
+                        await loadCommunityFeed();
+                    }
+                } catch (error) {
+                    alert(error.message);
+                }
+            }
+
+            function editCommunityPost(postId) {
+                const row = document.getElementById(`post-${postId}`);
+                if (!row) return;
+                const contentEl = row.querySelector('.post-content');
+                if (!contentEl) return;
+                const currentText = contentEl.textContent.trim();
+                contentEl.innerHTML = `
+                    <textarea id="edit-post-${postId}" style="width:100%; min-height:80px; background:var(--bg-card); color:var(--text); border:1px solid var(--border); padding:8px; border-radius:4px; font-family:inherit;">${escapeHtml(currentText)}</textarea>
+                    <div style="margin-top:8px;">
+                        <button class="btn btn-ghost" onclick="saveCommunityPost('${postId}')" style="color:var(--accent); font-weight:bold;">Save</button>
+                        <button class="btn btn-ghost" onclick="loadCommunityFeed()">Cancel</button>
+                    </div>
+                `;
+            }
+
+            async function saveCommunityPost(postId) {
+                const input = document.getElementById(`edit-post-${postId}`);
+                if (!input) return;
+                const content = input.value.trim();
+                if (!content) return;
+                try {
+                    await apiJson("/api/reader/community", {
+                        method: "POST",
+                        body: JSON.stringify({ action: "edit_post", postId, content }),
+                    });
+                    const activeView = document.querySelector(".view.active")?.id;
+                    if (activeView === "view-reactions") {
+                        await setReactionTarget(reactionState.target.targetType, reactionState.target.volumeId, reactionState.target.chapterId);
+                    } else {
+                        await loadCommunityFeed();
+                    }
+                } catch (error) {
+                    alert(error.message);
+                }
+            }
+
+            async function deleteCommunityComment(commentId) {
+                if (!confirm("Are you sure you want to delete this reply?")) return;
+                try {
+                    await apiJson("/api/reader/community", {
+                        method: "POST",
+                        body: JSON.stringify({ action: "delete_comment", commentId }),
+                    });
+                    const activeView = document.querySelector(".view.active")?.id;
+                    if (activeView === "view-reactions") {
+                        await setReactionTarget(reactionState.target.targetType, reactionState.target.volumeId, reactionState.target.chapterId);
+                    } else {
+                        await loadCommunityFeed();
+                    }
+                } catch (error) {
+                    alert(error.message);
+                }
+            }
+
+            function editCommunityComment(commentId) {
+                const row = document.getElementById(`comment-${commentId}`);
+                if (!row) return;
+                const contentEl = row.querySelector('.comment-content');
+                if (!contentEl) return;
+                const currentText = contentEl.textContent.trim();
+                contentEl.innerHTML = `
+                    <textarea id="edit-comment-${commentId}" style="width:100%; min-height:60px; background:var(--bg-card); color:var(--text); border:1px solid var(--border); padding:8px; border-radius:4px; font-family:inherit;">${escapeHtml(currentText)}</textarea>
+                    <div style="margin-top:4px;">
+                        <button class="btn btn-ghost" onclick="saveCommunityComment('${commentId}')" style="color:var(--accent); font-weight:bold;">Save</button>
+                        <button class="btn btn-ghost" onclick="loadCommunityFeed()">Cancel</button>
+                    </div>
+                `;
+            }
+
+            async function saveCommunityComment(commentId) {
+                const input = document.getElementById(`edit-comment-${commentId}`);
+                if (!input) return;
+                const content = input.value.trim();
+                if (!content) return;
+                try {
+                    await apiJson("/api/reader/community", {
+                        method: "POST",
+                        body: JSON.stringify({ action: "edit_comment", commentId, content }),
+                    });
+                    const activeView = document.querySelector(".view.active")?.id;
+                    if (activeView === "view-reactions") {
+                        await setReactionTarget(reactionState.target.targetType, reactionState.target.volumeId, reactionState.target.chapterId);
+                    } else {
+                        await loadCommunityFeed();
+                    }
+                } catch (error) {
+                    alert(error.message);
+                }
             }
 
             async function submitCommunityPost() {
