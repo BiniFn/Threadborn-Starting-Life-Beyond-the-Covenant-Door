@@ -8417,6 +8417,11 @@
                                 behavior: "smooth",
                             });
                     }
+                    setTimeout(() => {
+                        if (list) {
+                            list.scrollTop = list.scrollHeight;
+                        }
+                    }, 50);
                     renderVolumes();
                     renderChapters();
                     renderReaderReactionPanel();
@@ -8487,8 +8492,8 @@
                         if (status) status.textContent = "画像をアップロード中...";
                         const file = imageEl.files[0];
                         const reader = new FileReader();
-                        const base64Data = await new Promise((resolve, reject) => {
-                            reader.onload = () => resolve(reader.result.split(",")[1]);
+                        const dataUrl = await new Promise((resolve, reject) => {
+                            reader.onload = () => resolve(reader.result);
                             reader.onerror = reject;
                             reader.readAsDataURL(file);
                         });
@@ -8496,8 +8501,7 @@
                             method: "POST",
                             body: JSON.stringify({
                                 purpose: "community",
-                                contentType: file.type,
-                                base64: base64Data
+                                dataUrl
                             })
                         });
                         if (uploadRes && uploadRes.url) {
@@ -8854,19 +8858,22 @@
                         if (file.size > 5 * 1024 * 1024) {
                             throw new Error("Image must be smaller than 5MB");
                         }
-                        const uploaderReq = await fetch(
-                            "/api/reader/upload-community-image?filename=" + encodeURIComponent(file.name),
-                        );
-                        const uploaderData = await uploaderReq.json();
-                        if (!uploaderReq.ok) {
-                            throw new Error(uploaderData.error || "Image upload setup failed");
-                        }
-                        const uploadRes = await fetch(uploaderData.url, {
-                            method: "PUT",
-                            body: file,
+                        const reader = new FileReader();
+                        const dataUrl = await new Promise((resolve, reject) => {
+                            reader.onload = () => resolve(reader.result);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(file);
                         });
-                        const uploadedData = await uploadRes.json();
-                        uploadedImageUrl = uploadedData.url;
+                        const uploadRes = await apiJson("/api/upload/avatar", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                purpose: "community",
+                                dataUrl
+                            })
+                        });
+                        if (uploadRes && uploadRes.url) {
+                            uploadedImageUrl = uploadRes.url;
+                        }
                     }
 
                     await apiJson("/api/reader/community", {

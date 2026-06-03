@@ -7438,6 +7438,11 @@
                                 behavior: "smooth",
                             });
                     }
+                    setTimeout(() => {
+                        if (list) {
+                            list.scrollTop = list.scrollHeight;
+                        }
+                    }, 50);
                     renderVolumes();
                     renderChapters();
                     renderReaderReactionPanel();
@@ -7478,83 +7483,7 @@
                 openReactionTarget("chapter", chapter.volume, chapter.chapter);
             }
 
-            async function submitCommunityReaction(event) {
-                event.preventDefault();
-                const targetRaw = parseReactionTarget(
-                    document.getElementById("reaction-target")?.value,
-                );
-                // If no target selected, use a general chat sentinel
-                const target = targetRaw || { targetType: "general", volumeId: "general-chat", chapterId: "" };
-                const category =
-                    document.getElementById("reaction-category")?.value ||
-                    "chat";
-                const textEl = document.getElementById("reaction-text");
-                const imageEl = document.getElementById("reaction-image");
-                const content = (textEl?.value || "").trim();
-                const status = document.getElementById("reaction-status");
-                if (!content && (!imageEl || !imageEl.files || !imageEl.files[0]) && !window.selectedGifUrl) {
-                    if (status) status.textContent = "Message text or image is required.";
-                    return;
-                }
-                const pingLabel =
-                    targetRaw
-                        ? (target.targetType === "chapter"
-                            ? `${target.volumeId} • ${target.chapterId}`
-                            : target.volumeId)
-                        : "General chat";
-                if (status) status.textContent = "Sending...";
-                try {
-                    let uploadedImageUrl = window.selectedGifUrl || "";
-                    if (!uploadedImageUrl && imageEl && imageEl.files && imageEl.files[0]) {
-                        if (status) status.textContent = "Uploading image...";
-                        const file = imageEl.files[0];
-                        const reader = new FileReader();
-                        const base64Data = await new Promise((resolve, reject) => {
-                            reader.onload = () => resolve(reader.result.split(",")[1]);
-                            reader.onerror = reject;
-                            reader.readAsDataURL(file);
-                        });
-                        const uploadRes = await apiJson("/api/upload/avatar", {
-                            method: "POST",
-                            body: JSON.stringify({
-                                purpose: "community",
-                                contentType: file.type,
-                                base64: base64Data
-                            })
-                        });
-                        if (uploadRes && uploadRes.url) {
-                            uploadedImageUrl = uploadRes.url;
-                        }
-                    }
 
-                    if (status) status.textContent = "Sending message...";
-                    await apiJson("/api/reader/community", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            action: "create_post",
-                            title: pingLabel,
-                            category,
-                            content,
-                            imageUrl: uploadedImageUrl
-                        }),
-                    });
-                    if (textEl) textEl.value = "";
-                    if (imageEl) imageEl.value = "";
-                    window.selectedGifUrl = null;
-                    if (status) status.textContent = "";
-                    await setReactionTarget(
-                        target.targetType,
-                        target.volumeId,
-                        target.chapterId,
-                    );
-                } catch (error) {
-                    if (status)
-                        status.textContent =
-                            error.message === "Unauthorized"
-                                ? "Login required to post."
-                                : error.message;
-                }
-            }
 
             async function submitReaderReaction(event) {
                 event.preventDefault();
@@ -7587,8 +7516,8 @@
                         if (status) status.textContent = "Uploading image...";
                         const file = imageEl.files[0];
                         const reader = new FileReader();
-                        const base64Data = await new Promise((resolve, reject) => {
-                            reader.onload = () => resolve(reader.result.split(",")[1]);
+                        const dataUrl = await new Promise((resolve, reject) => {
+                            reader.onload = () => resolve(reader.result);
                             reader.onerror = reject;
                             reader.readAsDataURL(file);
                         });
@@ -7596,8 +7525,7 @@
                             method: "POST",
                             body: JSON.stringify({
                                 purpose: "community",
-                                contentType: file.type,
-                                base64: base64Data
+                                dataUrl
                             })
                         });
                         if (uploadRes && uploadRes.url) {
@@ -7954,19 +7882,22 @@
                         if (file.size > 5 * 1024 * 1024) {
                             throw new Error("Image must be smaller than 5MB");
                         }
-                        const uploaderReq = await fetch(
-                            "/api/reader/upload-community-image?filename=" + encodeURIComponent(file.name),
-                        );
-                        const uploaderData = await uploaderReq.json();
-                        if (!uploaderReq.ok) {
-                            throw new Error(uploaderData.error || "Image upload setup failed");
-                        }
-                        const uploadRes = await fetch(uploaderData.url, {
-                            method: "PUT",
-                            body: file,
+                        const reader = new FileReader();
+                        const dataUrl = await new Promise((resolve, reject) => {
+                            reader.onload = () => resolve(reader.result);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(file);
                         });
-                        const uploadedData = await uploadRes.json();
-                        uploadedImageUrl = uploadedData.url;
+                        const uploadRes = await apiJson("/api/upload/avatar", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                purpose: "community",
+                                dataUrl
+                            })
+                        });
+                        if (uploadRes && uploadRes.url) {
+                            uploadedImageUrl = uploadRes.url;
+                        }
                     }
 
                     await apiJson("/api/reader/community", {
