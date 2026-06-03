@@ -168,27 +168,7 @@
                 </nav>
 
                 <!-- Notification Bell -->
-                <!-- Push notification enable button -->
-                <button
-                    id="push-enable-btn"
-                    onclick="requestPushPermission()"
-                    style="
-                        display: none;
-                        background: none;
-                        border: 1px solid rgba(255, 255, 255, 0.1);
-                        color: var(--mist);
-                        font-size: 12px;
-                        padding: 6px 12px;
-                        border-radius: 999px;
-                        cursor: pointer;
-                        transition: 0.2s;
-                        font-family: &quot;Space Mono&quot;, monospace;
-                        margin-right: 6px;
-                    "
-                    title="Enable push notifications"
-                >
-                    🔔 <span class="push-label">Enable Notifications</span>
-                </button>
+
                 <div
                     id="notif-bell"
                     style="position: relative; display: none; margin-right: 8px"
@@ -205,7 +185,7 @@
                             border-radius: 50%;
                             transition: 0.2s;
                         "
-                        title="Notifications"
+                        title="通知"
                     >
                         🔔
                     </button>
@@ -251,14 +231,37 @@
                                 padding: 12px 16px;
                                 border-bottom: 1px solid
                                     rgba(255, 255, 255, 0.08);
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <span style="
                                 font-family: &quot;Space Mono&quot;, monospace;
                                 font-size: 11px;
                                 letter-spacing: 0.1em;
                                 text-transform: uppercase;
                                 color: var(--mist);
-                            "
-                        >
-                            Notifications
+                            ">通知</span>
+                            <button
+                                id="push-enable-btn"
+                                onclick="requestPushPermission()"
+                                style="
+                                    display: none;
+                                    background: rgba(138, 43, 226, 0.15);
+                                    border: 1px solid rgba(138, 43, 226, 0.4);
+                                    color: #c4b5fd;
+                                    font-size: 10px;
+                                    padding: 4px 8px;
+                                    border-radius: 4px;
+                                    cursor: pointer;
+                                    transition: 0.2s;
+                                    font-family: &quot;Space Mono&quot;, monospace;
+                                "
+                                title="プッシュ通知を有効にする"
+                            >
+                                有効化
+                            </button>
                         </div>
                         <div id="notif-list" style="padding: 8px 0"></div>
                     </div>

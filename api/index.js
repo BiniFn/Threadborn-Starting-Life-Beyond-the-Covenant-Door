@@ -1456,45 +1456,49 @@ async function ensureCommunityCompatibility() {
   if (communityCompatibilityReady) {
     return;
   }
-  await pool.query(`
-    alter table users
-      add column if not exists community_banned_until timestamptz,
-      add column if not exists community_ban_reason text
-  `);
-  await pool.query(`
-    alter table posts
-      drop constraint if exists posts_category_check
-  `);
-  await pool.query(`
-    alter table posts
-      add constraint posts_category_check
-      check (category in ('chat', 'fan_art', 'theory', 'spoiler')) not valid
-  `);
-  await pool.query(`
-    create table if not exists comments (
-      id uuid primary key default gen_random_uuid(),
-      post_id uuid not null references posts(id) on delete cascade,
-      user_id uuid not null references users(id) on delete cascade,
-      content text not null,
-      created_at timestamptz not null default now(),
-      updated_at timestamptz not null default now()
-    )
-  `);
-  await pool.query(`
-    alter table comments add column if not exists image_url text;
-  `);
-  await pool.query(`
-    create table if not exists likes (
-      user_id uuid not null references users(id) on delete cascade,
-      post_id uuid not null references posts(id) on delete cascade,
-      created_at timestamptz not null default now(),
-      primary key (user_id, post_id)
-    )
-  `);
-  await pool.query(
-    "create index if not exists idx_comments_post_created on comments(post_id, created_at asc)",
-  );
-  await pool.query("create index if not exists idx_likes_post on likes(post_id)");
+  try {
+    await pool.query(`
+      alter table users
+        add column if not exists community_banned_until timestamptz,
+        add column if not exists community_ban_reason text
+    `);
+    await pool.query(`
+      alter table posts
+        drop constraint if exists posts_category_check
+    `);
+    await pool.query(`
+      alter table posts
+        add constraint posts_category_check
+        check (category in ('chat', 'fan_art', 'theory', 'spoiler')) not valid
+    `);
+    await pool.query(`
+      create table if not exists comments (
+        id uuid primary key default gen_random_uuid(),
+        post_id uuid not null references posts(id) on delete cascade,
+        user_id uuid not null references users(id) on delete cascade,
+        content text not null,
+        created_at timestamptz not null default now(),
+        updated_at timestamptz not null default now()
+      )
+    `);
+    await pool.query(`
+      alter table comments add column if not exists image_url text;
+    `);
+    await pool.query(`
+      create table if not exists likes (
+        user_id uuid not null references users(id) on delete cascade,
+        post_id uuid not null references posts(id) on delete cascade,
+        created_at timestamptz not null default now(),
+        primary key (user_id, post_id)
+      )
+    `);
+    await pool.query(
+      "create index if not exists idx_comments_post_created on comments(post_id, created_at asc)",
+    );
+    await pool.query("create index if not exists idx_likes_post on likes(post_id)");
+  } catch (compatError) {
+    console.error("[community] compatibility migration warning:", compatError.message);
+  }
   communityCompatibilityReady = true;
 }
 
@@ -1884,7 +1888,7 @@ return async (req, res) => {
 
     fail(res, 405, "Method not allowed");
   } catch (error) {
-    console.error("[community] request failed:", error);
+    console.error("[community] request failed:", error.message, error.code || "", error.detail || "", error.hint || "");
     fail(res, 500, "Community chat is unavailable right now.");
   }
 };
