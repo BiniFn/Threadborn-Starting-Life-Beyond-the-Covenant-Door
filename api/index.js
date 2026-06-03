@@ -403,7 +403,7 @@ async function approveModerationRequest(request) {
     );
     // Notification for approval
     await pool.query(
-      `insert into notifications (user_id, type, title, body) values ($1, 'moderation', 'Image Approved', 'Your image attached to a community post was approved.')`,
+      `insert into notifications (user_id, type, title, body) values ($1, 'system', 'Image Approved', 'Your image attached to a community post was approved.')`,
       [request.user_id]
     );
     return;
@@ -427,7 +427,7 @@ async function approveModerationRequest(request) {
       [payload.imageUrl, request.target_id]
     );
     await pool.query(
-      `insert into notifications (user_id, type, title, body) values ($1, 'moderation', 'Image Approved', 'Your image attached to a community reply was approved.')`,
+      `insert into notifications (user_id, type, title, body) values ($1, 'system', 'Image Approved', 'Your image attached to a community reply was approved.')`,
       [request.user_id]
     );
     return;
@@ -454,7 +454,7 @@ async function moderateRequest(requestId, reviewer, decision, note = "") {
         [request.target_id]
       );
       await pool.query(
-        `insert into notifications (user_id, type, title, body) values ($1, 'moderation', 'Image Declined', 'Your image attached to a community post was declined.')`,
+        `insert into notifications (user_id, type, title, body) values ($1, 'system', 'Image Declined', 'Your image attached to a community post was declined.')`,
         [request.user_id]
       );
     } else if (request.request_type === "community_comment_image") {
@@ -463,7 +463,7 @@ async function moderateRequest(requestId, reviewer, decision, note = "") {
         [request.target_id]
       );
       await pool.query(
-        `insert into notifications (user_id, type, title, body) values ($1, 'moderation', 'Image Declined', 'Your image attached to a community reply was declined.')`,
+        `insert into notifications (user_id, type, title, body) values ($1, 'system', 'Image Declined', 'Your image attached to a community reply was declined.')`,
         [request.user_id]
       );
     }
