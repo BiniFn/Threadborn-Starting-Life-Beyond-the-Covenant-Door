@@ -79,13 +79,8 @@
             attachBtn.addEventListener('click', () => {
                 fileInput.click();
             });
-            // Clear GIF if real image is selected
             fileInput.addEventListener('change', () => {
-                if (fileInput.files && fileInput.files.length > 0) {
-                    window.selectedGifUrl = null;
-                    if (preview) preview.style.display = 'none';
-                    if (removeBtn) removeBtn.style.display = 'none';
-                }
+                window.handleImagePreview(fileInput, 'main');
             });
         }
 
@@ -166,6 +161,32 @@
             const removeBtn = document.getElementById(target === 'main' ? 'chat-remove-gif-btn' : 'remove-gif-' + target);
             if (preview) preview.style.display = 'none';
             if (removeBtn) removeBtn.style.display = 'none';
+            
+            const fileInput = document.getElementById(target === 'main' ? 'reaction-image' : 'image-' + target);
+            if (fileInput) fileInput.value = "";
+        };
+
+        window.handleImagePreview = function(inputEl, target) {
+            if (inputEl.files && inputEl.files.length > 0) {
+                // Clear GIF selection if any
+                window.selectedGifs[target] = null;
+                if (target === 'main') window.selectedGifUrl = null;
+                
+                const preview = document.getElementById(target === 'main' ? 'chat-selected-gif-preview' : 'preview-' + target);
+                const removeBtn = document.getElementById(target === 'main' ? 'chat-remove-gif-btn' : 'remove-gif-' + target);
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (preview) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                    if (removeBtn) removeBtn.style.display = 'block';
+                };
+                reader.readAsDataURL(inputEl.files[0]);
+            } else {
+                window.removeGif(target);
+            }
         };
 
         if (removeBtn) {

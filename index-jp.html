@@ -8270,7 +8270,7 @@
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                         </button>
                     </div>
-                    <input type="file" id="image-${postId}" accept="image/png, image/jpeg, image/gif, image/webp" style="display: none;" onchange="window.removeGif('${postId}')" />
+                    <input type="file" id="image-${postId}" accept="image/png, image/jpeg, image/gif, image/webp" style="display: none;" onchange="window.handleImagePreview(this, '${postId}')" />
                     <img id="preview-${postId}" class="chat-selected-gif-preview" src="" alt="Selected Media" style="display:none;" />
                     <button id="remove-gif-${postId}" onclick="window.removeGif('${postId}')" style="display:none;position:absolute;bottom:100%;left:86px;margin-bottom:60px;z-index:11;background:rgba(0,0,0,0.8);border:none;color:white;border-radius:50%;width:24px;height:24px;cursor:pointer;">×</button>
                 </div>
