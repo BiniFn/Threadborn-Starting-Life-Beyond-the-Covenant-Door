@@ -1687,7 +1687,7 @@ return async (req, res) => {
         202,
       );
     } else {
-      const postImageUrl = imageUrl ? "pending" : null;
+      const postImageUrl = imageUrl ? "https://threadborn.app/assets/pending-moderation.png" : null;
       const { rows } = await pool.query(
         `insert into posts (user_id, title, content, image_url, category, created_at, updated_at)
          values ($1,$2,$3,$4,$5,now(),now()) returning id, created_at`,
