@@ -91,11 +91,23 @@
 
         if (gifBtn && overlay) {
             gifBtn.addEventListener('click', () => {
+                window.currentGifTarget = 'main';
                 overlay.style.display = 'flex';
                 fetchGifs();
                 if (searchInput) searchInput.focus();
             });
         }
+
+        window.openGifModal = function(targetId) {
+            window.currentGifTarget = targetId;
+            const ov = document.getElementById("gif-modal-overlay");
+            if (ov) {
+                ov.style.display = 'flex';
+                fetchGifs();
+                const si = document.getElementById("gif-search-input");
+                if (si) si.focus();
+            }
+        };
 
         if (closeBtn && overlay) {
             closeBtn.addEventListener('click', () => {
@@ -116,11 +128,20 @@
             });
         }
 
+        if (!window.selectedGifs) window.selectedGifs = {};
+
         if (grid) {
             grid.addEventListener('click', (e) => {
                 if (e.target.classList.contains('gif-item')) {
                     const fullUrl = e.target.getAttribute('data-full');
-                    window.selectedGifUrl = fullUrl;
+                    const target = window.currentGifTarget || 'main';
+                    
+                    window.selectedGifs[target] = fullUrl;
+                    
+                    const preview = document.getElementById(target === 'main' ? 'chat-selected-gif-preview' : 'preview-' + target);
+                    const removeBtn = document.getElementById(target === 'main' ? 'chat-remove-gif-btn' : 'remove-gif-' + target);
+                    const fileInput = document.getElementById(target === 'main' ? 'reaction-image' : 'image-' + target);
+                    
                     if (preview) {
                         preview.src = fullUrl;
                         preview.style.display = 'block';
@@ -128,18 +149,28 @@
                     if (removeBtn) {
                         removeBtn.style.display = 'block';
                     }
-                    // Clear file input
                     if (fileInput) fileInput.value = "";
+                    
+                    // Legacy fallback
+                    if (target === 'main') window.selectedGifUrl = fullUrl;
+                    
                     overlay.style.display = 'none';
                 }
             });
         }
 
+        window.removeGif = function(target) {
+            window.selectedGifs[target] = null;
+            if (target === 'main') window.selectedGifUrl = null;
+            const preview = document.getElementById(target === 'main' ? 'chat-selected-gif-preview' : 'preview-' + target);
+            const removeBtn = document.getElementById(target === 'main' ? 'chat-remove-gif-btn' : 'remove-gif-' + target);
+            if (preview) preview.style.display = 'none';
+            if (removeBtn) removeBtn.style.display = 'none';
+        };
+
         if (removeBtn) {
             removeBtn.addEventListener('click', () => {
-                window.selectedGifUrl = null;
-                if (preview) preview.style.display = 'none';
-                removeBtn.style.display = 'none';
+                window.removeGif('main');
             });
         }
         

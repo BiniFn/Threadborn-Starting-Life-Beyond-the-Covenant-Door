@@ -415,6 +415,22 @@ async function approveModerationRequest(request) {
        values ($1,$2,$3,now(),now())`,
       [payload.postId, request.user_id, payload.content],
     );
+    return;
+  }
+
+  if (request.request_type === "community_comment_image") {
+    if (payload.imageUrl && !isAllowedCommunityImageUrl(payload.imageUrl)) {
+      throw new Error("Invalid community image URL in request");
+    }
+    await pool.query(
+      `update comments set image_url = $1, updated_at = now() where id = $2`,
+      [payload.imageUrl, request.target_id]
+    );
+    await pool.query(
+      `insert into notifications (user_id, type, title, body) values ($1, 'moderation', 'Image Approved', 'Your image attached to a community reply was approved.')`,
+      [request.user_id]
+    );
+    return;
   }
 }
 
@@ -441,11 +457,20 @@ async function moderateRequest(requestId, reviewer, decision, note = "") {
         `insert into notifications (user_id, type, title, body) values ($1, 'moderation', 'Image Declined', 'Your image attached to a community post was declined.')`,
         [request.user_id]
       );
+    } else if (request.request_type === "community_comment_image") {
+      await pool.query(
+        `update comments set image_url = null, updated_at = now() where id = $1`,
+        [request.target_id]
+      );
+      await pool.query(
+        `insert into notifications (user_id, type, title, body) values ($1, 'moderation', 'Image Declined', 'Your image attached to a community reply was declined.')`,
+        [request.user_id]
+      );
     }
     const pendingUrl = String(
       request.request_type === "avatar_update"
         ? request.payload?.avatarUrl || ""
-        : request.request_type === "community_post" || request.request_type === "community_post_image"
+        : request.request_type === "community_post" || request.request_type === "community_post_image" || request.request_type === "community_comment" || request.request_type === "community_comment_image"
           ? request.payload?.imageUrl || ""
           : "",
     );
@@ -1456,6 +1481,9 @@ async function ensureCommunityCompatibility() {
     )
   `);
   await pool.query(`
+    alter table comments add column if not exists image_url text;
+  `);
+  await pool.query(`
     create table if not exists likes (
       user_id uuid not null references users(id) on delete cascade,
       post_id uuid not null references posts(id) on delete cascade,
@@ -1535,7 +1563,7 @@ return async (req, res) => {
     if (ids.length) {
       const commentsResult = await pool.query(
         `
-        select c.id, c.post_id, c.content, c.created_at, c.user_id, u.username, u.avatar_url, u.verified, u.role
+        select c.id, c.post_id, c.content, c.image_url, c.created_at, c.user_id, u.username, u.avatar_url, u.verified, u.role
         from comments c
         join users u on u.id = c.user_id
         where c.post_id = any($1::uuid[])
@@ -1746,8 +1774,15 @@ return async (req, res) => {
   if (req.method === "POST" && action === "add_comment") {
     const postId = cleanText(body.postId, 80);
     const content = cleanText(body.content, 1200);
-    if (!postId || !content) {
-      fail(res, 400, "postId and content are required");
+    const imageUrl = cleanText(body.imageUrl, 800);
+    
+    if (imageUrl && !isAllowedCommunityImageUrl(imageUrl)) {
+      fail(res, 400, "Community images must be uploaded through Threadborn.");
+      return;
+    }
+    
+    if (!postId || (!content && !imageUrl)) {
+      fail(res, 400, "postId and content or image are required");
       return;
     }
     const exists = await pool.query("select 1 from posts where id = $1", [
@@ -1757,7 +1792,7 @@ return async (req, res) => {
       fail(res, 404, "Post not found");
       return;
     }
-    const payloadWithSignals = withModerationSignals({ postId, content }, ["content"]);
+    const payloadWithSignals = withModerationSignals({ postId, content, imageUrl: imageUrl || "" }, ["content"]);
     if (payloadWithSignals.moderation.filtered) {
       const request = await createModerationRequest(
         session.user_id,
@@ -1770,22 +1805,34 @@ return async (req, res) => {
         {
           pending: true,
           requestId: request.id,
-          message: "Reply submitted for review due to inappropriate language.",
+          message: "Reply held for review due to inappropriate language.",
         },
         202,
       );
     } else {
+      const commentImageUrl = imageUrl ? "https://threadborn.app/assets/pending-moderation.png" : null;
       const { rows } = await pool.query(
-        `insert into comments (post_id, user_id, content, created_at, updated_at)
-         values ($1,$2,$3,now(),now()) returning id, created_at`,
-        [postId, session.user_id, content]
+        `insert into comments (post_id, user_id, content, image_url, created_at, updated_at)
+         values ($1,$2,$3,$4,now(),now()) returning id, created_at`,
+        [postId, session.user_id, content, commentImageUrl]
       );
+      const newComment = rows[0];
+
+      if (imageUrl) {
+        await createModerationRequest(
+          session.user_id,
+          "community_comment_image",
+          { imageUrl },
+          { targetTable: "comments", targetId: newComment.id }
+        );
+      }
+
       success(
         res,
         {
           pending: false,
-          comment: rows[0],
-          message: "Reply posted successfully.",
+          comment: newComment,
+          message: imageUrl ? "Reply posted. Image is held for review." : "Reply posted successfully.",
         },
         201,
       );

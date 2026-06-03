@@ -7246,6 +7246,7 @@
                                 return `<div class="discord-reply">
                                   <button class="profile-link-btn" type="button" onclick="openPublicProfile('${commentUser}')">${commentUser}${renderNameBadges(comment)}</button>
                                   <span>${escapeHtml(comment.content || "")}</span>
+                                  ${comment.image_url === "https://threadborn.app/assets/pending-moderation.png" ? `<div class="chat-embed-image pending-image" style="max-width:200px; padding: 8px; border: 2px dashed var(--accent, #66b2ff); border-radius: 8px; text-align: center; color: var(--accent, #66b2ff); font-weight: bold; margin: 4px 0; font-size: 12px; background: rgba(0,0,0,0.2);">Image is under review</div>` : (comment.image_url ? `<img src="${safeImageUrl(comment.image_url)}" class="chat-embed-image" style="max-width:200px; max-height:200px; border-radius:8px; display:block; margin:4px 0;" />` : '')}
                                   ${isOwner ? `<button onclick="deleteCommunityComment(\'${escapeHtml(comment.id || "")}\')" class="discord-delete-btn">Delete</button>` : ""}
                                 </div>`;
                             })
@@ -7269,7 +7270,18 @@
               </div>
               ${comments ? `<div class="discord-replies">${comments}</div>` : ""}
               <div class="discord-reply-box" id="reply-box-${postId}">
-                <input id="comment-input-${postId}" placeholder="Reply to ${username}..." maxlength="1200" />
+                <div class="chat-input-wrapper" style="width: 100%; border-radius: 8px; margin-bottom: 8px;">
+                    <input id="comment-input-${postId}" placeholder="Reply to ${username}..." maxlength="1200" style="flex:1; border:none; background:transparent; color:white; padding:12px; outline:none;" />
+                    <div class="chat-actions">
+                        <button type="button" class="chat-action-btn" onclick="openGifModal('${postId}')" title="Search GIFs" style="font-size: 11px; font-weight: bold;">GIF</button>
+                        <button type="button" class="chat-action-btn" onclick="document.getElementById('image-${postId}').click()" title="Attach Image">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        </button>
+                    </div>
+                    <input type="file" id="image-${postId}" accept="image/png, image/jpeg, image/gif, image/webp" style="display: none;" onchange="window.removeGif('${postId}')" />
+                    <img id="preview-${postId}" class="chat-selected-gif-preview" src="" alt="Selected Media" style="display:none;" />
+                    <button id="remove-gif-${postId}" onclick="window.removeGif('${postId}')" style="display:none;position:absolute;bottom:100%;left:86px;margin-bottom:60px;z-index:11;background:rgba(0,0,0,0.8);border:none;color:white;border-radius:50%;width:24px;height:24px;cursor:pointer;">×</button>
+                </div>
                 <button class="btn btn-ghost" type="button" onclick="addCommunityComment('${postId}')">Send</button>
               </div>
             </div>
@@ -7924,22 +7936,53 @@
             }
 
             async function addCommunityComment(postId) {
-                const input = document.getElementById(
-                    `comment-input-${postId}`,
-                );
+                const input = document.getElementById(`comment-input-${postId}`);
+                const imageEl = document.getElementById(`image-${postId}`);
                 if (!input) return;
+                
                 const content = input.value.trim();
-                if (!content) return;
+                const selectedGif = (window.selectedGifs && window.selectedGifs[postId]) || null;
+                
+                if (!content && (!imageEl || !imageEl.files || !imageEl.files[0]) && !selectedGif) {
+                    return;
+                }
+                
                 try {
+                    let uploadedImageUrl = selectedGif || "";
+                    if (!uploadedImageUrl && imageEl && imageEl.files && imageEl.files.length > 0) {
+                        const file = imageEl.files[0];
+                        if (file.size > 5 * 1024 * 1024) {
+                            throw new Error("Image must be smaller than 5MB");
+                        }
+                        const uploaderReq = await fetch(
+                            "/api/reader/upload-community-image?filename=" + encodeURIComponent(file.name),
+                        );
+                        const uploaderData = await uploaderReq.json();
+                        if (!uploaderReq.ok) {
+                            throw new Error(uploaderData.error || "Image upload setup failed");
+                        }
+                        const uploadRes = await fetch(uploaderData.url, {
+                            method: "PUT",
+                            body: file,
+                        });
+                        const uploadedData = await uploadRes.json();
+                        uploadedImageUrl = uploadedData.url;
+                    }
+
                     await apiJson("/api/reader/community", {
                         method: "POST",
                         body: JSON.stringify({
                             action: "add_comment",
                             postId,
                             content,
+                            imageUrl: uploadedImageUrl
                         }),
                     });
+                    
                     input.value = "";
+                    if (imageEl) imageEl.value = "";
+                    if (window.removeGif) window.removeGif(postId);
+                    
                     const activeView = document.querySelector(".view.active")?.id;
                     if (activeView === "view-reactions") {
                         await setReactionTarget(
@@ -7955,6 +7998,7 @@
                     const chatStatus = document.getElementById("reaction-status");
                     if (status) status.textContent = error.message;
                     if (chatStatus) chatStatus.textContent = error.message;
+                    alert(error.message);
                 }
             }
 
