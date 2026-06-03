@@ -1799,10 +1799,14 @@ return async (req, res) => {
       fail(res, 403, "You can only delete your own posts");
       return;
     }
-    await pool.query(
-      `update posts set content = '[Deleted message]', image_url = null, is_deleted = true, updated_at = now() where id = $1`,
-      [postId]
-    );
+    if (isModerator) {
+      await pool.query(`delete from posts where id = $1`, [postId]);
+    } else {
+      await pool.query(
+        `update posts set content = '[Deleted message]', image_url = null, is_deleted = true, updated_at = now() where id = $1`,
+        [postId]
+      );
+    }
     success(res, { ok: true });
     return;
   }
@@ -1946,10 +1950,14 @@ return async (req, res) => {
       fail(res, 403, "You can only delete your own comments");
       return;
     }
-    await pool.query(
-      `update comments set content = '[Deleted message]', image_url = null, is_deleted = true, updated_at = now() where id = $1`,
-      [commentId]
-    );
+    if (isModerator) {
+      await pool.query(`delete from comments where id = $1`, [commentId]);
+    } else {
+      await pool.query(
+        `update comments set content = '[Deleted message]', image_url = null, is_deleted = true, updated_at = now() where id = $1`,
+        [commentId]
+      );
+    }
     success(res, { ok: true });
     return;
   }
